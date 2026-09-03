@@ -10,29 +10,56 @@ requires-python = "==3.11.10"          # 冻结版本，不得放宽
 # 注：不设 readme —— 本工程约定默认不生成 README.md
 dependencies = [
     # ---- 运行时（版本严格按 60.90.03 §3.7 冻结表）----
+# 冻结表内的 5 项：逐字对齐 60.90.03 §3.7
     "fastapi==0.115.6",
     "uvicorn[standard]==0.34.0",
     "celery==5.4.0",
     "redis==7.4.1",
-    "sqlalchemy>=2.0",
-    "psycopg[binary]>=3.2",
-    "pgvector>=0.3",
     "pymupdf==1.25.1",
-    "minio>=7.2",
-    "httpx>=0.28",                      # 模型网关 / RAGFlow REST 调用
-    "pydantic>=2.9",
-    "pydantic-settings>=2.6",
+    # 冻结表外的 7 项：不在冻结表里不等于可以漂。
+    # 一律取 uv.lock 实际解析值写死，禁止 >= 范围 —— 范围是声明不是承诺：
+    # 今天解析到 A、明天解析到 B，环境就不可复现，而 TR-4 看不见范围约束。
+    "sqlalchemy==2.0.52",
+    "psycopg[binary]==3.3.5",
+    # pgvector 有两个同名不同物：§3.7 的 0.8.0 是 PostgreSQL 服务端扩展
+    # （由镜像标签钉住，见 docker-compose.dev.yml），PyPI 上的 Python 客户端
+    # 最高只到 0.5.0，永远升不到 0.8.0 —— 两者不是一回事，别拿它去对冻结表。
+    "pgvector==0.5.0",
+    "minio==7.2.20",
+    "httpx==0.28.1",                        # 模型网关 / RAGFlow REST 调用
+    "pydantic==2.13.5",
+    "pydantic-settings==2.15.0",
+    # 配置层加载。原本经 uvicorn[standard] 传递引入 —— 传递依赖不能当直接依赖用：
+    # 上游哪天不再依赖它，我们的配置层就凭空断掉，而 pyproject 里看不出任何线索。
+    "pyyaml==6.0.3",
     # 注意：paddleocr==2.9.1 暂缓引入（arm64 依赖链重，留到 E1 验证）
 ]
 
-[project.optional-dependencies]
+# 开发工具链放 [dependency-groups]（PEP 735），不放在 [project.optional-dependencies]。
+#
+# 为什么：uv 默认就纳入 dev 组，新机器 `uv sync` 直接可用；放 optional-dependencies
+# 则必须记得加 --extra dev，忘了就撞在 `make gate` 的第一行报错
+# "Failed to spawn: ruff" —— 而这条报错完全不提示真实原因是缺 dev 依赖。
+# 环境可复现的敌人不是复杂，是「要记得多加一个参数」这类隐性前提。
+#
+# 另一半：dev 依赖不进 wheel 元数据，构建产物不会被测试工具污染。
+[dependency-groups]
 dev = [
-    "ruff>=0.8",
-    "mypy>=1.13",
-    "pytest>=8.3",
-    "pytest-cov>=6.0",
-    "pytest-asyncio>=0.24",
-    "httpx>=0.28",                      # TestClient 依赖
+    # 一律锁死实际值，理由与运行时依赖相同，且这里更致命：
+    # lint / 类型 / 测试工具版本一漂，同一份代码昨天绿今天红，
+    # 门禁就从「判据」退化成「当时的天气」，交付证据不可复现。
+    # 实证：mypy 声明写 >=1.13，实际已解析到 2.3.1（跨大版本），
+    # 期间无人察觉 —— 这正是范围声明最典型的失效方式。
+    "ruff==0.16.5",
+    "mypy==2.3.1",
+    "pytest==9.1.1",
+    "pytest-cov==7.1.0",
+    "pytest-asyncio==1.4.0",
+    # 不进 ignore_missing_imports：配置加载是新代码，正是最该被类型检查的部分。
+    # 忽略掉就等于放弃这块的检查 —— 而它错起来是静默的（键名写错照样能跑）。
+    "types-PyYAML==6.0.12.20260815",
+    # httpx 不在此重复声明：它已是运行时依赖（==0.28.1），TestClient 直接可用。
+    # 两处声明同一依赖 = 两个真相来源，约束不一致时谁赢取决于解析顺序。
 ]
 
 [build-system]

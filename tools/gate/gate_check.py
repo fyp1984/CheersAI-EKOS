@@ -349,6 +349,25 @@ def check_tr2(root, cfg, out, cfg_path, do_baseline=False):
 _SEP_ANY = r"""(?:[a-z0-9._-]*[/:]|\[[^\]]*\]|["']|[=:~<>!]+|[,:._\s-])*"""
 
 
+def _strip_comment(line):
+    """去掉行注释后再做版本匹配。
+
+    为什么必须去注释：compose 与 SQL 的注释里写着「冻结 PostgreSQL 16.6 +
+    pgvector 0.8.0」，而实际装的是 pgvector 0.5.0 —— 门禁却判定「0.8.0 在位」。
+    **让注释满足版本校验，等于拿文档顶替现实**：文档永远写对的，环境未必。
+    这比「未找到」更糟 —— 「未找到」是没结论，这个是**肯定的错误结论**。
+
+    只去行注释；版本号里不会出现 #，且要求 # 前有空白，故引号内的 # 不受影响。
+    """
+    s = line.strip()
+    if s.startswith("#") or s.startswith("--") or s.startswith("//"):
+        return ""
+    idx = line.find(" #")
+    if idx != -1:
+        line = line[:idx]
+    return line
+
+
 def check_tr4(root, cfg, out):
     spec = cfg.get("TR-4", {})
     comps = spec.get("components", [])
@@ -375,7 +394,8 @@ def check_tr4(root, cfg, out):
     blob = []
     for f in targets:
         for i, line in enumerate(read_lines(f), 1):
-            blob.append((f.relative_to(root), i, line))
+            # 去注释后再入 blob：注释不得满足版本校验，也不得触发 latest 禁令
+            blob.append((f.relative_to(root), i, _strip_comment(line)))
     # 禁止 :latest
     if spec.get("forbid_latest", True):
         for rel, ln, line in blob:
@@ -578,7 +598,13 @@ def check_tr6(root, cfg, out):
                 cd = root / d
                 if cd.is_dir():
                     pats = r.get("expect_files", ["*"])
-                    if any(cd.rglob(p) for p in pats):
+                    # 必须展开生成器再判真值。
+                    # `any(cd.rglob(p) for p in pats)` 恒为 True —— rglob 返回的是
+                    # 生成器对象，对象本身永远真值，一个文件都没匹配到也照样通过。
+                    # 后果：只要建了空的 configs/ 目录，P2 就变绿，
+                    # 而「切分规则与别名表」可能一条都没落 —— 这正是 P2 要防的事。
+                    # 判据写的是「落在配置层」，空目录不是配置层。
+                    if any(True for p in pats for _ in cd.rglob(p)):
                         ok = True
                         break
         else:
@@ -767,7 +793,11 @@ def selftest(cfg_path):
             "services:\n"
             "  pg:\n    image: postgres:16.6\n"
             "  llm:\n    image: vllm/vllm-openai:0.7.0\n"
-            "  cache:\n    image: redis:latest\n",
+            "  cache:\n    image: redis:latest\n"
+            # 注释里写对冻结版本、实际声明却是旧版 —— 必须仍判漂移。
+            # 真实事故：pgvector 装的是 0.5.0，注释写着 0.8.0，门禁却报「0.8.0 在位」。
+            "  store:\n    image: minio/minio:RELEASE.2023-01-01T00-00-00Z\n"
+            "# 冻结 MinIO RELEASE.2024-11-07T00-52-20Z（注释写对，实际是旧版）\n",
             encoding="utf-8",
         )
         # P2 结构预留：配置层有 yaml
@@ -801,6 +831,18 @@ def selftest(cfg_path):
         print(text)
         print()
 
+        # P2 反例：只有空的 configs/ 目录、里面一个配置文件都没有，P2 必须判不通过。
+        # 真实缺陷：判据写的是「切分规则与别名表落在配置层」，
+        # 而 any(cd.rglob(p) for p in pats) 里 rglob 返回生成器对象、恒为真，
+        # 于是「建个空目录」就算「落在配置层」了 —— 这条断言专门盯着它。
+        empty = tmp / "empty_repo"
+        (empty / "configs").mkdir(parents=True)
+        out_empty = []
+        check_tr6(empty, cfg_local_cfg, out_empty)
+        p2_empty_passed = any(
+            f.check == "TR-6" and f.level == PASS and f.where == "P2" for f in out_empty
+        )
+
         def has(check, level, keyword=""):
             return any(
                 f.check == check and f.level == level and keyword in f.message for f in findings
@@ -811,6 +853,7 @@ def selftest(cfg_path):
             ("TR-2 抓到 vendor 内容漂移", has("TR-2", FAIL, "基线不一致")),
             ("TR-4 抓到 vLLM 版本漂移", has("TR-4", FAIL, "vLLM")),
             ("TR-4 抓到 latest 标签", has("TR-4", FAIL, "latest")),
+            ("TR-4 注释里的冻结版本不能顶替实际声明", has("TR-4", FAIL, "MinIO")),
             (
                 "TR-4 认可 PostgreSQL 冻结版本",
                 any(
@@ -826,6 +869,7 @@ def selftest(cfg_path):
             ("干净文件未被误报", not any("generic.py" in (f.where or "") for f in findings)),
             ("TR-6 文档字符串中的中文不误报", not has("TR-6", WARN, "本模块说明")),
             ("TR-6 三引号字符串常量仍被抓到", has("TR-6", WARN, "中文切分规则表")),
+            ("P2 空配置目录不得判为通过", not p2_empty_passed),
         ]
         print("=== 自检断言 ===")
         ok = True

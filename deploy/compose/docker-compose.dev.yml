@@ -17,7 +17,13 @@ services:
 
   # ---------------- 事实与向量库 ----------------
   postgres:
-    image: pgvector/pgvector:pg16          # 交付冻结 PostgreSQL 16.6 + pgvector 0.8.0
+    # 标签 = <扩展版本>-pg<主版本>-<基础镜像>。必须写全三段，理由：
+    #   · 扩展版本：0.8.0 —— 60.90.03 §3.7 冻结值。写 pg16 这类滚动标签时，
+    #     扩展版本随镜像走（今天 0.8.6，明天可能是 0.9.x），冻结等于没冻。
+    #   · 基础镜像：bookworm —— 不写会落到 trixie，基础库变了排查成本极高。
+    #   · 已知缺口：PG 小版本 16.6 无法通过此标签钉住（标签只编码主版本），
+    #     处置待拍板，见方案附件 D-⑨。
+    image: pgvector/pgvector:0.8.0-pg16-bookworm
     platform: linux/arm64                   # ← E0 关键；E1 改为 linux/amd64
     profiles: [dev]
     container_name: ekos-postgres
