@@ -1,0 +1,667 @@
+{
+  "meta": {
+    "config_version": "1.0",
+    "updated": "2026-09-03",
+    "owner": "西北人",
+    "authority_doc": "../00_项目管理/双线推进方案-最小任务集与门禁验证-内部-260903-v2.2.md",
+    "tech_baseline_doc": "../02_方案/60.90.03.【方案】.企业信贷报告生成下轮技术准备与实施讨论.260901.v1.0.md",
+    "note": "本文件是八道门禁的唯一判据源。改这里等于改门禁——任何修改须写入变更记录，禁止为通过门禁而放宽本文件内容。",
+    "checks_automated": [
+      "TR-1",
+      "TR-2",
+      "TR-4",
+      "TR-6"
+    ],
+    "checks_manual": [
+      "TR-3",
+      "TR-5",
+      "BIZ-1",
+      "BIZ-2",
+      "BIZ-3",
+      "BIZ-4",
+      "BIZ-5",
+      "QA-1",
+      "QA-2",
+      "QA-3",
+      "QA-4",
+      "QA-5"
+    ]
+  },
+  "scan": {
+    "root": "../..",
+    "exempt_dirs": [
+      "configs",
+      "config",
+      "prompts",
+      "prompt",
+      "skills",
+      "skill_packs",
+      "vendor",
+      "third_party",
+      "external",
+      "deps",
+      "node_modules",
+      "__pycache__",
+      ".venv",
+      "venv",
+      ".git",
+      ".idea",
+      ".vscode",
+      "docs",
+      "01_需求",
+      "02_方案",
+      "04_归档",
+      "00_项目管理",
+      "03_实施/门禁检查",
+      "assets",
+      "记录"
+    ],
+    "code_ext": [
+      ".py",
+      ".ts",
+      ".tsx",
+      ".js",
+      ".jsx",
+      ".go",
+      ".java",
+      ".rb",
+      ".rs"
+    ],
+    "config_ext": [
+      ".yml",
+      ".yaml",
+      ".toml",
+      ".ini",
+      ".cfg",
+      ".sql"
+    ],
+    "max_file_bytes": 2097152
+  },
+  "TR-1": {
+    "name": "内核零行业词",
+    "principle": "金租特有逻辑必须落在配置层/提示词层，共用层代码零信贷术语。内核长了信贷字段，EKOS 就从企业知识库退化成信贷报告生成器。",
+    "severity": "FAIL",
+    "industry_words": [
+      "信贷",
+      "授信",
+      "征信",
+      "经销商",
+      "信审",
+      "贷前",
+      "贷后",
+      "放款",
+      "还款",
+      "逾期",
+      "抵押",
+      "担保",
+      "承租人",
+      "租赁物",
+      "首付",
+      "残值",
+      "库存融资",
+      "零售金融",
+      "对公授信",
+      "授信额度",
+      "贷后管理",
+      "不良贷款",
+      "五级分类",
+      "汽车金融",
+      "融资租赁",
+      "金融租赁",
+      "客户评级",
+      "评级模型",
+      "尽调报告",
+      "年审报告",
+      "6页模板",
+      "六页模板",
+      "首付比例",
+      "残值率",
+      "LoanReview",
+      "CreditReport",
+      "creditLimit"
+    ]
+  },
+  "TR-2": {
+    "name": "开源组件零侵入",
+    "principle": "集成方式只能是 adapter 或 REST 调用，无 vendor 内修改。一旦开始改 core，升级就跟不上了——这是开源复用最常见的翻车点。",
+    "severity": "FAIL",
+    "vendor_dirs": [
+      "vendor",
+      "third_party",
+      "external",
+      "deps",
+      "ragflow"
+    ],
+    "hash_ext": [
+      ".py",
+      ".ts",
+      ".js",
+      ".tsx",
+      ".jsx",
+      ".go",
+      ".java",
+      ".rb",
+      ".rs",
+      ".json",
+      ".yml",
+      ".yaml",
+      ".toml",
+      ".md"
+    ]
+  },
+  "TR-4": {
+    "name": "版本零漂移",
+    "principle": "与 60.90.03 §3.7 冻结组件版本表逐项 diff，差异数=0。任何升级须走变更记录，不得顺手升。顺手升是最常见的环境不可复现来源。",
+    "severity": "FAIL",
+    "match_files": [
+      "docker-compose.yml",
+      "docker-compose.yaml",
+      "docker-compose.*.yml",
+      "Dockerfile",
+      "Dockerfile.*",
+      "requirements.txt",
+      "requirements-*.txt",
+      "pyproject.toml",
+      "Pipfile",
+      ".env",
+      ".env.*",
+      "*.env"
+    ],
+    "forbid_latest": true,
+    "components": [
+      {
+        "key": "docker",
+        "label": "Docker Engine",
+        "frozen": "27.3.1",
+        "regex": "docker[\\s:=_-]*([0-9]+\\.[0-9]+(?:\\.[0-9]+)?)"
+      },
+      {
+        "key": "compose",
+        "label": "Docker Compose",
+        "frozen": "2.29.7",
+        "regex": "compose[\\s:=_-]*([0-9]+\\.[0-9]+(?:\\.[0-9]+)?)"
+      },
+      {
+        "key": "nvidia_driver",
+        "label": "NVIDIA Driver",
+        "frozen": "550.127.05",
+        "regex": "nvidia[\\s_-]*driver[\\s:=_-]*([0-9]+\\.[0-9]+(?:\\.[0-9]+)?)"
+      },
+      {
+        "key": "cuda",
+        "label": "CUDA Runtime",
+        "frozen": "12.4",
+        "regex": "cuda[\\s:=_-]*(?:runtime[\\s:=_-]*)?([0-9]+\\.[0-9]+(?:\\.[0-9]+)?)"
+      },
+      {
+        "key": "vllm",
+        "label": "vLLM",
+        "frozen": "0.8.5",
+        "regex": "vllm[\\s:=_-]*([0-9]+\\.[0-9]+(?:\\.[0-9]+)?)"
+      },
+      {
+        "key": "llamacpp",
+        "label": "llama.cpp server",
+        "frozen": "b5401",
+        "regex": "llama[\\.\\s_-]*cpp[\\s:=_-]*([a-zA-Z0-9\\.\\-]+)"
+      },
+      {
+        "key": "python",
+        "label": "Python",
+        "frozen": "3.11.10",
+        "regex": "python[\\s:=_-]*([0-9]+\\.[0-9]+(?:\\.[0-9]+)?)"
+      },
+      {
+        "key": "fastapi",
+        "label": "FastAPI",
+        "frozen": "0.115.6",
+        "regex": "fastapi[\\s:=_-]*([0-9]+\\.[0-9]+(?:\\.[0-9]+)?)"
+      },
+      {
+        "key": "uvicorn",
+        "label": "Uvicorn",
+        "frozen": "0.34.0",
+        "regex": "uvicorn[\\s:=_-]*([0-9]+\\.[0-9]+(?:\\.[0-9]+)?)"
+      },
+      {
+        "key": "celery",
+        "label": "Celery",
+        "frozen": "5.4.0",
+        "regex": "celery[\\s:=_-]*([0-9]+\\.[0-9]+(?:\\.[0-9]+)?)"
+      },
+      {
+        "key": "redis",
+        "label": "Redis",
+        "frozen": "7.4.1",
+        "regex": "redis[\\s:=_-]*([0-9]+\\.[0-9]+(?:\\.[0-9]+)?)"
+      },
+      {
+        "key": "postgres",
+        "label": "PostgreSQL",
+        "frozen": "16.6",
+        "regex": "(?:postgres|postgresql)[\\s:=_-]*([0-9]+(?:\\.[0-9]+)?)"
+      },
+      {
+        "key": "pgvector",
+        "label": "pgvector",
+        "frozen": "0.8.0",
+        "regex": "pgvector[\\s:=_-]*([0-9]+\\.[0-9]+(?:\\.[0-9]+)?)"
+      },
+      {
+        "key": "minio",
+        "label": "MinIO",
+        "frozen": "RELEASE.2024-11-07T00-52-20Z",
+        "regex": "minio[\\s/:_-]*(RELEASE\\.[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}-[0-9]{2}-[0-9]{2}Z)"
+      },
+      {
+        "key": "pymupdf",
+        "label": "PyMuPDF",
+        "frozen": "1.25.1",
+        "regex": "(?:pymupdf|fitz)[\\s:=_-]*([0-9]+\\.[0-9]+(?:\\.[0-9]+)?)"
+      },
+      {
+        "key": "paddleocr",
+        "label": "PaddleOCR",
+        "frozen": "2.9.1",
+        "regex": "paddleocr[\\s:=_-]*([0-9]+\\.[0-9]+(?:\\.[0-9]+)?)"
+      }
+    ]
+  },
+  "TR-6": {
+    "name": "语种未写死在内核",
+    "principle": "防的是本期图省事把中文规则写进代码、下期加韩文要重构。三处结构预留 P1/P2/P3（schema 留 language 字段、切分与别名落配置层、脱敏策略表留 lang 列）必须真的在。",
+    "severity": "FAIL",
+    "fail_patterns": [
+      "(?:lang|language|locale|LAN)\\s*(?:==|!=|is)\\s*['\\\"](?:zh|zh[-_]?CN|zh[-_]?Hans|zh[-_]?TW|cn|chinese)['\\\"]",
+      "(?:lang|language|locale)\\s+in\\s*\\(\\s*['\\\"]zh[^'\\\"]*['\\\"]",
+      "re\\.(?:compile|match|search|sub|findall|split)\\s*\\(\\s*r?['\\\"][^'\\\"]*[\\u4e00-\\u9fff]",
+      "(?:if|elif|switch|case)\\s*\\(?\\s*(?:lang|language|locale)\\s*(?:==|!=|in|is)"
+    ],
+    "warn_patterns": [
+      "['\\\"](?:zh|zh[-_]?CN|zh[-_]?Hans|chinese|Chinese)['\\\"]"
+    ],
+    "warn_cjk_literal": {
+      "enabled": true,
+      "min_cjk_len": 4,
+      "desc": "代码行内字符串字面量含连续 4 个以上汉字（排除注释与文档字符串），可能是被写死的中文切分规则或别名表"
+    },
+    "structure_reservations": [
+      {
+        "id": "P1",
+        "desc": "解析输出 schema 含 language 字段",
+        "expect_file_patterns": [
+          "*schema*.json",
+          "*schema*.py",
+          "*model*.py",
+          "*schema*.yaml"
+        ],
+        "expect_regex": "\\blanguage\\b"
+      },
+      {
+        "id": "P2",
+        "desc": "切分规则与别名表落在配置层",
+        "expect_config_dirs": [
+          "configs",
+          "config"
+        ],
+        "expect_files": [
+          "*.yaml",
+          "*.yml",
+          "*.json"
+        ]
+      },
+      {
+        "id": "P3",
+        "desc": "脱敏策略表含 lang 列",
+        "expect_file_patterns": [
+          "*mask*",
+          "*desens*",
+          "*脱敏*",
+          "*policy*"
+        ],
+        "expect_regex": "\\blang\\b"
+      }
+    ]
+  },
+  "gates": {
+    "Q1": {
+      "name": "底座与选型门禁",
+      "milestone": "M1",
+      "date": "2026-09-07",
+      "outputs": [
+        "选型决策记录(T-A6)",
+        "冻结组件版本表落地",
+        "SBOM初稿",
+        "共用接口契约 X1-X4"
+      ],
+      "items": [
+        {
+          "id": "TR-3",
+          "type": "manual",
+          "text": "X1-X4 四个共用接口字段命名已定稿，无行业语义、无语种语义"
+        },
+        {
+          "id": "TR-6",
+          "type": "auto",
+          "text": "解析输出 schema 已含 language 字段；脱敏策略表已含 lang 列"
+        },
+        {
+          "id": "TR-5",
+          "type": "manual",
+          "text": "选型决策记录能说清 RAGFlow 承担哪几环、勤思侧自研哪几环"
+        },
+        {
+          "id": "BIZ-3",
+          "type": "manual",
+          "text": "60.90.03 §3.7 版本在本地干净环境已装起来一次（不是纸面清单）"
+        }
+      ],
+      "on_fail": "选型卡住 → 直接锁 RAGFlow（金租侧已在用，切换成本最低），不继续比选。底座选型不是研究课题，卡住就是它。"
+    },
+    "Q2": {
+      "name": "脱敏内核门禁（双侧同时交账）",
+      "milestone": "M2",
+      "date": "2026-09-11",
+      "outputs": [
+        "Vault脱敏适配器 detect/mask/restore/health",
+        "中文识别率与出域拦截实测表",
+        "PC版+Word版两个安装包",
+        "一页纸性能报告"
+      ],
+      "items": [
+        {
+          "id": "TR-1",
+          "type": "auto",
+          "text": "脱敏适配器代码中零信贷术语，§4.2 四类接口签名保持通用"
+        },
+        {
+          "id": "TR-6",
+          "type": "auto",
+          "text": "脱敏策略表有 lang 列且中文规则全在配置层，代码内无硬编码中文实体正则"
+        },
+        {
+          "id": "BIZ-1",
+          "type": "manual",
+          "text": "两个安装包在同配置干净机上当场装成功（不能在开发机上装成功就算）"
+        },
+        {
+          "id": "BIZ-2",
+          "type": "manual",
+          "text": "性能数据如实给出：吞吐、P95 时延、大文件耗时；慢就写慢"
+        },
+        {
+          "id": "BIZ-4",
+          "type": "manual",
+          "text": "性能报告能直接进 A 包（答甲方那句脱敏的性能快还是慢）"
+        },
+        {
+          "id": "QA-1",
+          "type": "manual",
+          "text": "识别率 ≥90%、出域拦截 100%，口径为中文语料"
+        },
+        {
+          "id": "SEC-1",
+          "type": "manual",
+          "text": "映射表存本地 Vault，未随云端请求发出——抓包验证一次"
+        }
+      ],
+      "on_fail": "识别率不达标 → 先调规则与策略再讨论换产品；不得为达标放宽策略或加白名单（放一次，后面所有合规论据全废）。"
+    },
+    "Q3": {
+      "name": "数据接入与深度解析门禁",
+      "milestone": "M3",
+      "date": "2026-09-18",
+      "outputs": [
+        "数据源接入完成",
+        "解析质量结论一页纸",
+        "入库即转MD+命名规范校验"
+      ],
+      "items": [
+        {
+          "id": "BIZ-1",
+          "type": "manual",
+          "text": "金租小库全为模拟数据，无任何真实客户信息（数据红线）"
+        },
+        {
+          "id": "BIZ-2",
+          "type": "manual",
+          "text": "中文极端场景解析出明确结论（合格/不合格/需第三方OCR），不写基本可以"
+        },
+        {
+          "id": "QA-1",
+          "type": "manual",
+          "text": "§3.5 加工约束逐条核对：本期执行 UTF-8+NFC、language 恒填 zh、并行召回、原文重排；本期不执行韩文切分规则与中韩别名表"
+        },
+        {
+          "id": "QA-1",
+          "type": "manual",
+          "text": "EKOS 准出⑨ 命名/路径违规 100% 告警"
+        }
+      ],
+      "on_fail": "极端场景解析不合格 → 立即如实告知甲方并给替代方案，不藏。注意：这一条不因韩文暂缓而放松。",
+      "note": "R2 回喂在此出口产出：中文极端场景解析实测 → 转交 EKOS 作 T-B3 验收证据。"
+    },
+    "Q4": {
+      "name": "检索与证据链门禁（全案最关键闸门）",
+      "milestone": "M4",
+      "date": "2026-09-25",
+      "outputs": [
+        "三索引打通",
+        "合并题库100题",
+        "中文召回实测表",
+        "证据链与拒答机制"
+      ],
+      "items": [
+        {
+          "id": "TR-5",
+          "type": "manual",
+          "text": "推进 EKOS 准出②（检索与问答质量）"
+        },
+        {
+          "id": "QA-1",
+          "type": "manual",
+          "text": "召回率 ≥85%；100% 回答带证据链"
+        },
+        {
+          "id": "QA-1",
+          "type": "manual",
+          "text": "§3.5 中→中组指标逐项填值（Recall@8 ≥90%、MRR@8 ≥0.80）。韩→韩组与跨语言组本期不测，须标注本期不覆盖，不得留空、不得填 0"
+        },
+        {
+          "id": "QA-1",
+          "type": "manual",
+          "text": "拒答时 100% 说清原因（T-C5）"
+        },
+        {
+          "id": "PERM-1",
+          "type": "manual",
+          "text": "双层权限过滤生效：无权限内容一条都搜不出来（T-C2）"
+        }
+      ],
+      "on_fail": "召回率调不到 85% → 先测基线、再调切分与别名、再调混合权重（§3.5 第7条已定此顺序），最后才讨论换模型。这一步不许跳。"
+    },
+    "Q5": {
+      "name": "报告 Skill 与端到端门禁（业务交付主闸门）",
+      "milestone": "M5",
+      "date": "2026-09-30",
+      "outputs": [
+        "报告Skill资产包",
+        "1个真实案例端到端跑通",
+        "Golden Test结果",
+        "模型冻结结论"
+      ],
+      "items": [
+        {
+          "id": "TR-1",
+          "type": "auto",
+          "text": "Skill 包全部落在配置层/提示词层，内核代码零信贷术语"
+        },
+        {
+          "id": "TR-6",
+          "type": "auto",
+          "text": "报告模板与提示词中无硬编码语种分支，语种配置走 Skill 配置层"
+        },
+        {
+          "id": "BIZ-1",
+          "type": "manual",
+          "text": "报告每项结论可溯源到页码；演示全程不中断、不卡顿"
+        },
+        {
+          "id": "BIZ-2",
+          "type": "manual",
+          "text": "无依据陈述率 = 0"
+        },
+        {
+          "id": "BIZ-3",
+          "type": "manual",
+          "text": "§3.3 六项模型硬门槛逐项过。韩文关键事实 ≥90% 本期不覆盖，须在 Golden Test 结果中标注"
+        },
+        {
+          "id": "BIZ-5",
+          "type": "manual",
+          "text": "所有关键数字来自事实库或规则结果，无一由 LLM 自行计算"
+        },
+        {
+          "id": "QA-4",
+          "type": "manual",
+          "text": "Golden Test 重跑通过；模型 Revision 与 SHA-256 已冻结并记录"
+        },
+        {
+          "id": "DEMO-1",
+          "type": "manual",
+          "text": "演示设备不是西北人自带笔记本（上一轮跑了一天多，有前科）"
+        }
+      ],
+      "on_fail": "任一硬门槛不过 → 不得进 M6。现场翻车的代价不是效果打折，是出局——这条不能通融。"
+    },
+    "Q6": {
+      "name": "部署与预演门禁",
+      "milestone": "M6",
+      "date": "2026-10-09",
+      "outputs": [
+        "一键部署包",
+        "部署操作手册",
+        "干净机器演练计时记录",
+        "部署方案唯一推荐档",
+        "演示脚本定稿三版本"
+      ],
+      "items": [
+        {
+          "id": "BIZ-3",
+          "type": "manual",
+          "text": "甲方 IT 拿手册能自己起环境；依赖清单简明到可直接照着下单"
+        },
+        {
+          "id": "QA-1",
+          "type": "manual",
+          "text": "部署 ≤1 周（EKOS 准出⑤）；干净机器演练全程计时记录"
+        },
+        {
+          "id": "QA-1",
+          "type": "manual",
+          "text": "§3.9 七步机器验证流程逐条执行（含第7条：非开发人员独立复现）"
+        },
+        {
+          "id": "BIZ-4",
+          "type": "manual",
+          "text": "部署方案有唯一推荐档（虚拟云/GPU 租赁起步），不再出现三选一你挑一个"
+        },
+        {
+          "id": "DEMO-2",
+          "type": "manual",
+          "text": "三个版本（给IT/给业务/给王总）分别预演跑通"
+        },
+        {
+          "id": "DEMO-3",
+          "type": "manual",
+          "text": "韩文问询标准答案已进演示脚本 Q&A"
+        }
+      ],
+      "on_fail": "演练计时超标 → 先砍手册里的非必要步骤（升级/回滚/证书延至阶段4），不许砍一键装起来这件事本身。"
+    },
+    "Q7": {
+      "name": "业务验证与回喂门禁（传动轴）",
+      "milestone": "M7",
+      "date": "2026-10-16",
+      "outputs": [
+        "演示会纪要+现场问答记录",
+        "信审专家盲评结论",
+        "客户验证纪要T-F4",
+        "验收用例执行结果"
+      ],
+      "items": [
+        {
+          "id": "BIZ-4",
+          "type": "manual",
+          "text": "演示会分两场（IT场讲过程/业务场讲感受），现场问答全部有记录"
+        },
+        {
+          "id": "R1",
+          "type": "manual",
+          "text": "盲评结论已转写为 T-F4 客户验证纪要——这一步不做，双线只是顺排"
+        },
+        {
+          "id": "QA-1",
+          "type": "manual",
+          "text": "EKOS 准出①⑥⑨ 有实测结果（连接器同步 ≤5min / 权限命中 100% / 脱敏 / 规范校验）"
+        },
+        {
+          "id": "QA-3",
+          "type": "manual",
+          "text": "现场任何卡顿、失败如实记入，不美化"
+        },
+        {
+          "id": "BIZ-5",
+          "type": "manual",
+          "text": "D4 商务收口：五项判定至少达成第1或第3项"
+        },
+        {
+          "id": "INTEL-1",
+          "type": "manual",
+          "text": "现场若主动出现韩方节点或韩文需求信息，当场记入附件E恢复触发条件"
+        }
+      ],
+      "on_fail": "盲评约不到 → 降级为勤思自测+甲方IT见证，并在说明书如实标注证据等级。藏了就是在信任上打洞。"
+    },
+    "Q8": {
+      "name": "EKOS 独有补齐门禁 = MVP 准出",
+      "milestone": "M8",
+      "date": "2026-10-30",
+      "outputs": [
+        "动态回流T-E1",
+        "RAGAS自动评测+基线对比T-E2/T-E3",
+        "知情同意门T-D3",
+        "权限与留痕T-D1/T-D2",
+        "验收用例11条全执行"
+      ],
+      "items": [
+        {
+          "id": "QA-1",
+          "type": "manual",
+          "text": "EKOS 准出十条逐条有实测结果，与 PRD §8.4 判定标准逐字比对"
+        },
+        {
+          "id": "QA-2",
+          "type": "manual",
+          "text": "本阶段若有裁剪，全部在 §5.3 可裁清单内"
+        },
+        {
+          "id": "TR-5",
+          "type": "manual",
+          "text": "七步闭环完整成立（连接→解析沉淀→三索引检索→治理脱敏→回流→评测）"
+        },
+        {
+          "id": "BIZ-4",
+          "type": "manual",
+          "text": "M7 盲评结论与真实案例已并入交付物，Phase 0 三项交付物齐"
+        },
+        {
+          "id": "QA-5",
+          "type": "manual",
+          "text": "附件E技术债台账已更新至最终状态：本期所有不覆盖项均有挂账，无一条遗漏或口头豁免"
+        }
+      ],
+      "on_fail": "准出十条未全过 → MVP 不宣布完成，按 PRD §8.5.1 走 M5/M6 流程，不对外宣称交付。"
+    }
+  }
+}

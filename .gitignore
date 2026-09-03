@@ -1,0 +1,55 @@
+# ================= Python =================
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+dist/
+build/
+
+# ================= 工具缓存 =================
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+# ================= 密钥与环境变量（红线）=================
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+
+# ================= 数据与样本（红线）=================
+# 真实样本一律不入库。fixtures 只放合成数据。
+deploy/fixtures/raw/
+deploy/fixtures/**/*.pdf
+deploy/fixtures/**/*.xlsx
+data/
+/data/
+*.sqlite3
+
+# ================= 模型权重（体积 + 磁盘 226GB 约束）=================
+models/
+*.gguf
+*.safetensors
+*.bin
+*.pt
+
+# ================= 运行产物 =================
+logs/
+*.log
+reports/output/
+记录/*-临时-*
+
+# ================= 编辑器 =================
+.idea/
+*.swp
+.DS_Store
+
+# ================= Obsidian（防止误把仓库放进 vault）=================
+.obsidian/
+.trash/

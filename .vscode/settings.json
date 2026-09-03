@@ -1,0 +1,41 @@
+{
+  // EKOS 信贷报告 · VS Code 工作区配置
+  // 复制为 .vscode/settings.json
+
+  "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
+  "python.testing.pytestEnabled": true,
+  "python.testing.unittestEnabled": false,
+  "python.testing.pytestArgs": ["tests"],
+  "python.analysis.typeCheckingMode": "basic",
+  "python.analysis.extraPaths": ["apps", "packages"],
+
+  // Lint / Format：交给 Ruff，禁用其它 formatter 抢权
+  "[python]": {
+    "editor.defaultFormatter": "charliermarsh.ruff",
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.fixAll.ruff": "explicit",
+      "source.organizeImports.ruff": "explicit"
+    }
+  },
+
+  // 让 Obsidian vault 的 .md 不被误当成项目文档编辑
+  "files.exclude": {
+    "**/__pycache__": true,
+    "**/.pytest_cache": true,
+    "**/.mypy_cache": true,
+    "**/.ruff_cache": true
+  },
+
+  // 搜索时排除，避免搜到样本与缓存
+  "search.exclude": {
+    "**/.venv": true,
+    "**/deploy/fixtures": true,
+    "**/*.pdf": true
+  },
+
+  "files.trimTrailingWhitespace": true,
+  "files.insertFinalNewline": true,
+  "editor.rulers": [100],
+  "editor.formatOnSave": true
+}

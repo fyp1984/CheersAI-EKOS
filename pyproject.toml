@@ -1,0 +1,107 @@
+# EKOS · 工程基线配置（共用层）
+# 行业特有逻辑一律落在 configs/ 与 prompts/，不得写入共用层 —— 见 TR-1
+# 版本冻结依据：60.90.03 §3.7 共用软件栈
+
+[project]
+name = "ekos-credit"
+version = "0.1.0"
+description = "EKOS MVP 共用层内核 · 企业知识库最小任务集"
+requires-python = "==3.11.10"          # 冻结版本，不得放宽
+# 注：不设 readme —— 本工程约定默认不生成 README.md
+dependencies = [
+    # ---- 运行时（版本严格按 60.90.03 §3.7 冻结表）----
+    "fastapi==0.115.6",
+    "uvicorn[standard]==0.34.0",
+    "celery==5.4.0",
+    "redis==7.4.1",
+    "sqlalchemy>=2.0",
+    "psycopg[binary]>=3.2",
+    "pgvector>=0.3",
+    "pymupdf==1.25.1",
+    "minio>=7.2",
+    "httpx>=0.28",                      # 模型网关 / RAGFlow REST 调用
+    "pydantic>=2.9",
+    "pydantic-settings>=2.6",
+    # 注意：paddleocr==2.9.1 暂缓引入（arm64 依赖链重，留到 E1 验证）
+]
+
+[project.optional-dependencies]
+dev = [
+    "ruff>=0.8",
+    "mypy>=1.13",
+    "pytest>=8.3",
+    "pytest-cov>=6.0",
+    "pytest-asyncio>=0.24",
+    "httpx>=0.28",                      # TestClient 依赖
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["apps", "packages"]
+
+# ---------------- Lint / Format ----------------
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+src = ["apps", "packages", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "UP", "B", "SIM", "S"]
+ignore = ["S101"]                        # 测试里允许 assert
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S"]                       # 测试放宽安全检查
+
+# 门禁脚本是继承来的工具代码，只忽略「风格类」规则，缺陷类（F / B / E7xx / E9xx / I）照查。
+# 不整体排除、也不批量改写的理由：它有 74 处 printf 风格与超长中文提示串，
+# 大改等于重写一个刚经 10 条自检断言验证通过的判据执行器 —— 收益是好看，风险是门禁失真。
+# 补偿控制比风格更强：每次提交跑 selftest（造违规样例验证抓得到）+ auto（真实仓库 FAIL 计数）。
+"tools/gate/gate_check.py" = [
+    "UP031",    # printf 风格格式化（53 处，纯风格）
+    "E501",     # 长行（21 处，中文提示串天然长）
+    "SIM102", "SIM103", "SIM105", "SIM110",  # 结构简化建议，非缺陷
+    "UP022",    # 偏好 capture_output
+    "S603",     # 按设计需要调用 git / docker 子进程
+    "S110",     # 退出路径上的宽泛 try-except，刻意吞异常以保证门禁可退出
+    "N806",     # 自检样例里的变量名
+]
+
+# ---------------- 类型检查 ----------------
+[tool.mypy]
+# 作用域写死，防止出现「make type 绿的、mypy . 红的」双口径。
+# 契约测试必须纳入：它是 E0/E1 可互换的唯一证据，类型含糊等于证据含糊。
+files = ["apps", "packages", "tests"]
+# tools/gate 是继承的未标注工具代码（101 处告警），不纳入类型检查；
+# 它的正确性由 selftest（造违规样例验证抓得到）+ auto（真实仓库 FAIL 计数）保证，
+# 这比类型注解更适合「判据执行器」这类代码。
+exclude = ["tools/gate/"]
+python_version = "3.11"
+strict = true
+warn_unused_ignores = true
+disallow_untyped_defs = true
+# 第三方库缺桩时不阻断
+[[tool.mypy.overrides]]
+module = ["pymupdf.*", "minio.*", "celery.*", "pgvector.*"]
+ignore_missing_imports = true
+
+# ---------------- 测试 ----------------
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+markers = [
+    "unit: 纯函数，无 IO",
+    "contract: 模型服务契约",
+    "integration: 需要外部依赖服务",
+    "golden: Golden Test，仅 E1 真实模型环境运行",
+]
+addopts = "-ra --strict-markers"
+
+[tool.coverage.run]
+source = ["apps", "packages"]
+omit = ["**/stub*", "**/tests/**"]
+
+[tool.coverage.report]
+fail_under = 60                          # 起步阈值，随门禁滚动上调
