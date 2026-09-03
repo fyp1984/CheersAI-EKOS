@@ -1,4 +1,4 @@
-# EKOS 信贷报告 · 统一命令入口
+# EKOS 共用层内核 · 统一命令入口
 # 用法：make help
 
 .DEFAULT_GOAL := help
@@ -6,7 +6,7 @@ PY   := uv run
 GATE := python tools/gate/gate_check.py
 
 .PHONY: help setup lint fmt type test-unit test-contract test-integration test-golden \
-        gate gate-checklist up down stub clean
+        gate gate-selftest gate-mutation gate-checklist up down stub clean
 
 help: ## 显示帮助
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
@@ -15,8 +15,10 @@ help: ## 显示帮助
 # ================= 环境 =================
 setup: ## 建虚拟环境并装依赖（Python 3.11.10）
 	uv venv --python 3.11.10
-	uv sync --all-extras
-	uv lock
+	# 裸 uv sync 即可装齐（dev 组在 [dependency-groups]，PEP 735）。
+	# 不写 --extra/--all-extras：那要求人记得加参数，忘了就撞
+	# "Failed to spawn: ruff" 这种完全不提示真实原因的错。
+	uv sync
 	@echo "下一步：source .venv/bin/activate && make gate"
 
 # ================= 质量 =================
@@ -53,11 +55,19 @@ test-golden: ## L4 Golden Test（仅 E1 真实模型环境）
 
 # ================= 门禁 =================
 gate: lint type test-unit test-contract ## 全量门禁（提交前必跑）
-	@echo "--- 运行 15 条常检 ---"
+	# 常检 17 条 = 推进方案 v2.2 §4.2 的 15 条 + 新增 TR-7/TR-8。
+	# 其中 6 条可自动化（TR-1/2/4/6/7/8）由脚本跑，其余人工清单逐条填。
+	@echo "--- 运行可自动化常检（6 条）---"
 	$(GATE) auto
 
 gate-selftest: ## 门禁脚本自检（改脚本后必跑）
 	$(GATE) selftest
+
+gate-mutation: ## 变异测试：把判据改坏，验证断言真的会红
+	# 为什么单独设一个目标：靠人记得跑的命令等于没有这条命令。
+	# 断言绿只说明路径走到了，说明不了实现坏了它会不会红 ——
+	# 不会红的断言是装饰品，比没有断言更危险（它给出虚假的安全感）。
+	$(PY) python tools/gate/mutation_test.py
 
 gate-checklist: ## 生成指定门禁人工清单，用法：make gate-checklist Q=Q1
 	$(GATE) checklist $(Q) --out 记录/$(Q)-人工清单-$$(date +%y%m%d).md
