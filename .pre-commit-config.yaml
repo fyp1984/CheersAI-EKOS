@@ -40,32 +40,13 @@ repos:
       # ---------- 项目门禁（核心）----------
       # 判据源：tools/gate/gate_baseline.json（唯一，改它等于改门禁）
       - id: gate-check
-        name: 门禁常检（TR-1/TR-2/TR-4/TR-6）
+        name: 门禁常检（TR-1/2/4/6/7/8）
         entry: uv run python tools/gate/gate_check.py auto
         language: system
         pass_filenames: false
         # 任一条 FAIL 即阻断提交；WARN 不阻断（如组件未落地）
         stages: [pre-commit, pre-push]
-
-      - id: no-hardcoded-port
-        name: 禁止硬编码交付端口（候选 TR-7，待拍板）
-        entry: bash -c '
-          if grep -rnE "(localhost|127\.0\.0\.1):(8080|8000|8001|8002|5432|6379|9000)\b" \
-               apps packages deploy/compose 2>/dev/null; then
-            echo "❌ 检测到硬编码交付端口。请改用环境变量注入（见 .env.example）";
-            exit 1;
-          fi'
-        language: system
-        pass_filenames: false
-
-      - id: no-real-sample
-        name: fixtures 目录零真实样本（候选 TR-8，待拍板）
-        entry: bash -c '
-          if find deploy/fixtures -type f 2>/dev/null | xargs -I{} grep -lE \
-               "[0-9]{17}[0-9Xx]|[0-9]{16,19}|[0-9A-HJ-NPQRTUWXY]{18}" {} 2>/dev/null \
-               | grep -q .; then
-            echo "❌ fixtures 中疑似存在真实敏感标识（身份证/银行卡/统一社会信用代码）";
-            exit 1;
-          fi'
-        language: system
-        pass_filenames: false
+# 注：TR-7（端口零硬编码）与 TR-8（样本零真实数据）曾以独立钩子形式挂在这里。
+# 2026-09-03 正式化后并入 gate_check.py —— 判据统一收在 gate_baseline.json 一处。
+# 留着独立钩子会形成「两个实现、两套判据」的双口径：改了判据，钩子那一套不会跟着变，
+# 而提交时看到的是钩子的绿。检查清单只在一处定义：AUTO_CHECKS。

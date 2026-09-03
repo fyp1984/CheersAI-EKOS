@@ -10,7 +10,9 @@
       "TR-1",
       "TR-2",
       "TR-4",
-      "TR-6"
+      "TR-6",
+      "TR-7",
+      "TR-8"
     ],
     "checks_manual": [
       "TR-3",
@@ -239,13 +241,17 @@
         "key": "postgres",
         "label": "PostgreSQL",
         "frozen": "16.6",
-        "regex": "(?:postgres|postgresql)[\\s:=_-]*([0-9]+(?:\\.[0-9]+)?)"
+        "regex": "(?:postgres|postgresql|(?<!psyco)pg)(?![a-z])[\\s:=_-]*([0-9]+(?:\\.[0-9]+)?)",
+        "match": "major",
+        "match_reason": "镜像标签只编码主版本（pgvector/pgvector:0.8.0-pg16-bookworm 只有 pg16），已查证 Docker Hub 无任何含 16.6 的标签 → 小版本钉不住。接受 16.x 滚动：安全补丁反而更及时。frozen 仍保留 16.6 —— 不改成 16，否则「本来要 16.6」这个信息就丢了。与 60.90.03 §3.7 的偏差已记入台账，待甲方确认。",
+        "regex_note": "追加 pg 前缀：交付镜像是 pgvector/pgvector:0.8.0-pg16-bookworm，标签里写的是 pg16，不含 postgres/postgresql 字样，原正则一个都抓不到。(?![a-z]) 排除 pgvector 里的 pg；(?<!psyco) 排除 psycopg 结尾的 pg（否则 psycopg==3.3.5 会被当成 PostgreSQL 3.3 报出来）。"
       },
       {
         "key": "pgvector",
         "label": "pgvector",
         "frozen": "0.8.0",
-        "regex": "pgvector[\\s:=_-]*([0-9]+\\.[0-9]+(?:\\.[0-9]+)?)"
+        "regex": "pgvector[\\s:=_-]*([0-9]+\\.[0-9]+(?:\\.[0-9]+)?)",
+        "note": "pgvector 有两个同名不同物：冻结的 0.8.0 是 PostgreSQL 服务端扩展；PyPI 上的 Python 客户端最高只到 0.5.0（已查证）。扩展版本由镜像标签 0.8.0-pg16-bookworm 钉住，客户端版本与它无关。"
       },
       {
         "key": "minio",
@@ -322,6 +328,73 @@
         "expect_regex": "\\blang\\b"
       }
     ]
+  },
+  "TR-7": {
+    "name": "端口零硬编码",
+    "principle": "交付端口（60.90.03 §3.8）不得写死在代码里，一律走环境变量注入。硬编码的代价要等切环境时才暴露：E0 用 15xxx 段、E1 用冻结段，同一份代码两种行为，而报错永远指向「连接被拒」而不是「端口写死」——排查方向从一开始就是错的。",
+    "severity": "FAIL",
+    "code": {
+      "desc": "代码中出现 host:port 字面量（排除注释）",
+      "pattern": "(?:localhost|127\\.0\\.0\\.1|0\\.0\\.0\\.0)\\s*:\\s*[0-9]{2,5}",
+      "scan_dirs": [
+        "apps",
+        "packages",
+        "tests"
+      ]
+    },
+    "compose": {
+      "desc": "compose 的主机侧端口（冒号左边）落在冻结段即违规。容器侧是各服务的标准端口（5432/6379/9000…），改不得也不必改，故只判主机侧。",
+      "frozen_ports": [
+        "8080",
+        "8000",
+        "8001",
+        "8002",
+        "5432",
+        "6379",
+        "9000",
+        "9001"
+      ],
+      "host_port_pattern": "^\\s*-\\s*[\\\"']?\\$?\\{?[A-Za-z_]*:?-?([0-9]{2,5})\\}?:[0-9]{2,5}"
+    }
+  },
+  "TR-8": {
+    "name": "样本目录零真实数据",
+    "principle": "样本 / fixtures 目录不得出现真实敏感标识。这是数据红线第二条的可执行版本：真实客户数据一旦进仓，git 历史里就永久留痕，删文件也删不掉。",
+    "severity": "FAIL",
+    "sample_dirs": [
+      "deploy/fixtures",
+      "tests/fixtures",
+      "tests/golden",
+      "tests/data",
+      "fixtures"
+    ],
+    "sample_ext": [
+      ".pdf",
+      ".doc",
+      ".docx",
+      ".xls",
+      ".xlsx",
+      ".txt",
+      ".md",
+      ".csv",
+      ".json",
+      ".png",
+      ".jpg",
+      ".jpeg"
+    ],
+    "patterns": {
+      "身份证": "[1-9][0-9]{5}(?:19|20)[0-9]{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12][0-9]|3[01])[0-9]{3}[0-9Xx]",
+      "银行卡": "(?<![0-9])[0-9]{16,19}(?![0-9])",
+      "统一社会信用代码": "[0-9A-HJ-NPQRTUWXY]{2}[0-9]{6}[0-9A-HJ-NPQRTUWXY]{10}",
+      "手机号": "(?<!\\d)1[3-9][0-9]{9}(?!\\d)"
+    },
+    "binary_extract": {
+      "pdf": "pymupdf",
+      "docx": "zipfile:word/document.xml",
+      "note": "PDF/DOCX 是压缩二进制，grep 文本抓不到 —— 而真实样本恰恰最可能是 PDF。不做提取的 TR-8 等于对真正的威胁视而不见。"
+    },
+    "empty_dir_behaviour": "SKIP",
+    "empty_dir_note": "样本目录不存在或为空时判 SKIP 而非 PASS：「没查到」不等于「没有」。Q1 出口须人工确认样本目录已建立或明确本期不用。"
   },
   "gates": {
     "Q1": {

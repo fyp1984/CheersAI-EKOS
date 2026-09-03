@@ -5,13 +5,15 @@
 
 用途
 ----
-把《双线推进方案-最小任务集与门禁验证-内部-260903-v2.2.md》§4.2 的 15 条常检中
-**可自动化的四条**变成可执行的门禁，挂在每个里程碑出口跑，不靠人自觉。
+把《双线推进方案-最小任务集与门禁验证-内部-260903-v2.2.md》§4.2 的常检中
+**可自动化的六条**变成可执行的门禁，挂在每个里程碑出口跑，不靠人自觉。
 
     TR-1  内核零行业词      共用层代码零信贷术语（金租特有逻辑必须落配置层）
     TR-2  开源组件零侵入    vendor 目录无本地修改（git status / hash 基线）
     TR-4  版本零漂移        与 60.90.03 §3.7 冻结版本表逐项 diff
     TR-6  语种未写死在内核  共用层无硬编码语种分支 + P1/P2/P3 结构预留在位
+    TR-7  端口零硬编码      代码内无 host:port 字面量；compose 主机侧端口避开冻结段
+    TR-8  样本目录零真实数据 fixtures/golden 无身份证、银行卡、统一社会信用代码、手机号
 
 判据源：`gate_baseline.json`。**改那个文件等于改门禁**，任何修改须写入变更记录，
 禁止为通过门禁而放宽判据——放一次，后面所有合规论据全废。
@@ -31,7 +33,7 @@
     # 3. 生成 vendor hash 基线（引入开源组件的当天必跑一次）
     python3 gate_check.py baseline
 
-    # 4. 自检：造一个含违规的样例仓库，验证四条检查真的抓得到
+    # 4. 自检：造一个含违规的样例仓库，验证各条检查真的抓得到
     python3 gate_check.py selftest
 
 退出码
@@ -43,6 +45,9 @@
 约定
 ----
 - 仅用 Python 标准库，无任何第三方依赖 —— 甲方干净机、离线环境都能跑。
+  **唯一例外**：TR-8 解析 PDF 样本时用 PyMuPDF（§3.7 已冻结的运行时依赖）。
+  取不到就降级，**但降级不看做干净** —— 扫不了的文件一律报 WARN 逐个列出，
+  由人确认。「没查到」不等于「没有」，这条对整个脚本都成立。
 - 只读，不修改被检仓库任何文件（`baseline` 只写本目录下的 vendor_hashes.json）。
 - 「本期不覆盖」≠「下调阈值」：脚本不因某组件未落地而静默放行，一律记为 WARN 并显式列出。
 
@@ -73,6 +78,12 @@ DEFAULT_CONFIG = HERE / "gate_baseline.json"
 VENDOR_HASH_FILE = "vendor_hashes.json"
 
 MAX_REPORT_PER_CHECK = 30  # 单项最多打印多少条，避免刷屏淹没结论
+
+# 自动化常检清单 —— 只在此处定义一次。
+# run_auto（决定跑哪些）与 render_text（决定显示哪些）都从这里取。
+# 之前两处各写一份，加一条检查时只改一处就会出现「跑了不显示」或「显示没跑」；
+# 这种双口径的恶果是：报告上看着全绿，其实新检查一次都没执行过。
+AUTO_CHECKS = ("TR-1", "TR-2", "TR-4", "TR-6", "TR-7", "TR-8")
 
 
 # --------------------------------------------------------------------------
@@ -212,9 +223,25 @@ def check_tr1(root, cfg, out):
         root, cfg, exts=tuple(cfg["scan"]["code_ext"] + cfg["scan"]["config_ext"])
     ):
         scanned += 1
+        # 与 TR-6 同口径：注释与文档字符串不参与执行，写在里面不改变任何行为。
+        #
+        # 不排除的代价反而更大 —— 在 schema 里写「内核一旦长出信贷字段就会退化成
+        # 报告生成器」这类警示性注释会被判 FAIL。人要消掉这条 FAIL，只有两条路：
+        # 删掉警示（后人不认识这条红线），或放宽判据（门禁失真）。
+        # 两者都比「注释里出现过这个词」糟得多。
+        #
+        # 补偿控制：真实值仍在扫描范围内 —— 变量 / 字段 / 函数命名、字符串常量、
+        # pyproject 的 description。行业语义要落地必须落在这些地方，
+        # 注释里写一百遍也运行不起来。
+        doc_lines = _docstring_lines(f) if str(f).endswith(".py") else set()
         for i, line in enumerate(read_lines(f), 1):
+            if i in doc_lines:
+                continue
+            code = _strip_comment(line)
+            if not code.strip():
+                continue
             for w in words:
-                if w in line:
+                if w in code:
                     hits.append((str(rel), i, w, line.strip()[:120]))
                     break  # 一行只报一次，避免同义词刷屏
 
@@ -427,20 +454,48 @@ def check_tr4(root, cfg, out):
         for _, _, line in blob:
             for m in rx.finditer(line):
                 got.add(m.group(1))
-        if c["frozen"] in got:
-            others = sorted(got - {c["frozen"]})
+        # 匹配粒度：默认精确到补丁号；match="major" 时只比主版本。
+        #
+        # 为什么需要 major 档：PostgreSQL 16.6 的小版本钉不住 ——
+        # pgvector/pgvector 的镜像标签只编码主版本（0.8.0-pg16-bookworm），
+        # 查 Docker Hub 确认没有任何标签带 16.6。
+        # 此时若改用「写个注释/环境变量假装声明」来消掉告警，是更糟的做法：
+        # 那正是刚修掉的「声明顶替现实」。正确做法是**显式声明**这一项接受
+        # 主版本匹配，同时把偏差记进台账，而不是悄悄放宽。
+        frozen = c["frozen"]
+        major_mode = c.get("match") == "major"
+        if major_mode:
+            matched = sorted(g for g in got if g.split(".")[0] == frozen.split(".")[0])
+        else:
+            matched = [frozen] if frozen in got else []
+
+        if matched:
+            others = sorted(got - set(matched))
             if others:
                 out.append(
                     Finding(
                         "TR-4",
                         WARN,
                         c["key"],
-                        "%s 冻结版本 %s 在位；但另有声明 %s，请人工确认是否为无关位置"
-                        % (c["label"], c["frozen"], "、".join(others)),
+                        "%s 冻结版本 %s 在位（%s）；但另有声明 %s，请人工确认是否为无关位置"
+                        % (
+                            c["label"],
+                            frozen,
+                            "主版本匹配" if major_mode else "精确匹配",
+                            "、".join(others),
+                        ),
                     )
                 )
             else:
-                out.append(Finding("TR-4", PASS, c["key"], "%s = %s" % (c["label"], c["frozen"])))
+                suffix = "（主版本匹配，小版本滚动）" if major_mode else ""
+                out.append(
+                    Finding(
+                        "TR-4",
+                        PASS,
+                        c["key"],
+                        "%s = %s%s" % (c["label"], "、".join(matched), suffix),
+                    )
+                )
         elif got:
             out.append(
                 Finding(
@@ -448,11 +503,15 @@ def check_tr4(root, cfg, out):
                     FAIL,
                     c["key"],
                     "%s 期望 %s，实得 %s → 版本漂移，须改回或走变更记录"
-                    % (c["label"], c["frozen"], "、".join(sorted(got))),
+                    % (
+                        c["label"],
+                        frozen + ("（主版本）" if major_mode else ""),
+                        "、".join(sorted(got)),
+                    ),
                 )
             )
         else:
-            not_found.append("%s %s" % (c["label"], c["frozen"]))
+            not_found.append("%s %s" % (c["label"], frozen))
 
     if not_found:
         out.append(
@@ -631,14 +690,227 @@ def check_tr6(root, cfg, out):
 
 
 # --------------------------------------------------------------------------
+# TR-7 端口零硬编码
+# --------------------------------------------------------------------------
+def check_tr7(root, cfg, out):
+    spec = cfg.get("TR-7", {})
+    if not spec:
+        out.append(Finding("TR-7", SKIP, "-", "未配置 TR-7 判据"))
+        return
+
+    # ---- 1) 代码里的 host:port 字面量 ----
+    # 只判代码，不判 compose 的容器侧端口：5432/6379/9000 是各服务在容器内的
+    # 标准端口，改不得也没必要改。真正要防的是「代码里写死地址」——
+    # 那种写法在切环境的当天才炸，而报错是「连接被拒」，没人会想到是端口写死。
+    code_spec = spec.get("code", {})
+    pat = re.compile(code_spec.get("pattern", r"(?!)"))
+    scan_dirs = set(code_spec.get("scan_dirs", []))
+    hits, scanned = [], 0
+    for f, rel in iter_code_files(root, cfg):
+        if scan_dirs and not (rel.parts and rel.parts[0] in scan_dirs):
+            continue
+        scanned += 1
+        for i, line in enumerate(read_lines(f), 1):
+            if pat.search(_strip_comment(line)):
+                hits.append((str(rel), i, line.strip()[:120]))
+
+    if hits:
+        for rel, ln, text in hits[:MAX_REPORT_PER_CHECK]:
+            out.append(
+                Finding("TR-7", FAIL, "%s:%d" % (rel, ln), "代码内硬编码 host:port → %s" % text)
+            )
+        if len(hits) > MAX_REPORT_PER_CHECK:
+            out.append(
+                Finding("TR-7", FAIL, "-", "另有 %d 处未展开" % (len(hits) - MAX_REPORT_PER_CHECK))
+            )
+    else:
+        out.append(
+            Finding("TR-7", PASS, "-", "代码中无 host:port 字面量（扫描 %d 个文件）" % scanned)
+        )
+
+    # ---- 2) compose 主机侧端口是否占用冻结段 ----
+    compose_spec = spec.get("compose", {})
+    frozen = set(compose_spec.get("frozen_ports", []))
+    host_pat = re.compile(compose_spec.get("host_port_pattern", r"(?!)"))
+    c_hits, c_scanned = [], 0
+    for f, rel in iter_code_files(root, cfg):
+        if f.suffix not in (".yml", ".yaml"):
+            continue
+        c_scanned += 1
+        for i, line in enumerate(read_lines(f), 1):
+            m = host_pat.match(line)
+            if not m:
+                continue
+            host_port = m.group(1)
+            if host_port in frozen:
+                c_hits.append((str(rel), i, host_port, line.strip()[:120]))
+
+    if c_hits:
+        for rel, ln, port, text in c_hits[:MAX_REPORT_PER_CHECK]:
+            out.append(
+                Finding(
+                    "TR-7",
+                    FAIL,
+                    "%s:%d" % (rel, ln),
+                    "compose 主机侧端口 %s 占用交付冻结段（应改到 15xxx 段）→ %s" % (port, text),
+                )
+            )
+    elif c_scanned:
+        out.append(
+            Finding(
+                "TR-7",
+                PASS,
+                "-",
+                "compose 主机侧端口均避开冻结段（扫描 %d 个编排文件）" % c_scanned,
+            )
+        )
+    else:
+        out.append(Finding("TR-7", SKIP, "-", "未发现编排文件，主机侧端口未校验"))
+
+
+# --------------------------------------------------------------------------
+# TR-8 样本目录零真实数据
+# --------------------------------------------------------------------------
+def _extract_sample_text(f):
+    """把样本文件转成可搜索文本；**无法提取时返回 None**（不是返回空串）。
+
+    为什么必须能读 PDF：真实样本最可能就是 PDF，而 PDF 是压缩二进制，
+    按文本 grep 一个字都匹配不到。不做提取的样本检查，等于对最主要的威胁视而不见。
+
+    为什么返回 None 而不是抛异常：本脚本承诺「仅用标准库」，PyMuPDF 取不到时
+    （甲方干净机、离线环境）必须能降级。但降级由调用方报 WARN 逐个列出未扫文件，
+    绝不静默当作干净 —— 「没查到」不等于「没有」。
+    """
+    suf = f.suffix.lower()
+    if suf in (".txt", ".md", ".csv", ".json"):
+        try:
+            return f.read_text(encoding="utf-8", errors="ignore")
+        except OSError:
+            return None
+    if suf == ".pdf":
+        try:
+            import fitz  # PyMuPDF（§3.7 冻结的运行时依赖）
+        except ImportError:
+            return None
+        try:
+            with fitz.open(f) as doc:
+                return "\n".join(page.get_text() for page in doc)
+        except Exception:
+            return None
+    if suf in (".docx", ".xlsx"):
+        import zipfile
+
+        target = "word/document.xml" if suf == ".docx" else "xl/sharedStrings.xml"
+        try:
+            with zipfile.ZipFile(f) as z:
+                xml = z.read(target).decode("utf-8", "ignore")
+            return re.sub(r"<[^>]+>", " ", xml)
+        except Exception:
+            return None
+    # 图片类无法 OCR（PaddleOCR 留 E1 验证），诚实报「未扫描」
+    return None
+
+
+def check_tr8(root, cfg, out):
+    spec = cfg.get("TR-8", {})
+    if not spec:
+        out.append(Finding("TR-8", SKIP, "-", "未配置 TR-8 判据"))
+        return
+
+    dirs = spec.get("sample_dirs", [])
+    exts = tuple(spec.get("sample_ext", []))
+    pats = [(k, re.compile(v)) for k, v in spec.get("patterns", {}).items()]
+
+    existed = [(d, root / d) for d in dirs if (root / d).is_dir()]
+    if not existed:
+        # 目录都不存在时判 SKIP 而不是 PASS：一个样本都没扫过，
+        # 报 PASS 会让人以为「检查过了，干净」，实际上什么都没查。
+        out.append(
+            Finding(
+                "TR-8",
+                SKIP,
+                "-",
+                "未发现任何样本目录（%s）→ 未扫描。Q1 出口须人工确认样本策略" % "、".join(dirs),
+            )
+        )
+        return
+
+    files = []
+    for _d, base in existed:
+        for f in sorted(base.rglob("*")):
+            if f.is_file() and (not exts or str(f).lower().endswith(exts)):
+                files.append(f)
+
+    if not files:
+        out.append(
+            Finding(
+                "TR-8",
+                SKIP,
+                "-",
+                "样本目录存在但为空（%s）→ 未扫描任何文件。空目录不等于安全"
+                % "、".join(d for d, _ in existed),
+            )
+        )
+        return
+
+    scanned, unscanned, hits = 0, [], []
+    for f in files:
+        try:
+            if f.stat().st_size > cfg["scan"].get("max_file_bytes", 2 * 1024 * 1024):
+                unscanned.append((str(f.relative_to(root)), "超过大小上限，未扫描"))
+                continue
+        except OSError:
+            continue
+        text = _extract_sample_text(f)
+        if text is None:
+            unscanned.append((str(f.relative_to(root)), "内容无法提取，未扫描"))
+            continue
+        scanned += 1
+        for label, pat in pats:
+            m = pat.search(text)
+            if m:
+                hits.append((str(f.relative_to(root)), label))
+                break  # 一个文件只报一次，避免同一个人被刷屏
+
+    if hits:
+        for rel, label in hits[:MAX_REPORT_PER_CHECK]:
+            out.append(Finding("TR-8", FAIL, rel, "样本中检出疑似真实「%s」" % label))
+        if len(hits) > MAX_REPORT_PER_CHECK:
+            out.append(
+                Finding(
+                    "TR-8", FAIL, "-", "另有 %d 个文件未展开" % (len(hits) - MAX_REPORT_PER_CHECK)
+                )
+            )
+    else:
+        out.append(Finding("TR-8", PASS, "-", "已扫描 %d 个样本文件，未检出真实敏感标识" % scanned))
+
+    # 扫不了的文件必须显式列出 —— 静默跳过是最危险的「通过」
+    for rel, why in unscanned[:MAX_REPORT_PER_CHECK]:
+        out.append(Finding("TR-8", WARN, rel, "%s → 需人工确认" % why))
+
+
+# --------------------------------------------------------------------------
 # 汇总与渲染
 # --------------------------------------------------------------------------
 def run_auto(root, cfg, cfg_path, do_baseline=False):
     findings = []
-    check_tr1(root, cfg, findings)
-    check_tr2(root, cfg, findings, cfg_path, do_baseline=do_baseline)
-    check_tr4(root, cfg, findings)
-    check_tr6(root, cfg, findings)
+    # 调度表与 AUTO_CHECKS 对齐：清单里写了却没有实现的检查，
+    # 会被显式记成 SKIP 而不是悄悄跳过 —— 「清单有、实现无」正是双口径的入口，
+    # 静默跳过的后果是报告里这一项整条消失，没人知道它从未执行过。
+    dispatch = {
+        "TR-1": lambda: check_tr1(root, cfg, findings),
+        "TR-2": lambda: check_tr2(root, cfg, findings, cfg_path, do_baseline=do_baseline),
+        "TR-4": lambda: check_tr4(root, cfg, findings),
+        "TR-6": lambda: check_tr6(root, cfg, findings),
+        "TR-7": lambda: check_tr7(root, cfg, findings),
+        "TR-8": lambda: check_tr8(root, cfg, findings),
+    }
+    for cid in AUTO_CHECKS:
+        fn = dispatch.get(cid)
+        if fn is None:
+            findings.append(Finding(cid, SKIP, "-", "AUTO_CHECKS 已登记但无对应实现"))
+            continue
+        fn()
     return findings
 
 
@@ -660,12 +932,13 @@ def count_levels(findings):
 
 def render_text(findings, root, cfg):
     lines = []
-    lines.append("=== 门禁自动检查 · TR-1 / TR-2 / TR-4 / TR-6 ===")
+    # 标题随 AUTO_CHECKS 自动生成，不写死 —— 否则加一条检查，标题还写着旧的四条
+    lines.append("=== 门禁自动检查 · %s ===" % " / ".join(AUTO_CHECKS))
     lines.append("时间：%s" % datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
     lines.append("被检根目录：%s" % root)
     lines.append("判据源：gate_baseline.json（= 《%s》§4.2）" % _authority(cfg)[0])
     lines.append("")
-    for check in ("TR-1", "TR-2", "TR-4", "TR-6"):
+    for check in AUTO_CHECKS:
         items = [f for f in findings if f.check == check]
         spec = cfg.get(check, {})
         lines.append("[%s %s]" % (check, spec.get("name", "")))
@@ -779,6 +1052,16 @@ def selftest(cfg_path):
         (repo / "src/core/report.py").write_text(
             'def build():\n    limit = row["授信额度"]\n    return limit\n', encoding="utf-8"
         )
+        # TR-1 反例：行业词只出现在文档字符串与注释里 —— 不参与执行，不得判 FAIL。
+        # 若这条被判 FAIL，等于禁止在内核里写「不要写信贷逻辑」的警示；
+        # 人要消掉它只有两条路：删掉警示（后人不认识红线），或放宽判据（门禁失真）。
+        (repo / "src/core/warning_only.py").write_text(
+            '"""本模块不得出现信贷语义：内核长了信贷字段就会退化成信贷报告生成器。"""\n'
+            "def build():\n"
+            "    # 禁止在此做授信额度相关计算 —— 行业逻辑一律走 configs/ 与 prompts/\n"
+            "    return None\n",
+            encoding="utf-8",
+        )
         # TR-6 违规：硬编码语种分支 + 中文正则
         (repo / "src/core/split.py").write_text(
             "import re\n"
@@ -789,9 +1072,11 @@ def selftest(cfg_path):
             encoding="utf-8",
         )
         # TR-4：postgres 正确、vllm 漂移、redis 用 latest
+        # 同时给 pg 配一个主机侧占用冻结段的端口映射（TR-7 违规样例）：
+        # 容器侧 5432 是标准端口不用改，错的是主机侧也写 5432 —— 会与交付环境抢端口。
         (repo / "docker-compose.yml").write_text(
             "services:\n"
-            "  pg:\n    image: postgres:16.6\n"
+            '  pg:\n    image: postgres:16.6\n    ports:\n      - "5432:5432"\n'
             "  llm:\n    image: vllm/vllm-openai:0.7.0\n"
             "  cache:\n    image: redis:latest\n"
             # 注释里写对冻结版本、实际声明却是旧版 —— 必须仍判漂移。
@@ -810,6 +1095,18 @@ def selftest(cfg_path):
             '"""本模块说明：这是一段中文文档字符串，用于说明切分规则的设计。"""\n'
             'RULES = """中文切分规则表：按句号与分号切分，再按段落合并。"""\n',
             encoding="utf-8",
+        )
+        # TR-7 违规：代码里写死 host:port（应走环境变量注入）
+        (repo / "tests/hardcoded.py").write_text(
+            "import httpx\n"
+            "BASE = 'http://localhost:8000/v1'\n"
+            "def ping():\n    return httpx.get(BASE + '/health')\n",
+            encoding="utf-8",
+        )
+        # TR-8 违规：样本里混入真实身份证号
+        (repo / "tests/fixtures").mkdir(parents=True)
+        (repo / "tests/fixtures/sample.txt").write_text(
+            "客户姓名：张三\n身份证号：110101199003076578\n", encoding="utf-8"
         )
 
         cfg_local = tmp / "gate_baseline.json"
@@ -843,13 +1140,55 @@ def selftest(cfg_path):
             f.check == "TR-6" and f.level == PASS and f.where == "P2" for f in out_empty
         )
 
+        # TR-8 反例：样本目录存在但为空，必须判 SKIP 而不是 PASS。
+        # 判 PASS 意味着「检查过了，干净」，而实际上一个字节都没扫 ——
+        # 这正是本项目反复出现的「看起来通过了，其实没查」。
+        empty_samples = tmp / "empty_samples"
+        (empty_samples / "tests/golden").mkdir(parents=True)
+        out_tr8_empty = []
+        check_tr8(empty_samples, cfg_local_cfg, out_tr8_empty)
+        tr8_empty_skipped = any(f.level == SKIP for f in out_tr8_empty) and not any(
+            f.level == PASS for f in out_tr8_empty
+        )
+
+        # TR-4 主版本匹配：放宽的是「粒度」，不是「放弃检查」。
+        # 这两条断言专门盯住这个区别 —— 只断言 16.9 能过是不够的，
+        # 必须同时断言 17.1 仍然过不了，否则「接受 16.x 滚动」随时会滑成「随便什么版本都行」。
+        def tr4_verdict(image_line, tag):
+            t = tmp / ("tr4_%s" % tag)
+            t.mkdir(parents=True, exist_ok=True)
+            (t / "docker-compose.yml").write_text(
+                "services:\n  pg:\n    image: %s\n" % image_line, encoding="utf-8"
+            )
+            o = []
+            check_tr4(t, cfg_local_cfg, o)
+            return [f.level for f in o if f.where == "postgres"]
+
+        tr4_169_ok = tr4_verdict("postgres:16.9", "a") == [PASS]
+        tr4_171_fail = tr4_verdict("postgres:17.1", "b") == [FAIL]
+
         def has(check, level, keyword=""):
             return any(
                 f.check == check and f.level == level and keyword in f.message for f in findings
             )
 
+        def has_at(check, level, where_kw=""):
+            """按位置（文件:行）匹配，而不是按 message。
+
+            has() 只匹配描述文本，区分不出「哪一行被判 FAIL」。而反例断言要问的
+            恰恰是这个：某个文件必须**一条 FAIL 都没有**。只能靠 where 判断。
+            """
+            return any(
+                f.check == check and f.level == level and where_kw in str(f.where) for f in findings
+            )
+
         asserts = [
             ("TR-1 抓到内核信贷术语", has("TR-1", FAIL, "授信额度")),
+            ("TR-1 注释与文档字符串中的行业词不误报", not has_at("TR-1", FAIL, "warning_only")),
+            ("TR-7 抓到代码内硬编码 host:port", has_at("TR-7", FAIL, "hardcoded")),
+            ("TR-7 抓到 compose 主机侧占用冻结端口", has("TR-7", FAIL, "占用交付冻结段")),
+            ("TR-8 抓到样本中的真实身份证号", has("TR-8", FAIL, "身份证")),
+            ("TR-8 空样本目录判 SKIP 而非 PASS", tr8_empty_skipped),
             ("TR-2 抓到 vendor 内容漂移", has("TR-2", FAIL, "基线不一致")),
             ("TR-4 抓到 vLLM 版本漂移", has("TR-4", FAIL, "vLLM")),
             ("TR-4 抓到 latest 标签", has("TR-4", FAIL, "latest")),
@@ -861,6 +1200,8 @@ def selftest(cfg_path):
                     for f in findings
                 ),
             ),
+            ("TR-4 主版本匹配认可 16.9", tr4_169_ok),
+            ("TR-4 主版本不匹配时仍判漂移（17.1）", tr4_171_fail),
             ("TR-6 抓到硬编码语种分支", has("TR-6", FAIL, "硬编码语种分支")),
             (
                 "TR-6 P2 结构预留检出",

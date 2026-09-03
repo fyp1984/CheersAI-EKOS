@@ -3,7 +3,10 @@
 # 版本冻结依据：60.90.03 §3.7 共用软件栈
 
 [project]
-name = "ekos-credit"
+# 2026-09-03 由 ekos-credit 更名：仓库已迁入 CheersAI-EKOS 产品线，
+# 而 "credit" 是行业词 —— 内核自称信贷，与 TR-1「共用层零行业术语」自相矛盾。
+# 此处是 EKOS 共用层内核，不是金租实例；金租特有逻辑属实例层。
+name = "ekos-core"
 version = "0.1.0"
 description = "EKOS MVP 共用层内核 · 企业知识库最小任务集"
 requires-python = "==3.11.10"          # 冻结版本，不得放宽
