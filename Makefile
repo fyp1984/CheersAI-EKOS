@@ -73,13 +73,13 @@ gate-checklist: ## 生成指定门禁人工清单，用法：make gate-checklist
 	$(GATE) checklist $(Q) --out 记录/$(Q)-人工清单-$$(date +%y%m%d).md
 
 # ================= 依赖服务 =================
-up: ## 启动本地依赖服务（arm64 原生）
-	cd deploy/compose && docker compose --profile dev up -d
+up: ## 启动本地依赖服务（arm64 原生；E0 只起三件基础设施，model-stub 走 make stub）
+	cd deploy/compose && docker compose -f docker-compose.dev.yml --profile dev up -d postgres redis minio
 	@echo "等待服务就绪..."; sleep 5
-	cd deploy/compose && docker compose ps
+	cd deploy/compose && docker compose -f docker-compose.dev.yml ps
 
 down: ## 停止依赖服务
-	cd deploy/compose && docker compose --profile dev down
+	cd deploy/compose && docker compose -f docker-compose.dev.yml --profile dev down
 
 stub: ## 启动模型契约 Stub（端口 18000）
 	$(PY) -m packages.modelgw.stub --port 18000

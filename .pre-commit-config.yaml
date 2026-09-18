@@ -18,8 +18,10 @@ repos:
       - id: detect-private-key          # 防私钥误入仓库
 
   # ---------- Lint + Format ----------
+  # rev 必须与 pyproject.toml 的 ruff 精确版本对齐（当前 dev 组 ruff==0.16.5）。
+  # 版本不一致 = pre-commit 格式化结果与 make fmt 不一致，提交时钩子改文件不暂存形成死循环。
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.8.4
+    rev: v0.16.5
     hooks:
       - id: ruff
         args: [--fix]

@@ -1,0 +1,6 @@
+生成时间: 2026-09-05 19:29:05
+## 镜像 digest（amd64 / linux 内容摘要，§3.7 冻结 + RAGFlow 适配层；由 docker buildx imagetools inspect 取注册表内容摘要，与本地拉取状态无关）
+pgvector/pgvector:0.8.0-pg16-bookworm = pgvector/pgvector:0.8.0-pg16-bookworm@sha256:a132765ec351c65111b5b675928a3a0515a466a40f97277329db8b8209ad8bc9
+redis:7.4.1 = redis:7.4.1@sha256:bb142a9c18ac18a16713c1491d779697b4e107c22a97266616099d288237ef47
+minio/minio:RELEASE.2024-11-07T00-52-20Z = minio/minio:RELEASE.2024-11-07T00-52-20Z@sha256:ac591851803a79aee64bc37f66d77c56b0a4b6e12d9e5356380f4105510f2332
+infiniflow/ragflow:v0.26.4 = infiniflow/ragflow:v0.26.4@sha256:16d24d1968ab59e2715a85d2590f1569c9539e0362344a42f3a23e8be06a655b

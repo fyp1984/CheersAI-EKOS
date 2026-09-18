@@ -26,11 +26,16 @@ services:
     image: pgvector/pgvector:0.8.0-pg16-bookworm
     platform: linux/arm64                   # ← E0 关键；E1 改为 linux/amd64
     profiles: [dev]
+    restart: unless-stopped
     container_name: ekos-postgres
     environment:
       POSTGRES_DB: ${PGDATABASE:-ekos}
       POSTGRES_USER: ${PGUSER:-ekos}
-      POSTGRES_PASSWORD: ${PGPASSWORD:-ekos_dev_only}
+      # 口令一律由 .env 提供，compose 内不写默认值（契约 X4.4「密钥不进 git」）。
+      # 为什么不给默认值：${PGPASSWORD:-<明文>} 这类写法会把开发口令提交进 git，
+      # 而「密钥不入库」的核验若按整行过滤（行内含变量引用即放过）根本抓不到。
+      # 缺变量时 compose 用 :? 直接报错，优于静默使用弱口令。
+      POSTGRES_PASSWORD: ${PGPASSWORD:?PGPASSWORD 未设置：请复制 .env.example 为 .env 并填写}
     ports:
       - "${PGPORT_HOST:-15432}:5432"        # ← 避开冻结端口 5432
     volumes:
@@ -64,7 +69,7 @@ services:
     command: server /data --console-address ":9001"
     environment:
       MINIO_ROOT_USER: ${MINIO_USER:-ekos}
-      MINIO_ROOT_PASSWORD: ${MINIO_PASSWORD:-ekos_dev_only}
+      MINIO_ROOT_PASSWORD: ${MINIO_PASSWORD:?MINIO_PASSWORD 未设置：请复制 .env.example 为 .env 并填写}
     ports:
       - "${MINIO_API_HOST:-19000}:9000"     # ← 避开冻结端口 9000
       - "${MINIO_CONSOLE_HOST:-19001}:9001"
@@ -84,6 +89,7 @@ services:
       dockerfile: deploy/compose/Dockerfile.stub
     platform: linux/arm64
     profiles: [dev, stub]
+    restart: unless-stopped
     container_name: ekos-model-stub
     ports:
       - "${MODEL_HOST:-18000}:8000"         # ← 避开冻结端口 8000

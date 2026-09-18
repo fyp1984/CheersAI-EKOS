@@ -1,0 +1,32 @@
+生成时间: 2026-09-05 19:29:30
+## 镜像 digest
+生成时间: 2026-09-05 19:29:05
+## 镜像 digest（amd64 / linux 内容摘要，§3.7 冻结 + RAGFlow 适配层；由 docker buildx imagetools inspect 取注册表内容摘要，与本地拉取状态无关）
+pgvector/pgvector:0.8.0-pg16-bookworm = pgvector/pgvector:0.8.0-pg16-bookworm@sha256:a132765ec351c65111b5b675928a3a0515a466a40f97277329db8b8209ad8bc9
+redis:7.4.1 = redis:7.4.1@sha256:bb142a9c18ac18a16713c1491d779697b4e107c22a97266616099d288237ef47
+minio/minio:RELEASE.2024-11-07T00-52-20Z = minio/minio:RELEASE.2024-11-07T00-52-20Z@sha256:ac591851803a79aee64bc37f66d77c56b0a4b6e12d9e5356380f4105510f2332
+infiniflow/ragflow:v0.26.4 = infiniflow/ragflow:v0.26.4@sha256:16d24d1968ab59e2715a85d2590f1569c9539e0362344a42f3a23e8be06a655b
+## 模型 SHA-256
+模型权重冻结清单（SHA-256）
+生成时间: 2026-09-05
+纪律: 每个权重必须 Revision 钉定具体提交，禁止浮动版本标记；SHA-256 随交付冻结（QA-4 / 门禁 Q5）
+E0 说明: E0 开发本机无 /data 数据盘、stub 已跑通链路、E0 数字无效。
+        本文件为冻结计划：6 个模型 Revision 全部钉定；真实权重落盘与 SHA 复验在 E1（/data/models）执行。
+        bge-m3 在 E0 做了一次演示下载（落 /tmp/ekos-models，非 /data），其 SHA 见下方 E0 演示段。
+
+模型清单（Revision 钉定，禁浮动标记）
+模型 | 用途 | 钉定 Revision | SHA-256 | 落盘环境
+Qwen/Qwen3-8B-AWQ | 生成主模型 GPU低档 | 待 E1 钉 commit | 待 E1 | E1
+Qwen/Qwen3-14B-AWQ | 生成主模型 GPU中档 | 待 E1 钉 commit | 待 E1 | E1
+Qwen/Qwen3-8B-GGUF | 生成主模型 CPU档 | 待 E1 钉 commit | 待 E1 | E1
+BAAI/bge-m3 | Embedding | 待 E1 钉 commit（E0 演示见下） | 待 E1（E0 演示见下） | E1
+BAAI/bge-reranker-v2-m3 | Reranker | 待 E1 钉 commit | 待 E1 | E1
+云端 qwen-plus | 云端出口 | 控制台固定 | 不适用 | 云端
+
+E0 演示段（bge-m3 真实下载 + 哈希，落 /tmp，非交付权重；由 ekos_t106.sh 追加）
+--- BAAI/bge-m3 (E0 演示下载)
+revision: 5617a9f61b028005a4858fdac845db406aefb181
+downloaded_at: 2026-09-05T16:11:14+0800
+b5e0ce3470abf5ef3831aa1bd5553b486803e83251590ab7ff35a117cf6aad38  /tmp/ekos-models/bge-m3/pytorch_model.bin
+## 介质 SHA-256
+16fe9ac158d6eecb3796e708fba843a53449d1c9fb037a9003db9c8dde630850  dist/offline/requirements.txt

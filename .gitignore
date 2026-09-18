@@ -4,8 +4,7 @@ __pycache__/
 *.egg-info/
 .venv/
 venv/
-dist/
-build/
+dist/*
 
 # ================= 工具缓存 =================
 .pytest_cache/
@@ -39,6 +38,20 @@ models/
 *.bin
 *.pt
 
+# ================= 外部制品仓（L2 · 见 02_方案/11_EKOS外部依赖与制品统一目录规范-v1.0）=================
+# 制品（权重/镜像/安装包/二进制）一律不入库；账本在文档仓 03_实施/外部依赖/INVENTORY.yaml
+# 注意：用 external/* 而非 external/ —— 父目录被整体忽略时 git 不再递归，
+#      其中的 ! 白名单不会被评估（2026-09-10 实测踩坑）。
+external/*
+!external/README.md
+
+# ================= 白名单（必须覆盖上面的忽略规则）=================
+# 冻结清单若被忽略 = 无版本管理，Q6 许可证结论将失去依据 → 强制入库
+!dist/offline/
+!dist/offline/MANIFEST.sha256
+!dist/offline/requirements.txt
+dist/offline/.tmp*
+
 # ================= 运行产物 =================
 logs/
 *.log
@@ -53,3 +66,7 @@ reports/output/
 # ================= Obsidian（防止误把仓库放进 vault）=================
 .obsidian/
 .trash/
+
+# ================= Syncthing（同步工具本地标记）=================
+.stfolder/
+.stignore

@@ -572,6 +572,27 @@ def _is_comment_or_doc(line):
     return False
 
 
+def _order_hits(hits, shared_prefixes=("packages/", "apps/")):
+    """命中排序：共用层优先，其次按路径与行号稳定排序。
+
+    为什么需要这一层排序
+    --------------------
+    TR-6 的 WARN 每类只显示前 10 条。若直接按 `rglob` 的遍历顺序取前 10，
+    测试层的中文断言消息（数量天然最多）会把共用层的命中挤出可见列表——
+    实测（2026-09-05）：中文字面量实际命中 45 条，可见 10 条全是 `tests/`，
+    `packages/modelgw/stub.py` 的 5 条共用层命中一次都没露出来。
+
+    WARN 是要人工签字的。签字的人看不到共用层那几条，就无从判断它们无害，
+    只能对着满屏测试层噪音默认放行——「查了但看不见」对签字人与「没查」等价。
+
+    排序只影响显示顺序，不影响命中集合，也不触碰任何判据正则。
+    """
+    return sorted(
+        hits,
+        key=lambda h: (0 if str(h[0]).startswith(shared_prefixes) else 1, str(h[0]), h[1]),
+    )
+
+
 def check_tr6(root, cfg, out):
     import fnmatch
 
@@ -615,6 +636,10 @@ def check_tr6(root, cfg, out):
             Finding("TR-6", PASS, "-", "共用层无硬编码语种分支（扫描 %d 个代码文件）" % scanned)
         )
 
+    # 先排序再截断：保证被截掉的是测试层噪音，而不是共用层命中
+    warn_hits = _order_hits(warn_hits)
+    cjk_hits = _order_hits(cjk_hits)
+
     for rel, ln, text in fail_hits[:MAX_REPORT_PER_CHECK]:
         out.append(Finding("TR-6", FAIL, "%s:%d" % (rel, ln), "硬编码语种分支 → %s" % text))
     for rel, ln, text in warn_hits[:10]:
@@ -632,6 +657,19 @@ def check_tr6(root, cfg, out):
                 "代码内中文字符串字面量（疑似被写死的规则）→ %s" % text,
             )
         )
+    # 截断必须自报数量：只显示 10 条却不说是 45 条里的 10 条，
+    # 签字的人会以为全库就这 10 处，据此签的「已确认」是假的。
+    for label, hits in (("语种字面量", warn_hits), ("中文字面量", cjk_hits)):
+        if len(hits) > 10:
+            out.append(
+                Finding(
+                    "TR-6",
+                    INFO,
+                    "-",
+                    "%s WARN 实为 %d 条，此处显示前 10 条（已按共用层优先排序，"
+                    "被折叠的多为测试层断言消息）" % (label, len(hits)),
+                )
+            )
     if len(fail_hits) > MAX_REPORT_PER_CHECK:
         out.append(
             Finding(

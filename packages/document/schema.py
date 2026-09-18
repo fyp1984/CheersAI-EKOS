@@ -52,3 +52,5 @@ class ParsedDocument(BaseModel):
     source_uri: str = Field(description="where the document was read from")
     language: str = Field(pattern=LANGUAGE_PATTERN, description="ISO 639-1 language code")
     blocks: list[ParsedBlock] = Field(default_factory=list, description="blocks in reading order")
+    parse_status: str = Field(default="ok", description="ok | needs_review | failed")
+    parser_version: str = Field(default="1.0.0", description="parser version, enables replay")
