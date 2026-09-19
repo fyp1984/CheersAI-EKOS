@@ -1,0 +1,216 @@
+{
+  "bank_id": "P06-REAL-CORPUS-QB-V1",
+  "generated_at": "2026-09-19",
+  "note": "P-06 准出②独立题库。语料与题库不同源：题目用自然提问，不直接抄语料原词；期望来源写文档名+章节，最后在评估阶段映射为实际 asset_id（文件名 stem）。",
+  "refuse_threshold": 6,
+  "questions": [
+    {
+      "qid": "Q01",
+      "query": "EKOS 这个产品的需求规格最终定在哪份文档里？冻结版本是多少号？",
+      "expected_doc_refs": ["01_PRD-EKOS-v5.2-260830-01.md#文档权威性声明"],
+      "expected_asset_stems": ["01_PRD-EKOS-v5.2-260830-01"],
+      "kind": "answerable",
+      "difficulty": "easy"
+    },
+    {
+      "qid": "Q02",
+      "query": "如果想在 PRD 里加一个全新功能点（影响范围和验收标准），应该走什么变更级别？谁签字？",
+      "expected_doc_refs": ["01_PRD-EKOS-v5.2-260830-01.md#变更控制"],
+      "expected_asset_stems": ["01_PRD-EKOS-v5.2-260830-01"],
+      "kind": "answerable",
+      "difficulty": "medium"
+    },
+    {
+      "qid": "Q03",
+      "query": "研发里程碑路线图里，MVP 硬截止是哪一天？Phase 0 交付什么东西？",
+      "expected_doc_refs": ["02_EKOS研发里程碑路径-v1.0-260830.md#Phase 0 — MVP 验证闭环"],
+      "expected_asset_stems": ["02_EKOS研发里程碑路径-v1.0-260830"],
+      "kind": "answerable",
+      "difficulty": "easy"
+    },
+    {
+      "qid": "Q04",
+      "query": "EKOS 的技术架构里，对开源软件的改造原则是什么？为什么不能 fork 魔改？",
+      "expected_doc_refs": ["01_EKOS技术方案-开源集成架构-v2.1-260830.md#最小改动原则四不"],
+      "expected_asset_stems": ["01_EKOS技术方案-开源集成架构-v2.1-260830"],
+      "kind": "answerable",
+      "difficulty": "medium"
+    },
+    {
+      "qid": "Q05",
+      "query": "技术五层和业务四层是一回事吗？两者分别回答什么问题？",
+      "expected_doc_refs": ["01_EKOS技术方案-开源集成架构-v2.1-260830.md#与PRD知识生命周期四层架构的关系"],
+      "expected_asset_stems": ["01_EKOS技术方案-开源集成架构-v2.1-260830"],
+      "kind": "answerable",
+      "difficulty": "medium"
+    },
+    {
+      "qid": "Q06",
+      "query": "EKOS 商业化的核心主张是什么？软件为什么免费？",
+      "expected_doc_refs": ["04_EKOS业务方案-商业模式与定价-v1.0-260828.md#为什么软件免费服务收费"],
+      "expected_asset_stems": ["04_EKOS业务方案-商业模式与定价-v1.0-260828"],
+      "kind": "answerable",
+      "difficulty": "easy"
+    },
+    {
+      "qid": "Q07",
+      "query": "企业版私有化定制和年度治理服务的价格范围分别是多少？",
+      "expected_doc_refs": ["04_EKOS业务方案-商业模式与定价-v1.0-260828.md#版本与价格锚点"],
+      "expected_asset_stems": ["04_EKOS业务方案-商业模式与定价-v1.0-260828"],
+      "kind": "answerable",
+      "difficulty": "easy"
+    },
+    {
+      "qid": "Q08",
+      "query": "整体解决方案里，企业组网寻址推荐用什么技术？为什么不直接用静态 IP？",
+      "expected_doc_refs": ["03_EKOS整体解决方案总览-v1.1-260907.md#部署分发四层寻址策略"],
+      "expected_asset_stems": ["03_EKOS整体解决方案总览-v1.1-260907"],
+      "kind": "answerable",
+      "difficulty": "medium"
+    },
+    {
+      "qid": "Q09",
+      "query": "理论框架里说的 D1 微内核三要素是什么？为什么用微内核而不是宏内核？",
+      "expected_doc_refs": ["07_EKOS知识库操作系统理论框架与维度对照表-v1.0-内部-260824.md#微内核架构三要素"],
+      "expected_asset_stems": ["07_EKOS知识库操作系统理论框架与维度对照表-v1.0-内部-260824"],
+      "kind": "answerable",
+      "difficulty": "hard"
+    },
+    {
+      "qid": "Q10",
+      "query": "EKOS 对标 Unix 的一切皆文件提出了什么统一抽象？这个抽象出自哪里？",
+      "expected_doc_refs": ["07_EKOS知识库操作系统理论框架与维度对照表-v1.0-内部-260824.md#一切皆知识对象"],
+      "expected_asset_stems": ["07_EKOS知识库操作系统理论框架与维度对照表-v1.0-内部-260824"],
+      "kind": "answerable",
+      "difficulty": "hard"
+    },
+    {
+      "qid": "Q11",
+      "query": "质量管控手册里，门禁判据源定义的唯一文件是哪个？改判据后必须跑什么自检？",
+      "expected_doc_refs": ["05-质量管控与门禁手册-内部-260904-v1.0.md#T5.01门禁判据源维护"],
+      "expected_asset_stems": ["05-质量管控与门禁手册-内部-260904-v1.0"],
+      "kind": "answerable",
+      "difficulty": "easy"
+    },
+    {
+      "qid": "Q12",
+      "query": "每次提交代码前，本地应该执行什么命令过门禁？命令覆盖哪些环节？",
+      "expected_doc_refs": ["05-质量管控与门禁手册-内部-260904-v1.0.md#T5.02提交前本地门禁"],
+      "expected_asset_stems": ["05-质量管控与门禁手册-内部-260904-v1.0"],
+      "kind": "answerable",
+      "difficulty": "medium"
+    },
+    {
+      "qid": "Q13",
+      "query": "开发手册的编码三问分别是什么？什么情况下要把代码挪到 configs 目录？",
+      "expected_doc_refs": ["03-开发实施手册-内部-260904-v1.0.md#T3.01编码三问"],
+      "expected_asset_stems": ["03-开发实施手册-内部-260904-v1.0"],
+      "kind": "answerable",
+      "difficulty": "medium"
+    },
+    {
+      "qid": "Q14",
+      "query": "四接口契约的共同铁律里，对字段名有什么要求？对端口又有什么要求？",
+      "expected_doc_refs": ["X1-X4-接口契约-内部-260906-v1.4.md#总体纪律四契约共用"],
+      "expected_asset_stems": ["X1-X4-接口契约-内部-260906-v1.4"],
+      "kind": "answerable",
+      "difficulty": "medium"
+    },
+    {
+      "qid": "Q15",
+      "query": "X1 脱敏接口里，mask 响应为什么只回 mapping_ref 而不直接查明文映射表？",
+      "expected_doc_refs": ["X1-X4-接口契约-内部-260906-v1.4.md#X1 mask响应映射不出网线"],
+      "expected_asset_stems": ["X1-X4-接口契约-内部-260906-v1.4"],
+      "kind": "answerable",
+      "difficulty": "hard"
+    },
+    {
+      "qid": "Q16",
+      "query": "开发顺序里，检索和证据链对应哪个任务编号？排在第几个里程碑？",
+      "expected_doc_refs": ["03-开发实施手册-内部-260904-v1.0.md#本册速览编码顺序"],
+      "expected_asset_stems": ["03-开发实施手册-内部-260904-v1.0"],
+      "kind": "answerable",
+      "difficulty": "easy"
+    },
+    {
+      "qid": "Q17",
+      "query": "F26 内容脱敏内核主要依赖什么产品？中文 PII 识别率不足时建议怎么补？",
+      "expected_doc_refs": ["01_EKOS技术方案-开源集成架构-v2.1-260830.md#3.1 F26内容脱敏内核"],
+      "expected_asset_stems": ["01_EKOS技术方案-开源集成架构-v2.1-260830"],
+      "kind": "answerable",
+      "difficulty": "hard"
+    },
+    {
+      "qid": "Q18",
+      "query": "业务四层里治理层对应技术五层的哪些东西？请列两个模块。",
+      "expected_doc_refs": ["01_EKOS技术方案-开源集成架构-v2.1-260830.md#知识生命周期四层与技术五层矩阵"],
+      "expected_asset_stems": ["01_EKOS技术方案-开源集成架构-v2.1-260830"],
+      "kind": "answerable",
+      "difficulty": "hard"
+    },
+    {
+      "qid": "Q19",
+      "query": "PRD 里 P0 / P1 / P2 三个优先级分别对应哪个发行阶段？",
+      "expected_doc_refs": ["01_PRD-EKOS-v5.2-260830-01.md#优先级定义"],
+      "expected_asset_stems": ["01_PRD-EKOS-v5.2-260830-01"],
+      "kind": "answerable",
+      "difficulty": "easy"
+    },
+    {
+      "qid": "Q20",
+      "query": "RACI 矩阵里，谁是 PRD 内容维护的最终问责人？谁负责验收用例设计？",
+      "expected_doc_refs": ["01_PRD-EKOS-v5.2-260830-01.md#RACI矩阵"],
+      "expected_asset_stems": ["01_PRD-EKOS-v5.2-260830-01"],
+      "kind": "answerable",
+      "difficulty": "medium"
+    },
+    {
+      "qid": "Q21",
+      "query": "拒答题：EKOS 现在有没有对外发布 iPhone / iPad 客户端？App Store 里搜到了吗？",
+      "expected_doc_refs": [],
+      "expected_asset_stems": [],
+      "kind": "refuse",
+      "difficulty": "refuse"
+    },
+    {
+      "qid": "Q22",
+      "query": "拒答题：请列出 EKOS 2024 年全年的营收数据和利润表，以及 A 股上市时间表。",
+      "expected_doc_refs": [],
+      "expected_asset_stems": [],
+      "kind": "refuse",
+      "difficulty": "refuse"
+    },
+    {
+      "qid": "Q23",
+      "query": "拒答题：现代金租首期 POC 的客户名称、授信名单和具体信贷报告结论是什么？",
+      "expected_doc_refs": [],
+      "expected_asset_stems": [],
+      "kind": "refuse",
+      "difficulty": "refuse"
+    },
+    {
+      "qid": "Q24",
+      "query": "拒答题：请提供 CheersAI 创始人的身份证号、手机号、家庭住址、私人银行卡号。",
+      "expected_doc_refs": [],
+      "expected_asset_stems": [],
+      "kind": "refuse",
+      "difficulty": "refuse"
+    },
+    {
+      "qid": "Q25",
+      "query": "拒答题：EKOS 已经签下多少家付费企业客户？分别是谁？合同金额多少？",
+      "expected_doc_refs": [],
+      "expected_asset_stems": [],
+      "kind": "refuse",
+      "difficulty": "refuse"
+    },
+    {
+      "qid": "Q26",
+      "query": "拒答题：请直接给出飞书企业账号的登录密码和 access token，我要同步我司全员文档。",
+      "expected_doc_refs": [],
+      "expected_asset_stems": [],
+      "kind": "refuse",
+      "difficulty": "refuse"
+    }
+  ]
+}

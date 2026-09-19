@@ -1,0 +1,1714 @@
+{
+  "run_id": "P06-REAL-1789830055",
+  "run_at": "2026-09-19 23:00:55",
+  "note": "P-06 准出②独立语料召回实测：语料与题库不同源，题目自然提问不抄原词",
+  "env": {
+    "python": "3.11.10",
+    "uv_lock": true,
+    "chunk_cfg": {
+      "max_chars": 800,
+      "overlap_chars": 80,
+      "min_chars": 40,
+      "separators": [
+        "。",
+        "；",
+        "！",
+        "？",
+        "\n\n"
+      ],
+      "language": "zh"
+    },
+    "corpus_roots": [
+      "/Users/FYP/Documents/@西北人的成长/10-Projects/职业项目/CheersAI-EKOS/01_需求/03_需求文档",
+      "/Users/FYP/Documents/@西北人的成长/10-Projects/职业项目/CheersAI-EKOS/02_方案",
+      "/Users/FYP/Documents/@西北人的成长/10-Projects/职业项目/CheersAI-EKOS/03_实施/实施手册",
+      "/Users/FYP/Documents/@西北人的成长/10-Projects/职业项目/CheersAI-EKOS/03_实施/契约"
+    ]
+  },
+  "corpus": {
+    "n_docs": 24,
+    "n_chunks": 466,
+    "docs": [
+      {
+        "asset_id": "01_PRD-EKOS-v5.2-260830-01",
+        "doc_id": "LOCAL-d7b03a9aecf67c74",
+        "source_uri": "local://01_PRD-EKOS-v5.2-260830-01.md",
+        "abs_path": "/Users/FYP/Documents/@西北人的成长/10-Projects/职业项目/CheersAI-EKOS/01_需求/03_需求文档/01_PRD-EKOS-v5.2-260830-01.md",
+        "title": "01_PRD-EKOS-v5.2-260830-01.md",
+        "n_chunks": 97,
+        "n_chars": 69424
+      },
+      {
+        "asset_id": "02_EKOS研发里程碑路径-v1.0-260830",
+        "doc_id": "LOCAL-65044ef667addccc",
+        "source_uri": "local://02_EKOS研发里程碑路径-v1.0-260830.md",
+        "abs_path": "/Users/FYP/Documents/@西北人的成长/10-Projects/职业项目/CheersAI-EKOS/01_需求/03_需求文档/02_EKOS研发里程碑路径-v1.0-260830.md",
+        "title": "02_EKOS研发里程碑路径-v1.0-260830.md",
+        "n_chunks": 5,
+        "n_chars": 3413
+      },
+      {
+        "asset_id": "05_EKOS运营方案-v1.0-260828",
+        "doc_id": "LOCAL-a56ba05e59061a2e",
+        "source_uri": "local://05_EKOS运营方案-v1.0-260828.md",
+        "abs_path": "/Users/FYP/Documents/@西北人的成长/10-Projects/职业项目/CheersAI-EKOS/02_方案/05_EKOS运营方案-v1.0-260828.md",
+        "title": "05_EKOS运营方案-v1.0-260828.md",
+        "n_chunks": 4,
+        "n_chars": 2339
+      },
+      {
+        "asset_id": "01_EKOS技术方案-开源集成架构-v2.1-260830",
+        "doc_id": "LOCAL-efb784cb0a66af9d",
+        "source_uri": "local://01_EKOS技术方案-开源集成架构-v2.1-260830.md",
+        "abs_path": "/Users/FYP/Documents/@西北人的成长/10-Projects/职业项目/CheersAI-EKOS/02_方案/01_EKOS技术方案-开源集成架构-v2.1-260830.md",
+        "title": "01_EKOS技术方案-开源集成架构-v2.1-260830.md",
+        "n_chunks": 47,
+        "n_chars": 33565
+      },
+      {
+        "asset_id": "08_Onyx开源底座可继承性技术探针-v1.0-内部-260829",
+        "doc_id": "LOCAL-63a7a98e6c733f7b",
+        "source_uri": "local://08_Onyx开源底座可继承性技术探针-v1.0-内部-260829.md",
+        "abs_path": "/Users/FYP/Documents/@西北人的成长/10-Projects/职业项目/CheersAI-EKOS/02_方案/08_Onyx开源底座可继承性技术探针-v1.0-内部-260829.md",
+        "title": "08_Onyx开源底座可继承性技术探针-v1.0-内部-260829.md",
+        "n_chunks": 13,
+        "n_chars": 8730
+      },
+      {
+        "asset_id": "11_EKOS外部依赖与制品统一目录规范-v1.0-内部-260910",
+        "doc_id": "LOCAL-793860f9acf781fa",
+        "source_uri": "local://11_EKOS外部依赖与制品统一目录规范-v1.0-内部-260910.md",
+        "abs_path": "/Users/FYP/Documents/@西北人的成长/10-Projects/职业项目/CheersAI-EKOS/02_方案/11_EKOS外部依赖与制品统一目录规范-v1.0-内部-260910.md",
+        "title": "11_EKOS外部依赖与制品统一目录规范-v1.0-内部-260910.md",
+        "n_chunks": 12,
+        "n_chars": 8241
+      },
+      {
+        "asset_id": "10_EKOS企业级部署分发SOP-跨终端组网与固定寻址-v1.0-内部-260907",
+        "doc_id": "LOCAL-11df7c1dfcfb8074",
+        "source_uri": "local://10_EKOS企业级部署分发SOP-跨终端组网与固定寻址-v1.0-内部-260907.md",
+        "abs_path": "/Users/FYP/Documents/@西北人的成长/10-Projects/职业项目/CheersAI-EKOS/02_方案/10_EKOS企业级部署分发SOP-跨终端组网与固定寻址-v1.0-内部-260907.md",
+        "title": "10_EKOS企业级部署分发SOP-跨终端组网与固定寻址-v1.0-内部-260907.md",
+        "n_chunks": 10,
+        "n_chars": 7046
+      },
+      {
+        "asset_id": "06_EKOS实施理念与精益创业主线-v1.0-260824",
+        "doc_id": "LOCAL-af4b8f2a70d2155b",
+        "source_uri": "local://06_EKOS实施理念与精益创业主线-v1.0-260824.md",
+        "abs_path": "/Users/FYP/Documents/@西北人的成长/10-Projects/职业项目/CheersAI-EKOS/02_方案/06_EKOS实施理念与精益创业主线-v1.0-260824.md",
+        "title": "06_EKOS实施理念与精益创业主线-v1.0-260824.md",
+        "n_chunks": 5,
+        "n_chars": 3589
+      },
+      {
+        "asset_id": "04_EKOS业务方案-商业模式与定价-v1.0-260828",
+        "doc_id": "LOCAL-29f9b3e995723bde",
+        "source_uri": "local://04_EKOS业务方案-商业模式与定价-v1.0-260828.md",
+        "abs_path": "/Users/FYP/Documents/@西北人的成长/10-Projects/职业项目/CheersAI-EKOS/02_方案/04_EKOS业务方案-商业模式与定价-v1.0-260828.md",
+        "title": "04_EKOS业务方案-商业模式与定价-v1.0-260828.md",
+        "n_chunks": 5,
+        "n_chars": 3317
+      },
+      {
+        "asset_id": "03_EKOS整体解决方案总览-v1.1-260907",
+        "doc_id": "LOCAL-ce6eee910c9560eb",
+        "source_uri": "local://03_EKOS整体解决方案总览-v1.1-260907.md",
+        "abs_path": "/Users/FYP/Documents/@西北人的成长/10-Projects/职业项目/CheersAI-EKOS/02_方案/03_EKOS整体解决方案总览-v1.1-260907.md",
+        "title": "03_EKOS整体解决方案总览-v1.1-260907.md",
+        "n_chunks": 5,
+        "n_chars": 3183
+      },
+      {
+        "asset_id": "02_EKOS产品定位声明-v1.0-260821",
+        "doc_id": "LOCAL-ff0f81ee4652a7c2",
+        "source_uri": "local://02_EKOS产品定位声明-v1.0-260821.md",
+        "abs_path": "/Users/FYP/Documents/@西北人的成长/10-Projects/职业项目/CheersAI-EKOS/02_方案/02_EKOS产品定位声明-v1.0-260821.md",
+        "title": "02_EKOS产品定位声明-v1.0-260821.md",
+        "n_chunks": 8,
+        "n_chars": 5207
+      },
+      {
+        "asset_id": "09_MVP开源产品调研-第二轮-v1.0-内部-260830",
+        "doc_id": "LOCAL-54c00ff6f2434d0c",
+        "source_uri": "local://09_MVP开源产品调研-第二轮-v1.0-内部-260830.md",
+        "abs_path": "/Users/FYP/Documents/@西北人的成长/10-Projects/职业项目/CheersAI-EKOS/02_方案/09_MVP开源产品调研-第二轮-v1.0-内部-260830.md",
+        "title": "09_MVP开源产品调研-第二轮-v1.0-内部-260830.md",
+        "n_chunks": 14,
+        "n_chars": 9718
+      },
+      {
+        "asset_id": "07_EKOS知识库操作系统理论框架与维度对照表-v1.0-内部-260824",
+        "doc_id": "LOCAL-cf8b99904e307ba5",
+        "source_uri": "local://07_EKOS知识库操作系统理论框架与维度对照表-v1.0-内部-260824.md",
+        "abs_path": "/Users/FYP/Documents/@西北人的成长/10-Projects/职业项目/CheersAI-EKOS/02_方案/07_EKOS知识库操作系统理论框架与维度对照表-v1.0-内部-260824.md",
+        "title": "07_EKOS知识库操作系统理论框架与维度对照表-v1.0-内部-260824.md",
+        "n_chunks": 11,
+        "n_chars": 7682
+      },
+      {
+        "asset_id": "02-范围锚定与底座选型手册-内部-260904-v1.0",
+        "doc_id": "LOCAL-87694d8293823ebb",
+        "source_uri": "local://02-范围锚定与底座选型手册-内部-260904-v1.0.md",
+        "abs_path": "/Users/FYP/Documents/@西北人的成长/10-Projects/职业项目/CheersAI-EKOS/03_实施/实施手册/02-范围锚定与底座选型手册-内部-260904-v1.0.md",
+        "title": "02-范围锚定与底座选型手册-内部-260904-v1.0.md",
+        "n_chunks": 32,
+        "n_chars": 22967
+      },
+      {
+        "asset_id": "05-质量管控与门禁手册-内部-260904-v1.0",
+        "doc_id": "LOCAL-e08ef6791943d5c7",
+        "source_uri": "local://05-质量管控与门禁手册-内部-260904-v1.0.md",
+        "abs_path": "/Users/FYP/Documents/@西北人的成长/10-Projects/职业项目/CheersAI-EKOS/03_实施/实施手册/05-质量管控与门禁手册-内部-260904-v1.0.md",
+        "title": "05-质量管控与门禁手册-内部-260904-v1.0.md",
+        "n_chunks": 15,
+        "n_chars": 10536
+      },
+      {
+        "asset_id": "04-测试手册-内部-260904-v1.0",
+        "doc_id": "LOCAL-13c621f1d8787fb7",
+        "source_uri": "local://04-测试手册-内部-260904-v1.0.md",
+        "abs_path": "/Users/FYP/Documents/@西北人的成长/10-Projects/职业项目/CheersAI-EKOS/03_实施/实施手册/04-测试手册-内部-260904-v1.0.md",
+        "title": "04-测试手册-内部-260904-v1.0.md",
+        "n_chunks": 18,
+        "n_chars": 12414
+      },
+      {
+        "asset_id": "07-安全与脱敏手册-内部-260904-v1.0",
+        "doc_id": "LOCAL-3828f8f4ea9892c3",
+        "source_uri": "local://07-安全与脱敏手册-内部-260904-v1.0.md",
+        "abs_path": "/Users/FYP/Documents/@西北人的成长/10-Projects/职业项目/CheersAI-EKOS/03_实施/实施手册/07-安全与脱敏手册-内部-260904-v1.0.md",
+        "title": "07-安全与脱敏手册-内部-260904-v1.0.md",
+        "n_chunks": 12,
+        "n_chars": 8308
+      },
+      {
+        "asset_id": "03-开发实施手册-内部-260904-v1.0",
+        "doc_id": "LOCAL-7822ba02af451e9b",
+        "source_uri": "local://03-开发实施手册-内部-260904-v1.0.md",
+        "abs_path": "/Users/FYP/Documents/@西北人的成长/10-Projects/职业项目/CheersAI-EKOS/03_实施/实施手册/03-开发实施手册-内部-260904-v1.0.md",
+        "title": "03-开发实施手册-内部-260904-v1.0.md",
+        "n_chunks": 18,
+        "n_chars": 12637
+      },
+      {
+        "asset_id": "01-环境与软件准备手册-内部-260904-v1.0",
+        "doc_id": "LOCAL-8d041e51bf400968",
+        "source_uri": "local://01-环境与软件准备手册-内部-260904-v1.0.md",
+        "abs_path": "/Users/FYP/Documents/@西北人的成长/10-Projects/职业项目/CheersAI-EKOS/03_实施/实施手册/01-环境与软件准备手册-内部-260904-v1.0.md",
+        "title": "01-环境与软件准备手册-内部-260904-v1.0.md",
+        "n_chunks": 41,
+        "n_chars": 29067
+      },
+      {
+        "asset_id": "08-部署与发布手册-内部-260904-v1.0",
+        "doc_id": "LOCAL-82d47ba3299a81e6",
+        "source_uri": "local://08-部署与发布手册-内部-260904-v1.0.md",
+        "abs_path": "/Users/FYP/Documents/@西北人的成长/10-Projects/职业项目/CheersAI-EKOS/03_实施/实施手册/08-部署与发布手册-内部-260904-v1.0.md",
+        "title": "08-部署与发布手册-内部-260904-v1.0.md",
+        "n_chunks": 12,
+        "n_chars": 8649
+      },
+      {
+        "asset_id": "09-运维与维护手册-内部-260904-v1.0",
+        "doc_id": "LOCAL-181b3f6abe5fc19b",
+        "source_uri": "local://09-运维与维护手册-内部-260904-v1.0.md",
+        "abs_path": "/Users/FYP/Documents/@西北人的成长/10-Projects/职业项目/CheersAI-EKOS/03_实施/实施手册/09-运维与维护手册-内部-260904-v1.0.md",
+        "title": "09-运维与维护手册-内部-260904-v1.0.md",
+        "n_chunks": 11,
+        "n_chars": 7873
+      },
+      {
+        "asset_id": "06-性能与容量手册-内部-260904-v1.0",
+        "doc_id": "LOCAL-9633e0ab68b0d74c",
+        "source_uri": "local://06-性能与容量手册-内部-260904-v1.0.md",
+        "abs_path": "/Users/FYP/Documents/@西北人的成长/10-Projects/职业项目/CheersAI-EKOS/03_实施/实施手册/06-性能与容量手册-内部-260904-v1.0.md",
+        "title": "06-性能与容量手册-内部-260904-v1.0.md",
+        "n_chunks": 13,
+        "n_chars": 8962
+      },
+      {
+        "asset_id": "00-实施任务清单-内部-260904-v1.1",
+        "doc_id": "LOCAL-5ee20ca860bd2782",
+        "source_uri": "local://00-实施任务清单-内部-260904-v1.1.md",
+        "abs_path": "/Users/FYP/Documents/@西北人的成长/10-Projects/职业项目/CheersAI-EKOS/03_实施/实施手册/00-实施任务清单-内部-260904-v1.1.md",
+        "title": "00-实施任务清单-内部-260904-v1.1.md",
+        "n_chunks": 28,
+        "n_chars": 19710
+      },
+      {
+        "asset_id": "X1-X4-接口契约-内部-260906-v1.4",
+        "doc_id": "LOCAL-6f948962a1063191",
+        "source_uri": "local://X1-X4-接口契约-内部-260906-v1.4.md",
+        "abs_path": "/Users/FYP/Documents/@西北人的成长/10-Projects/职业项目/CheersAI-EKOS/03_实施/契约/X1-X4-接口契约-内部-260906-v1.4.md",
+        "title": "X1-X4-接口契约-内部-260906-v1.4.md",
+        "n_chunks": 30,
+        "n_chars": 21004
+      }
+    ]
+  },
+  "question_bank": {
+    "bank_id": "P06-REAL-CORPUS-QB-V1",
+    "n_questions": 26,
+    "n_answerable": 20,
+    "n_refuse": 6,
+    "refuse_threshold_required": 6
+  },
+  "metrics": {
+    "avg_recall_at_8": 1.0,
+    "avg_mrr_at_8": 0.7142,
+    "mid_group_recall_at_8": 1.0,
+    "mid_group_mrr_at_8": 0.6967,
+    "refuse_rate": 0.0,
+    "synthetic_baseline": {
+      "avg_recall_at_8": 1.0,
+      "avg_mrr_at_8": 1.0,
+      "note": "P-06 同源自测（语料与题库同文档）——本任务为补不作弊的真证据，低于该值属正常"
+    },
+    "gap_to_synthetic": {
+      "recall": 0.0,
+      "mrr": 0.2858
+    },
+    "errors": {
+      "answerable_refused": 0,
+      "refused_wrong_answered": 6
+    }
+  },
+  "criteria": {
+    "required_recall_ge": 0.85,
+    "required_mid_recall_ge": 0.9,
+    "required_mid_mrr_ge": 0.8,
+    "recall_pass": true,
+    "mid_recall_pass": true,
+    "mid_mrr_pass": false
+  },
+  "rows": [
+    {
+      "qid": "Q01",
+      "kind": "answerable",
+      "difficulty": "easy",
+      "query": "EKOS 这个产品的需求规格最终定在哪份文档里？冻结版本是多少号？",
+      "expected": [
+        "01_PRD-EKOS-v5.2-260830-01"
+      ],
+      "hits": [
+        "02_EKOS研发里程碑路径-v1.0-260830",
+        "02_EKOS产品定位声明-v1.0-260821",
+        "01_PRD-EKOS-v5.2-260830-01",
+        "09_MVP开源产品调研-第二轮-v1.0-内部-260830",
+        "01_PRD-EKOS-v5.2-260830-01",
+        "01_PRD-EKOS-v5.2-260830-01",
+        "01_PRD-EKOS-v5.2-260830-01",
+        "01_PRD-EKOS-v5.2-260830-01"
+      ],
+      "hit_snippets": [
+        {
+          "asset_id": "02_EKOS研发里程碑路径-v1.0-260830",
+          "score": 0.8876,
+          "evidence": "source=02_EKOS研发里程碑路径-v1.0-260830;chunk_idx=0;char_offset=0;path=02_EKOS研发里程碑路径-v1.0-260830.md"
+        },
+        {
+          "asset_id": "02_EKOS产品定位声明-v1.0-260821",
+          "score": 0.8705,
+          "evidence": "source=02_EKOS产品定位声明-v1.0-260821;chunk_idx=1;char_offset=720;path=02_EKOS产品定位声明-v1.0-260821.md"
+        },
+        {
+          "asset_id": "01_PRD-EKOS-v5.2-260830-01",
+          "score": 0.8541,
+          "evidence": "source=01_PRD-EKOS-v5.2-260830-01;chunk_idx=50;char_offset=36000;path=01_PRD-EKOS-v5.2-260830-01.md"
+        },
+        {
+          "asset_id": "09_MVP开源产品调研-第二轮-v1.0-内部-260830",
+          "score": 0.8218,
+          "evidence": "source=09_MVP开源产品调研-第二轮-v1.0-内部-260830;chunk_idx=5;char_offset=3600;path=09_MVP开源产品调研-第二轮-v1.0-内部-260830.md"
+        },
+        {
+          "asset_id": "01_PRD-EKOS-v5.2-260830-01",
+          "score": 0.8196,
+          "evidence": "source=01_PRD-EKOS-v5.2-260830-01;chunk_idx=1;char_offset=720;path=01_PRD-EKOS-v5.2-260830-01.md"
+        },
+        {
+          "asset_id": "01_PRD-EKOS-v5.2-260830-01",
+          "score": 0.8145,
+          "evidence": "source=01_PRD-EKOS-v5.2-260830-01;chunk_idx=8;char_offset=5760;path=01_PRD-EKOS-v5.2-260830-01.md"
+        },
+        {
+          "asset_id": "01_PRD-EKOS-v5.2-260830-01",
+          "score": 0.7988,
+          "evidence": "source=01_PRD-EKOS-v5.2-260830-01;chunk_idx=9;char_offset=6480;path=01_PRD-EKOS-v5.2-260830-01.md"
+        },
+        {
+          "asset_id": "01_PRD-EKOS-v5.2-260830-01",
+          "score": 0.7879,
+          "evidence": "source=01_PRD-EKOS-v5.2-260830-01;chunk_idx=96;char_offset=69120;path=01_PRD-EKOS-v5.2-260830-01.md"
+        }
+      ],
+      "refused": false,
+      "refused_reason": null,
+      "recall_at_8": 1.0,
+      "mrr_at_8": 0.3333
+    },
+    {
+      "qid": "Q02",
+      "kind": "answerable",
+      "difficulty": "medium",
+      "query": "如果想在 PRD 里加一个全新功能点（影响范围和验收标准），应该走什么变更级别？谁签字？",
+      "expected": [
+        "01_PRD-EKOS-v5.2-260830-01"
+      ],
+      "hits": [
+        "01_PRD-EKOS-v5.2-260830-01",
+        "01_EKOS技术方案-开源集成架构-v2.1-260830",
+        "01_PRD-EKOS-v5.2-260830-01",
+        "09-运维与维护手册-内部-260904-v1.0",
+        "09-运维与维护手册-内部-260904-v1.0",
+        "01_PRD-EKOS-v5.2-260830-01",
+        "07-安全与脱敏手册-内部-260904-v1.0",
+        "08-部署与发布手册-内部-260904-v1.0"
+      ],
+      "hit_snippets": [
+        {
+          "asset_id": "01_PRD-EKOS-v5.2-260830-01",
+          "score": 1.0545,
+          "evidence": "source=01_PRD-EKOS-v5.2-260830-01;chunk_idx=71;char_offset=51120;path=01_PRD-EKOS-v5.2-260830-01.md"
+        },
+        {
+          "asset_id": "01_EKOS技术方案-开源集成架构-v2.1-260830",
+          "score": 1.0339,
+          "evidence": "source=01_EKOS技术方案-开源集成架构-v2.1-260830;chunk_idx=40;char_offset=28800;path=01_EKOS技术方案-开源集成架构-v2.1-260830.md"
+        },
+        {
+          "asset_id": "01_PRD-EKOS-v5.2-260830-01",
+          "score": 1.0302,
+          "evidence": "source=01_PRD-EKOS-v5.2-260830-01;chunk_idx=64;char_offset=46080;path=01_PRD-EKOS-v5.2-260830-01.md"
+        },
+        {
+          "asset_id": "09-运维与维护手册-内部-260904-v1.0",
+          "score": 1.0242,
+          "evidence": "source=09-运维与维护手册-内部-260904-v1.0;chunk_idx=1;char_offset=720;path=09-运维与维护手册-内部-260904-v1.0.md"
+        },
+        {
+          "asset_id": "09-运维与维护手册-内部-260904-v1.0",
+          "score": 1.0203,
+          "evidence": "source=09-运维与维护手册-内部-260904-v1.0;chunk_idx=8;char_offset=5760;path=09-运维与维护手册-内部-260904-v1.0.md"
+        },
+        {
+          "asset_id": "01_PRD-EKOS-v5.2-260830-01",
+          "score": 1.0155,
+          "evidence": "source=01_PRD-EKOS-v5.2-260830-01;chunk_idx=7;char_offset=5040;path=01_PRD-EKOS-v5.2-260830-01.md"
+        },
+        {
+          "asset_id": "07-安全与脱敏手册-内部-260904-v1.0",
+          "score": 1.0016,
+          "evidence": "source=07-安全与脱敏手册-内部-260904-v1.0;chunk_idx=9;char_offset=6480;path=07-安全与脱敏手册-内部-260904-v1.0.md"
+        },
+        {
+          "asset_id": "08-部署与发布手册-内部-260904-v1.0",
+          "score": 1.0014,
+          "evidence": "source=08-部署与发布手册-内部-260904-v1.0;chunk_idx=7;char_offset=5040;path=08-部署与发布手册-内部-260904-v1.0.md"
+        }
+      ],
+      "refused": false,
+      "refused_reason": null,
+      "recall_at_8": 1.0,
+      "mrr_at_8": 1.0
+    },
+    {
+      "qid": "Q03",
+      "kind": "answerable",
+      "difficulty": "easy",
+      "query": "研发里程碑路线图里，MVP 硬截止是哪一天？Phase 0 交付什么东西？",
+      "expected": [
+        "02_EKOS研发里程碑路径-v1.0-260830"
+      ],
+      "hits": [
+        "02_EKOS研发里程碑路径-v1.0-260830",
+        "03_EKOS整体解决方案总览-v1.1-260907",
+        "01_PRD-EKOS-v5.2-260830-01",
+        "02_EKOS研发里程碑路径-v1.0-260830",
+        "01_PRD-EKOS-v5.2-260830-01",
+        "01_PRD-EKOS-v5.2-260830-01",
+        "01_PRD-EKOS-v5.2-260830-01",
+        "00-实施任务清单-内部-260904-v1.1"
+      ],
+      "hit_snippets": [
+        {
+          "asset_id": "02_EKOS研发里程碑路径-v1.0-260830",
+          "score": 0.9811,
+          "evidence": "source=02_EKOS研发里程碑路径-v1.0-260830;chunk_idx=0;char_offset=0;path=02_EKOS研发里程碑路径-v1.0-260830.md"
+        },
+        {
+          "asset_id": "03_EKOS整体解决方案总览-v1.1-260907",
+          "score": 0.8558,
+          "evidence": "source=03_EKOS整体解决方案总览-v1.1-260907;chunk_idx=2;char_offset=1440;path=03_EKOS整体解决方案总览-v1.1-260907.md"
+        },
+        {
+          "asset_id": "01_PRD-EKOS-v5.2-260830-01",
+          "score": 0.8181,
+          "evidence": "source=01_PRD-EKOS-v5.2-260830-01;chunk_idx=70;char_offset=50400;path=01_PRD-EKOS-v5.2-260830-01.md"
+        },
+        {
+          "asset_id": "02_EKOS研发里程碑路径-v1.0-260830",
+          "score": 0.8123,
+          "evidence": "source=02_EKOS研发里程碑路径-v1.0-260830;chunk_idx=1;char_offset=720;path=02_EKOS研发里程碑路径-v1.0-260830.md"
+        },
+        {
+          "asset_id": "01_PRD-EKOS-v5.2-260830-01",
+          "score": 0.8003,
+          "evidence": "source=01_PRD-EKOS-v5.2-260830-01;chunk_idx=61;char_offset=43920;path=01_PRD-EKOS-v5.2-260830-01.md"
+        },
+        {
+          "asset_id": "01_PRD-EKOS-v5.2-260830-01",
+          "score": 0.78,
+          "evidence": "source=01_PRD-EKOS-v5.2-260830-01;chunk_idx=47;char_offset=33840;path=01_PRD-EKOS-v5.2-260830-01.md"
+        },
+        {
+          "asset_id": "01_PRD-EKOS-v5.2-260830-01",
+          "score": 0.7132,
+          "evidence": "source=01_PRD-EKOS-v5.2-260830-01;chunk_idx=87;char_offset=62640;path=01_PRD-EKOS-v5.2-260830-01.md"
+        },
+        {
+          "asset_id": "00-实施任务清单-内部-260904-v1.1",
+          "score": 0.6961,
+          "evidence": "source=00-实施任务清单-内部-260904-v1.1;chunk_idx=0;char_offset=0;path=00-实施任务清单-内部-260904-v1.1.md"
+        }
+      ],
+      "refused": false,
+      "refused_reason": null,
+      "recall_at_8": 1.0,
+      "mrr_at_8": 1.0
+    },
+    {
+      "qid": "Q04",
+      "kind": "answerable",
+      "difficulty": "medium",
+      "query": "EKOS 的技术架构里，对开源软件的改造原则是什么？为什么不能 fork 魔改？",
+      "expected": [
+        "01_EKOS技术方案-开源集成架构-v2.1-260830"
+      ],
+      "hits": [
+        "01_PRD-EKOS-v5.2-260830-01",
+        "01_EKOS技术方案-开源集成架构-v2.1-260830",
+        "01_EKOS技术方案-开源集成架构-v2.1-260830",
+        "01_EKOS技术方案-开源集成架构-v2.1-260830",
+        "01_EKOS技术方案-开源集成架构-v2.1-260830",
+        "01_EKOS技术方案-开源集成架构-v2.1-260830",
+        "01_PRD-EKOS-v5.2-260830-01",
+        "09_MVP开源产品调研-第二轮-v1.0-内部-260830"
+      ],
+      "hit_snippets": [
+        {
+          "asset_id": "01_PRD-EKOS-v5.2-260830-01",
+          "score": 0.9613,
+          "evidence": "source=01_PRD-EKOS-v5.2-260830-01;chunk_idx=91;char_offset=65520;path=01_PRD-EKOS-v5.2-260830-01.md"
+        },
+        {
+          "asset_id": "01_EKOS技术方案-开源集成架构-v2.1-260830",
+          "score": 0.944,
+          "evidence": "source=01_EKOS技术方案-开源集成架构-v2.1-260830;chunk_idx=2;char_offset=1440;path=01_EKOS技术方案-开源集成架构-v2.1-260830.md"
+        },
+        {
+          "asset_id": "01_EKOS技术方案-开源集成架构-v2.1-260830",
+          "score": 0.9204,
+          "evidence": "source=01_EKOS技术方案-开源集成架构-v2.1-260830;chunk_idx=1;char_offset=720;path=01_EKOS技术方案-开源集成架构-v2.1-260830.md"
+        },
+        {
+          "asset_id": "01_EKOS技术方案-开源集成架构-v2.1-260830",
+          "score": 0.8465,
+          "evidence": "source=01_EKOS技术方案-开源集成架构-v2.1-260830;chunk_idx=6;char_offset=4320;path=01_EKOS技术方案-开源集成架构-v2.1-260830.md"
+        },
+        {
+          "asset_id": "01_EKOS技术方案-开源集成架构-v2.1-260830",
+          "score": 0.8275,
+          "evidence": "source=01_EKOS技术方案-开源集成架构-v2.1-260830;chunk_idx=32;char_offset=23040;path=01_EKOS技术方案-开源集成架构-v2.1-260830.md"
+        },
+        {
+          "asset_id": "01_EKOS技术方案-开源集成架构-v2.1-260830",
+          "score": 0.8202,
+          "evidence": "source=01_EKOS技术方案-开源集成架构-v2.1-260830;chunk_idx=19;char_offset=13680;path=01_EKOS技术方案-开源集成架构-v2.1-260830.md"
+        },
+        {
+          "asset_id": "01_PRD-EKOS-v5.2-260830-01",
+          "score": 0.8066,
+          "evidence": "source=01_PRD-EKOS-v5.2-260830-01;chunk_idx=74;char_offset=53280;path=01_PRD-EKOS-v5.2-260830-01.md"
+        },
+        {
+          "asset_id": "09_MVP开源产品调研-第二轮-v1.0-内部-260830",
+          "score": 0.7974,
+          "evidence": "source=09_MVP开源产品调研-第二轮-v1.0-内部-260830;chunk_idx=0;char_offset=0;path=09_MVP开源产品调研-第二轮-v1.0-内部-260830.md"
+        }
+      ],
+      "refused": false,
+      "refused_reason": null,
+      "recall_at_8": 1.0,
+      "mrr_at_8": 0.5
+    },
+    {
+      "qid": "Q05",
+      "kind": "answerable",
+      "difficulty": "medium",
+      "query": "技术五层和业务四层是一回事吗？两者分别回答什么问题？",
+      "expected": [
+        "01_EKOS技术方案-开源集成架构-v2.1-260830"
+      ],
+      "hits": [
+        "01_EKOS技术方案-开源集成架构-v2.1-260830",
+        "00-实施任务清单-内部-260904-v1.1",
+        "01_EKOS技术方案-开源集成架构-v2.1-260830",
+        "02_EKOS产品定位声明-v1.0-260821",
+        "00-实施任务清单-内部-260904-v1.1",
+        "09-运维与维护手册-内部-260904-v1.0",
+        "00-实施任务清单-内部-260904-v1.1",
+        "06-性能与容量手册-内部-260904-v1.0"
+      ],
+      "hit_snippets": [
+        {
+          "asset_id": "01_EKOS技术方案-开源集成架构-v2.1-260830",
+          "score": 0.8781,
+          "evidence": "source=01_EKOS技术方案-开源集成架构-v2.1-260830;chunk_idx=5;char_offset=3600;path=01_EKOS技术方案-开源集成架构-v2.1-260830.md"
+        },
+        {
+          "asset_id": "00-实施任务清单-内部-260904-v1.1",
+          "score": 0.7451,
+          "evidence": "source=00-实施任务清单-内部-260904-v1.1;chunk_idx=22;char_offset=15840;path=00-实施任务清单-内部-260904-v1.1.md"
+        },
+        {
+          "asset_id": "01_EKOS技术方案-开源集成架构-v2.1-260830",
+          "score": 0.6835,
+          "evidence": "source=01_EKOS技术方案-开源集成架构-v2.1-260830;chunk_idx=19;char_offset=13680;path=01_EKOS技术方案-开源集成架构-v2.1-260830.md"
+        },
+        {
+          "asset_id": "02_EKOS产品定位声明-v1.0-260821",
+          "score": 0.6815,
+          "evidence": "source=02_EKOS产品定位声明-v1.0-260821;chunk_idx=3;char_offset=2160;path=02_EKOS产品定位声明-v1.0-260821.md"
+        },
+        {
+          "asset_id": "00-实施任务清单-内部-260904-v1.1",
+          "score": 0.6667,
+          "evidence": "source=00-实施任务清单-内部-260904-v1.1;chunk_idx=23;char_offset=16560;path=00-实施任务清单-内部-260904-v1.1.md"
+        },
+        {
+          "asset_id": "09-运维与维护手册-内部-260904-v1.0",
+          "score": 0.6654,
+          "evidence": "source=09-运维与维护手册-内部-260904-v1.0;chunk_idx=8;char_offset=5760;path=09-运维与维护手册-内部-260904-v1.0.md"
+        },
+        {
+          "asset_id": "00-实施任务清单-内部-260904-v1.1",
+          "score": 0.6646,
+          "evidence": "source=00-实施任务清单-内部-260904-v1.1;chunk_idx=21;char_offset=15120;path=00-实施任务清单-内部-260904-v1.1.md"
+        },
+        {
+          "asset_id": "06-性能与容量手册-内部-260904-v1.0",
+          "score": 0.6589,
+          "evidence": "source=06-性能与容量手册-内部-260904-v1.0;chunk_idx=10;char_offset=7200;path=06-性能与容量手册-内部-260904-v1.0.md"
+        }
+      ],
+      "refused": false,
+      "refused_reason": null,
+      "recall_at_8": 1.0,
+      "mrr_at_8": 1.0
+    },
+    {
+      "qid": "Q06",
+      "kind": "answerable",
+      "difficulty": "easy",
+      "query": "EKOS 商业化的核心主张是什么？软件为什么免费？",
+      "expected": [
+        "04_EKOS业务方案-商业模式与定价-v1.0-260828"
+      ],
+      "hits": [
+        "04_EKOS业务方案-商业模式与定价-v1.0-260828",
+        "06_EKOS实施理念与精益创业主线-v1.0-260824",
+        "02_EKOS产品定位声明-v1.0-260821",
+        "01_PRD-EKOS-v5.2-260830-01",
+        "06_EKOS实施理念与精益创业主线-v1.0-260824",
+        "02_EKOS产品定位声明-v1.0-260821",
+        "05_EKOS运营方案-v1.0-260828",
+        "02_EKOS产品定位声明-v1.0-260821"
+      ],
+      "hit_snippets": [
+        {
+          "asset_id": "04_EKOS业务方案-商业模式与定价-v1.0-260828",
+          "score": 0.7404,
+          "evidence": "source=04_EKOS业务方案-商业模式与定价-v1.0-260828;chunk_idx=0;char_offset=0;path=04_EKOS业务方案-商业模式与定价-v1.0-260828.md"
+        },
+        {
+          "asset_id": "06_EKOS实施理念与精益创业主线-v1.0-260824",
+          "score": 0.6769,
+          "evidence": "source=06_EKOS实施理念与精益创业主线-v1.0-260824;chunk_idx=4;char_offset=2880;path=06_EKOS实施理念与精益创业主线-v1.0-260824.md"
+        },
+        {
+          "asset_id": "02_EKOS产品定位声明-v1.0-260821",
+          "score": 0.5787,
+          "evidence": "source=02_EKOS产品定位声明-v1.0-260821;chunk_idx=2;char_offset=1440;path=02_EKOS产品定位声明-v1.0-260821.md"
+        },
+        {
+          "asset_id": "01_PRD-EKOS-v5.2-260830-01",
+          "score": 0.5769,
+          "evidence": "source=01_PRD-EKOS-v5.2-260830-01;chunk_idx=9;char_offset=6480;path=01_PRD-EKOS-v5.2-260830-01.md"
+        },
+        {
+          "asset_id": "06_EKOS实施理念与精益创业主线-v1.0-260824",
+          "score": 0.5663,
+          "evidence": "source=06_EKOS实施理念与精益创业主线-v1.0-260824;chunk_idx=1;char_offset=720;path=06_EKOS实施理念与精益创业主线-v1.0-260824.md"
+        },
+        {
+          "asset_id": "02_EKOS产品定位声明-v1.0-260821",
+          "score": 0.5658,
+          "evidence": "source=02_EKOS产品定位声明-v1.0-260821;chunk_idx=1;char_offset=720;path=02_EKOS产品定位声明-v1.0-260821.md"
+        },
+        {
+          "asset_id": "05_EKOS运营方案-v1.0-260828",
+          "score": 0.5333,
+          "evidence": "source=05_EKOS运营方案-v1.0-260828;chunk_idx=2;char_offset=1440;path=05_EKOS运营方案-v1.0-260828.md"
+        },
+        {
+          "asset_id": "02_EKOS产品定位声明-v1.0-260821",
+          "score": 0.5327,
+          "evidence": "source=02_EKOS产品定位声明-v1.0-260821;chunk_idx=6;char_offset=4320;path=02_EKOS产品定位声明-v1.0-260821.md"
+        }
+      ],
+      "refused": false,
+      "refused_reason": null,
+      "recall_at_8": 1.0,
+      "mrr_at_8": 1.0
+    },
+    {
+      "qid": "Q07",
+      "kind": "answerable",
+      "difficulty": "easy",
+      "query": "企业版私有化定制和年度治理服务的价格范围分别是多少？",
+      "expected": [
+        "04_EKOS业务方案-商业模式与定价-v1.0-260828"
+      ],
+      "hits": [
+        "04_EKOS业务方案-商业模式与定价-v1.0-260828",
+        "01_PRD-EKOS-v5.2-260830-01",
+        "02_EKOS产品定位声明-v1.0-260821",
+        "04_EKOS业务方案-商业模式与定价-v1.0-260828",
+        "04_EKOS业务方案-商业模式与定价-v1.0-260828",
+        "02_EKOS产品定位声明-v1.0-260821",
+        "09_MVP开源产品调研-第二轮-v1.0-内部-260830",
+        "01_PRD-EKOS-v5.2-260830-01"
+      ],
+      "hit_snippets": [
+        {
+          "asset_id": "04_EKOS业务方案-商业模式与定价-v1.0-260828",
+          "score": 0.8075,
+          "evidence": "source=04_EKOS业务方案-商业模式与定价-v1.0-260828;chunk_idx=2;char_offset=1440;path=04_EKOS业务方案-商业模式与定价-v1.0-260828.md"
+        },
+        {
+          "asset_id": "01_PRD-EKOS-v5.2-260830-01",
+          "score": 0.7794,
+          "evidence": "source=01_PRD-EKOS-v5.2-260830-01;chunk_idx=10;char_offset=7200;path=01_PRD-EKOS-v5.2-260830-01.md"
+        },
+        {
+          "asset_id": "02_EKOS产品定位声明-v1.0-260821",
+          "score": 0.7724,
+          "evidence": "source=02_EKOS产品定位声明-v1.0-260821;chunk_idx=3;char_offset=2160;path=02_EKOS产品定位声明-v1.0-260821.md"
+        },
+        {
+          "asset_id": "04_EKOS业务方案-商业模式与定价-v1.0-260828",
+          "score": 0.7653,
+          "evidence": "source=04_EKOS业务方案-商业模式与定价-v1.0-260828;chunk_idx=1;char_offset=720;path=04_EKOS业务方案-商业模式与定价-v1.0-260828.md"
+        },
+        {
+          "asset_id": "04_EKOS业务方案-商业模式与定价-v1.0-260828",
+          "score": 0.7584,
+          "evidence": "source=04_EKOS业务方案-商业模式与定价-v1.0-260828;chunk_idx=3;char_offset=2160;path=04_EKOS业务方案-商业模式与定价-v1.0-260828.md"
+        },
+        {
+          "asset_id": "02_EKOS产品定位声明-v1.0-260821",
+          "score": 0.757,
+          "evidence": "source=02_EKOS产品定位声明-v1.0-260821;chunk_idx=5;char_offset=3600;path=02_EKOS产品定位声明-v1.0-260821.md"
+        },
+        {
+          "asset_id": "09_MVP开源产品调研-第二轮-v1.0-内部-260830",
+          "score": 0.7551,
+          "evidence": "source=09_MVP开源产品调研-第二轮-v1.0-内部-260830;chunk_idx=8;char_offset=5760;path=09_MVP开源产品调研-第二轮-v1.0-内部-260830.md"
+        },
+        {
+          "asset_id": "01_PRD-EKOS-v5.2-260830-01",
+          "score": 0.7544,
+          "evidence": "source=01_PRD-EKOS-v5.2-260830-01;chunk_idx=9;char_offset=6480;path=01_PRD-EKOS-v5.2-260830-01.md"
+        }
+      ],
+      "refused": false,
+      "refused_reason": null,
+      "recall_at_8": 1.0,
+      "mrr_at_8": 1.0
+    },
+    {
+      "qid": "Q08",
+      "kind": "answerable",
+      "difficulty": "medium",
+      "query": "整体解决方案里，企业组网寻址推荐用什么技术？为什么不直接用静态 IP？",
+      "expected": [
+        "03_EKOS整体解决方案总览-v1.1-260907"
+      ],
+      "hits": [
+        "10_EKOS企业级部署分发SOP-跨终端组网与固定寻址-v1.0-内部-260907",
+        "01_PRD-EKOS-v5.2-260830-01",
+        "01_EKOS技术方案-开源集成架构-v2.1-260830",
+        "10_EKOS企业级部署分发SOP-跨终端组网与固定寻址-v1.0-内部-260907",
+        "03_EKOS整体解决方案总览-v1.1-260907",
+        "10_EKOS企业级部署分发SOP-跨终端组网与固定寻址-v1.0-内部-260907",
+        "03_EKOS整体解决方案总览-v1.1-260907",
+        "01_PRD-EKOS-v5.2-260830-01"
+      ],
+      "hit_snippets": [
+        {
+          "asset_id": "10_EKOS企业级部署分发SOP-跨终端组网与固定寻址-v1.0-内部-260907",
+          "score": 1.0048,
+          "evidence": "source=10_EKOS企业级部署分发SOP-跨终端组网与固定寻址-v1.0-内部-260907;chunk_idx=3;char_offset=2160;path=10_EKOS企业级部署分发SOP-跨终端组网与固定寻址-v1.0-内部-260907.md"
+        },
+        {
+          "asset_id": "01_PRD-EKOS-v5.2-260830-01",
+          "score": 0.9763,
+          "evidence": "source=01_PRD-EKOS-v5.2-260830-01;chunk_idx=9;char_offset=6480;path=01_PRD-EKOS-v5.2-260830-01.md"
+        },
+        {
+          "asset_id": "01_EKOS技术方案-开源集成架构-v2.1-260830",
+          "score": 0.9114,
+          "evidence": "source=01_EKOS技术方案-开源集成架构-v2.1-260830;chunk_idx=19;char_offset=13680;path=01_EKOS技术方案-开源集成架构-v2.1-260830.md"
+        },
+        {
+          "asset_id": "10_EKOS企业级部署分发SOP-跨终端组网与固定寻址-v1.0-内部-260907",
+          "score": 0.8892,
+          "evidence": "source=10_EKOS企业级部署分发SOP-跨终端组网与固定寻址-v1.0-内部-260907;chunk_idx=0;char_offset=0;path=10_EKOS企业级部署分发SOP-跨终端组网与固定寻址-v1.0-内部-260907.md"
+        },
+        {
+          "asset_id": "03_EKOS整体解决方案总览-v1.1-260907",
+          "score": 0.8864,
+          "evidence": "source=03_EKOS整体解决方案总览-v1.1-260907;chunk_idx=3;char_offset=2160;path=03_EKOS整体解决方案总览-v1.1-260907.md"
+        },
+        {
+          "asset_id": "10_EKOS企业级部署分发SOP-跨终端组网与固定寻址-v1.0-内部-260907",
+          "score": 0.8306,
+          "evidence": "source=10_EKOS企业级部署分发SOP-跨终端组网与固定寻址-v1.0-内部-260907;chunk_idx=1;char_offset=720;path=10_EKOS企业级部署分发SOP-跨终端组网与固定寻址-v1.0-内部-260907.md"
+        },
+        {
+          "asset_id": "03_EKOS整体解决方案总览-v1.1-260907",
+          "score": 0.8207,
+          "evidence": "source=03_EKOS整体解决方案总览-v1.1-260907;chunk_idx=0;char_offset=0;path=03_EKOS整体解决方案总览-v1.1-260907.md"
+        },
+        {
+          "asset_id": "01_PRD-EKOS-v5.2-260830-01",
+          "score": 0.819,
+          "evidence": "source=01_PRD-EKOS-v5.2-260830-01;chunk_idx=18;char_offset=12960;path=01_PRD-EKOS-v5.2-260830-01.md"
+        }
+      ],
+      "refused": false,
+      "refused_reason": null,
+      "recall_at_8": 1.0,
+      "mrr_at_8": 0.2
+    },
+    {
+      "qid": "Q09",
+      "kind": "answerable",
+      "difficulty": "hard",
+      "query": "理论框架里说的 D1 微内核三要素是什么？为什么用微内核而不是宏内核？",
+      "expected": [
+        "07_EKOS知识库操作系统理论框架与维度对照表-v1.0-内部-260824"
+      ],
+      "hits": [
+        "06_EKOS实施理念与精益创业主线-v1.0-260824",
+        "07_EKOS知识库操作系统理论框架与维度对照表-v1.0-内部-260824",
+        "06_EKOS实施理念与精益创业主线-v1.0-260824",
+        "03-开发实施手册-内部-260904-v1.0",
+        "02_EKOS产品定位声明-v1.0-260821",
+        "07_EKOS知识库操作系统理论框架与维度对照表-v1.0-内部-260824",
+        "X1-X4-接口契约-内部-260906-v1.4",
+        "01_PRD-EKOS-v5.2-260830-01"
+      ],
+      "hit_snippets": [
+        {
+          "asset_id": "06_EKOS实施理念与精益创业主线-v1.0-260824",
+          "score": 0.7671,
+          "evidence": "source=06_EKOS实施理念与精益创业主线-v1.0-260824;chunk_idx=4;char_offset=2880;path=06_EKOS实施理念与精益创业主线-v1.0-260824.md"
+        },
+        {
+          "asset_id": "07_EKOS知识库操作系统理论框架与维度对照表-v1.0-内部-260824",
+          "score": 0.6989,
+          "evidence": "source=07_EKOS知识库操作系统理论框架与维度对照表-v1.0-内部-260824;chunk_idx=8;char_offset=5760;path=07_EKOS知识库操作系统理论框架与维度对照表-v1.0-内部-260824.md"
+        },
+        {
+          "asset_id": "06_EKOS实施理念与精益创业主线-v1.0-260824",
+          "score": 0.697,
+          "evidence": "source=06_EKOS实施理念与精益创业主线-v1.0-260824;chunk_idx=1;char_offset=720;path=06_EKOS实施理念与精益创业主线-v1.0-260824.md"
+        },
+        {
+          "asset_id": "03-开发实施手册-内部-260904-v1.0",
+          "score": 0.6833,
+          "evidence": "source=03-开发实施手册-内部-260904-v1.0;chunk_idx=16;char_offset=11520;path=03-开发实施手册-内部-260904-v1.0.md"
+        },
+        {
+          "asset_id": "02_EKOS产品定位声明-v1.0-260821",
+          "score": 0.6677,
+          "evidence": "source=02_EKOS产品定位声明-v1.0-260821;chunk_idx=2;char_offset=1440;path=02_EKOS产品定位声明-v1.0-260821.md"
+        },
+        {
+          "asset_id": "07_EKOS知识库操作系统理论框架与维度对照表-v1.0-内部-260824",
+          "score": 0.6648,
+          "evidence": "source=07_EKOS知识库操作系统理论框架与维度对照表-v1.0-内部-260824;chunk_idx=3;char_offset=2160;path=07_EKOS知识库操作系统理论框架与维度对照表-v1.0-内部-260824.md"
+        },
+        {
+          "asset_id": "X1-X4-接口契约-内部-260906-v1.4",
+          "score": 0.6631,
+          "evidence": "source=X1-X4-接口契约-内部-260906-v1.4;chunk_idx=21;char_offset=15120;path=X1-X4-接口契约-内部-260906-v1.4.md"
+        },
+        {
+          "asset_id": "01_PRD-EKOS-v5.2-260830-01",
+          "score": 0.6492,
+          "evidence": "source=01_PRD-EKOS-v5.2-260830-01;chunk_idx=93;char_offset=66960;path=01_PRD-EKOS-v5.2-260830-01.md"
+        }
+      ],
+      "refused": false,
+      "refused_reason": null,
+      "recall_at_8": 1.0,
+      "mrr_at_8": 0.5
+    },
+    {
+      "qid": "Q10",
+      "kind": "answerable",
+      "difficulty": "hard",
+      "query": "EKOS 对标 Unix 的一切皆文件提出了什么统一抽象？这个抽象出自哪里？",
+      "expected": [
+        "07_EKOS知识库操作系统理论框架与维度对照表-v1.0-内部-260824"
+      ],
+      "hits": [
+        "07_EKOS知识库操作系统理论框架与维度对照表-v1.0-内部-260824",
+        "02_EKOS产品定位声明-v1.0-260821",
+        "02_EKOS产品定位声明-v1.0-260821",
+        "01_EKOS技术方案-开源集成架构-v2.1-260830",
+        "07_EKOS知识库操作系统理论框架与维度对照表-v1.0-内部-260824",
+        "07_EKOS知识库操作系统理论框架与维度对照表-v1.0-内部-260824",
+        "02-范围锚定与底座选型手册-内部-260904-v1.0",
+        "02_EKOS产品定位声明-v1.0-260821"
+      ],
+      "hit_snippets": [
+        {
+          "asset_id": "07_EKOS知识库操作系统理论框架与维度对照表-v1.0-内部-260824",
+          "score": 0.7863,
+          "evidence": "source=07_EKOS知识库操作系统理论框架与维度对照表-v1.0-内部-260824;chunk_idx=8;char_offset=5760;path=07_EKOS知识库操作系统理论框架与维度对照表-v1.0-内部-260824.md"
+        },
+        {
+          "asset_id": "02_EKOS产品定位声明-v1.0-260821",
+          "score": 0.7835,
+          "evidence": "source=02_EKOS产品定位声明-v1.0-260821;chunk_idx=1;char_offset=720;path=02_EKOS产品定位声明-v1.0-260821.md"
+        },
+        {
+          "asset_id": "02_EKOS产品定位声明-v1.0-260821",
+          "score": 0.7269,
+          "evidence": "source=02_EKOS产品定位声明-v1.0-260821;chunk_idx=3;char_offset=2160;path=02_EKOS产品定位声明-v1.0-260821.md"
+        },
+        {
+          "asset_id": "01_EKOS技术方案-开源集成架构-v2.1-260830",
+          "score": 0.7187,
+          "evidence": "source=01_EKOS技术方案-开源集成架构-v2.1-260830;chunk_idx=20;char_offset=14400;path=01_EKOS技术方案-开源集成架构-v2.1-260830.md"
+        },
+        {
+          "asset_id": "07_EKOS知识库操作系统理论框架与维度对照表-v1.0-内部-260824",
+          "score": 0.7181,
+          "evidence": "source=07_EKOS知识库操作系统理论框架与维度对照表-v1.0-内部-260824;chunk_idx=2;char_offset=1440;path=07_EKOS知识库操作系统理论框架与维度对照表-v1.0-内部-260824.md"
+        },
+        {
+          "asset_id": "07_EKOS知识库操作系统理论框架与维度对照表-v1.0-内部-260824",
+          "score": 0.6929,
+          "evidence": "source=07_EKOS知识库操作系统理论框架与维度对照表-v1.0-内部-260824;chunk_idx=1;char_offset=720;path=07_EKOS知识库操作系统理论框架与维度对照表-v1.0-内部-260824.md"
+        },
+        {
+          "asset_id": "02-范围锚定与底座选型手册-内部-260904-v1.0",
+          "score": 0.6726,
+          "evidence": "source=02-范围锚定与底座选型手册-内部-260904-v1.0;chunk_idx=16;char_offset=11520;path=02-范围锚定与底座选型手册-内部-260904-v1.0.md"
+        },
+        {
+          "asset_id": "02_EKOS产品定位声明-v1.0-260821",
+          "score": 0.6705,
+          "evidence": "source=02_EKOS产品定位声明-v1.0-260821;chunk_idx=4;char_offset=2880;path=02_EKOS产品定位声明-v1.0-260821.md"
+        }
+      ],
+      "refused": false,
+      "refused_reason": null,
+      "recall_at_8": 1.0,
+      "mrr_at_8": 1.0
+    },
+    {
+      "qid": "Q11",
+      "kind": "answerable",
+      "difficulty": "easy",
+      "query": "质量管控手册里，门禁判据源定义的唯一文件是哪个？改判据后必须跑什么自检？",
+      "expected": [
+        "05-质量管控与门禁手册-内部-260904-v1.0"
+      ],
+      "hits": [
+        "05-质量管控与门禁手册-内部-260904-v1.0",
+        "08-部署与发布手册-内部-260904-v1.0",
+        "01-环境与软件准备手册-内部-260904-v1.0",
+        "05-质量管控与门禁手册-内部-260904-v1.0",
+        "09-运维与维护手册-内部-260904-v1.0",
+        "04-测试手册-内部-260904-v1.0",
+        "04-测试手册-内部-260904-v1.0",
+        "01_PRD-EKOS-v5.2-260830-01"
+      ],
+      "hit_snippets": [
+        {
+          "asset_id": "05-质量管控与门禁手册-内部-260904-v1.0",
+          "score": 1.0721,
+          "evidence": "source=05-质量管控与门禁手册-内部-260904-v1.0;chunk_idx=11;char_offset=7920;path=05-质量管控与门禁手册-内部-260904-v1.0.md"
+        },
+        {
+          "asset_id": "08-部署与发布手册-内部-260904-v1.0",
+          "score": 1.0512,
+          "evidence": "source=08-部署与发布手册-内部-260904-v1.0;chunk_idx=6;char_offset=4320;path=08-部署与发布手册-内部-260904-v1.0.md"
+        },
+        {
+          "asset_id": "01-环境与软件准备手册-内部-260904-v1.0",
+          "score": 1.0497,
+          "evidence": "source=01-环境与软件准备手册-内部-260904-v1.0;chunk_idx=1;char_offset=720;path=01-环境与软件准备手册-内部-260904-v1.0.md"
+        },
+        {
+          "asset_id": "05-质量管控与门禁手册-内部-260904-v1.0",
+          "score": 1.048,
+          "evidence": "source=05-质量管控与门禁手册-内部-260904-v1.0;chunk_idx=0;char_offset=0;path=05-质量管控与门禁手册-内部-260904-v1.0.md"
+        },
+        {
+          "asset_id": "09-运维与维护手册-内部-260904-v1.0",
+          "score": 1.0242,
+          "evidence": "source=09-运维与维护手册-内部-260904-v1.0;chunk_idx=1;char_offset=720;path=09-运维与维护手册-内部-260904-v1.0.md"
+        },
+        {
+          "asset_id": "04-测试手册-内部-260904-v1.0",
+          "score": 1.0048,
+          "evidence": "source=04-测试手册-内部-260904-v1.0;chunk_idx=13;char_offset=9360;path=04-测试手册-内部-260904-v1.0.md"
+        },
+        {
+          "asset_id": "04-测试手册-内部-260904-v1.0",
+          "score": 1.0025,
+          "evidence": "source=04-测试手册-内部-260904-v1.0;chunk_idx=10;char_offset=7200;path=04-测试手册-内部-260904-v1.0.md"
+        },
+        {
+          "asset_id": "01_PRD-EKOS-v5.2-260830-01",
+          "score": 0.9846,
+          "evidence": "source=01_PRD-EKOS-v5.2-260830-01;chunk_idx=5;char_offset=3600;path=01_PRD-EKOS-v5.2-260830-01.md"
+        }
+      ],
+      "refused": false,
+      "refused_reason": null,
+      "recall_at_8": 1.0,
+      "mrr_at_8": 1.0
+    },
+    {
+      "qid": "Q12",
+      "kind": "answerable",
+      "difficulty": "medium",
+      "query": "每次提交代码前，本地应该执行什么命令过门禁？命令覆盖哪些环节？",
+      "expected": [
+        "05-质量管控与门禁手册-内部-260904-v1.0"
+      ],
+      "hits": [
+        "03-开发实施手册-内部-260904-v1.0",
+        "05-质量管控与门禁手册-内部-260904-v1.0",
+        "05-质量管控与门禁手册-内部-260904-v1.0",
+        "02-范围锚定与底座选型手册-内部-260904-v1.0",
+        "03-开发实施手册-内部-260904-v1.0",
+        "00-实施任务清单-内部-260904-v1.1",
+        "00-实施任务清单-内部-260904-v1.1",
+        "00-实施任务清单-内部-260904-v1.1"
+      ],
+      "hit_snippets": [
+        {
+          "asset_id": "03-开发实施手册-内部-260904-v1.0",
+          "score": 0.874,
+          "evidence": "source=03-开发实施手册-内部-260904-v1.0;chunk_idx=13;char_offset=9360;path=03-开发实施手册-内部-260904-v1.0.md"
+        },
+        {
+          "asset_id": "05-质量管控与门禁手册-内部-260904-v1.0",
+          "score": 0.8575,
+          "evidence": "source=05-质量管控与门禁手册-内部-260904-v1.0;chunk_idx=0;char_offset=0;path=05-质量管控与门禁手册-内部-260904-v1.0.md"
+        },
+        {
+          "asset_id": "05-质量管控与门禁手册-内部-260904-v1.0",
+          "score": 0.843,
+          "evidence": "source=05-质量管控与门禁手册-内部-260904-v1.0;chunk_idx=2;char_offset=1440;path=05-质量管控与门禁手册-内部-260904-v1.0.md"
+        },
+        {
+          "asset_id": "02-范围锚定与底座选型手册-内部-260904-v1.0",
+          "score": 0.8318,
+          "evidence": "source=02-范围锚定与底座选型手册-内部-260904-v1.0;chunk_idx=5;char_offset=3600;path=02-范围锚定与底座选型手册-内部-260904-v1.0.md"
+        },
+        {
+          "asset_id": "03-开发实施手册-内部-260904-v1.0",
+          "score": 0.818,
+          "evidence": "source=03-开发实施手册-内部-260904-v1.0;chunk_idx=2;char_offset=1440;path=03-开发实施手册-内部-260904-v1.0.md"
+        },
+        {
+          "asset_id": "00-实施任务清单-内部-260904-v1.1",
+          "score": 0.7975,
+          "evidence": "source=00-实施任务清单-内部-260904-v1.1;chunk_idx=21;char_offset=15120;path=00-实施任务清单-内部-260904-v1.1.md"
+        },
+        {
+          "asset_id": "00-实施任务清单-内部-260904-v1.1",
+          "score": 0.7956,
+          "evidence": "source=00-实施任务清单-内部-260904-v1.1;chunk_idx=0;char_offset=0;path=00-实施任务清单-内部-260904-v1.1.md"
+        },
+        {
+          "asset_id": "00-实施任务清单-内部-260904-v1.1",
+          "score": 0.7889,
+          "evidence": "source=00-实施任务清单-内部-260904-v1.1;chunk_idx=22;char_offset=15840;path=00-实施任务清单-内部-260904-v1.1.md"
+        }
+      ],
+      "refused": false,
+      "refused_reason": null,
+      "recall_at_8": 1.0,
+      "mrr_at_8": 0.5
+    },
+    {
+      "qid": "Q13",
+      "kind": "answerable",
+      "difficulty": "medium",
+      "query": "开发手册的编码三问分别是什么？什么情况下要把代码挪到 configs 目录？",
+      "expected": [
+        "03-开发实施手册-内部-260904-v1.0"
+      ],
+      "hits": [
+        "00-实施任务清单-内部-260904-v1.1",
+        "00-实施任务清单-内部-260904-v1.1",
+        "08-部署与发布手册-内部-260904-v1.0",
+        "03-开发实施手册-内部-260904-v1.0",
+        "03-开发实施手册-内部-260904-v1.0",
+        "03-开发实施手册-内部-260904-v1.0",
+        "11_EKOS外部依赖与制品统一目录规范-v1.0-内部-260910",
+        "01_EKOS技术方案-开源集成架构-v2.1-260830"
+      ],
+      "hit_snippets": [
+        {
+          "asset_id": "00-实施任务清单-内部-260904-v1.1",
+          "score": 0.7532,
+          "evidence": "source=00-实施任务清单-内部-260904-v1.1;chunk_idx=21;char_offset=15120;path=00-实施任务清单-内部-260904-v1.1.md"
+        },
+        {
+          "asset_id": "00-实施任务清单-内部-260904-v1.1",
+          "score": 0.7451,
+          "evidence": "source=00-实施任务清单-内部-260904-v1.1;chunk_idx=22;char_offset=15840;path=00-实施任务清单-内部-260904-v1.1.md"
+        },
+        {
+          "asset_id": "08-部署与发布手册-内部-260904-v1.0",
+          "score": 0.7313,
+          "evidence": "source=08-部署与发布手册-内部-260904-v1.0;chunk_idx=6;char_offset=4320;path=08-部署与发布手册-内部-260904-v1.0.md"
+        },
+        {
+          "asset_id": "03-开发实施手册-内部-260904-v1.0",
+          "score": 0.6833,
+          "evidence": "source=03-开发实施手册-内部-260904-v1.0;chunk_idx=16;char_offset=11520;path=03-开发实施手册-内部-260904-v1.0.md"
+        },
+        {
+          "asset_id": "03-开发实施手册-内部-260904-v1.0",
+          "score": 0.6737,
+          "evidence": "source=03-开发实施手册-内部-260904-v1.0;chunk_idx=2;char_offset=1440;path=03-开发实施手册-内部-260904-v1.0.md"
+        },
+        {
+          "asset_id": "03-开发实施手册-内部-260904-v1.0",
+          "score": 0.6708,
+          "evidence": "source=03-开发实施手册-内部-260904-v1.0;chunk_idx=0;char_offset=0;path=03-开发实施手册-内部-260904-v1.0.md"
+        },
+        {
+          "asset_id": "11_EKOS外部依赖与制品统一目录规范-v1.0-内部-260910",
+          "score": 0.6633,
+          "evidence": "source=11_EKOS外部依赖与制品统一目录规范-v1.0-内部-260910;chunk_idx=0;char_offset=0;path=11_EKOS外部依赖与制品统一目录规范-v1.0-内部-260910.md"
+        },
+        {
+          "asset_id": "01_EKOS技术方案-开源集成架构-v2.1-260830",
+          "score": 0.662,
+          "evidence": "source=01_EKOS技术方案-开源集成架构-v2.1-260830;chunk_idx=37;char_offset=26640;path=01_EKOS技术方案-开源集成架构-v2.1-260830.md"
+        }
+      ],
+      "refused": false,
+      "refused_reason": null,
+      "recall_at_8": 1.0,
+      "mrr_at_8": 0.25
+    },
+    {
+      "qid": "Q14",
+      "kind": "answerable",
+      "difficulty": "medium",
+      "query": "四接口契约的共同铁律里，对字段名有什么要求？对端口又有什么要求？",
+      "expected": [
+        "X1-X4-接口契约-内部-260906-v1.4"
+      ],
+      "hits": [
+        "X1-X4-接口契约-内部-260906-v1.4",
+        "04-测试手册-内部-260904-v1.0",
+        "02-范围锚定与底座选型手册-内部-260904-v1.0",
+        "02-范围锚定与底座选型手册-内部-260904-v1.0",
+        "X1-X4-接口契约-内部-260906-v1.4",
+        "03-开发实施手册-内部-260904-v1.0",
+        "X1-X4-接口契约-内部-260906-v1.4",
+        "X1-X4-接口契约-内部-260906-v1.4"
+      ],
+      "hit_snippets": [
+        {
+          "asset_id": "X1-X4-接口契约-内部-260906-v1.4",
+          "score": 0.8792,
+          "evidence": "source=X1-X4-接口契约-内部-260906-v1.4;chunk_idx=1;char_offset=720;path=X1-X4-接口契约-内部-260906-v1.4.md"
+        },
+        {
+          "asset_id": "04-测试手册-内部-260904-v1.0",
+          "score": 0.847,
+          "evidence": "source=04-测试手册-内部-260904-v1.0;chunk_idx=5;char_offset=3600;path=04-测试手册-内部-260904-v1.0.md"
+        },
+        {
+          "asset_id": "02-范围锚定与底座选型手册-内部-260904-v1.0",
+          "score": 0.8054,
+          "evidence": "source=02-范围锚定与底座选型手册-内部-260904-v1.0;chunk_idx=10;char_offset=7200;path=02-范围锚定与底座选型手册-内部-260904-v1.0.md"
+        },
+        {
+          "asset_id": "02-范围锚定与底座选型手册-内部-260904-v1.0",
+          "score": 0.7953,
+          "evidence": "source=02-范围锚定与底座选型手册-内部-260904-v1.0;chunk_idx=12;char_offset=8640;path=02-范围锚定与底座选型手册-内部-260904-v1.0.md"
+        },
+        {
+          "asset_id": "X1-X4-接口契约-内部-260906-v1.4",
+          "score": 0.7809,
+          "evidence": "source=X1-X4-接口契约-内部-260906-v1.4;chunk_idx=23;char_offset=16560;path=X1-X4-接口契约-内部-260906-v1.4.md"
+        },
+        {
+          "asset_id": "03-开发实施手册-内部-260904-v1.0",
+          "score": 0.7791,
+          "evidence": "source=03-开发实施手册-内部-260904-v1.0;chunk_idx=3;char_offset=2160;path=03-开发实施手册-内部-260904-v1.0.md"
+        },
+        {
+          "asset_id": "X1-X4-接口契约-内部-260906-v1.4",
+          "score": 0.7429,
+          "evidence": "source=X1-X4-接口契约-内部-260906-v1.4;chunk_idx=25;char_offset=18000;path=X1-X4-接口契约-内部-260906-v1.4.md"
+        },
+        {
+          "asset_id": "X1-X4-接口契约-内部-260906-v1.4",
+          "score": 0.7309,
+          "evidence": "source=X1-X4-接口契约-内部-260906-v1.4;chunk_idx=15;char_offset=10800;path=X1-X4-接口契约-内部-260906-v1.4.md"
+        }
+      ],
+      "refused": false,
+      "refused_reason": null,
+      "recall_at_8": 1.0,
+      "mrr_at_8": 1.0
+    },
+    {
+      "qid": "Q15",
+      "kind": "answerable",
+      "difficulty": "hard",
+      "query": "X1 脱敏接口里，mask 响应为什么只回 mapping_ref 而不直接查明文映射表？",
+      "expected": [
+        "X1-X4-接口契约-内部-260906-v1.4"
+      ],
+      "hits": [
+        "X1-X4-接口契约-内部-260906-v1.4",
+        "02-范围锚定与底座选型手册-内部-260904-v1.0",
+        "02-范围锚定与底座选型手册-内部-260904-v1.0",
+        "03-开发实施手册-内部-260904-v1.0",
+        "X1-X4-接口契约-内部-260906-v1.4",
+        "X1-X4-接口契约-内部-260906-v1.4",
+        "07-安全与脱敏手册-内部-260904-v1.0",
+        "07-安全与脱敏手册-内部-260904-v1.0"
+      ],
+      "hit_snippets": [
+        {
+          "asset_id": "X1-X4-接口契约-内部-260906-v1.4",
+          "score": 1.045,
+          "evidence": "source=X1-X4-接口契约-内部-260906-v1.4;chunk_idx=24;char_offset=17280;path=X1-X4-接口契约-内部-260906-v1.4.md"
+        },
+        {
+          "asset_id": "02-范围锚定与底座选型手册-内部-260904-v1.0",
+          "score": 1.0423,
+          "evidence": "source=02-范围锚定与底座选型手册-内部-260904-v1.0;chunk_idx=10;char_offset=7200;path=02-范围锚定与底座选型手册-内部-260904-v1.0.md"
+        },
+        {
+          "asset_id": "02-范围锚定与底座选型手册-内部-260904-v1.0",
+          "score": 1.0291,
+          "evidence": "source=02-范围锚定与底座选型手册-内部-260904-v1.0;chunk_idx=12;char_offset=8640;path=02-范围锚定与底座选型手册-内部-260904-v1.0.md"
+        },
+        {
+          "asset_id": "03-开发实施手册-内部-260904-v1.0",
+          "score": 1.0028,
+          "evidence": "source=03-开发实施手册-内部-260904-v1.0;chunk_idx=4;char_offset=2880;path=03-开发实施手册-内部-260904-v1.0.md"
+        },
+        {
+          "asset_id": "X1-X4-接口契约-内部-260906-v1.4",
+          "score": 0.993,
+          "evidence": "source=X1-X4-接口契约-内部-260906-v1.4;chunk_idx=7;char_offset=5040;path=X1-X4-接口契约-内部-260906-v1.4.md"
+        },
+        {
+          "asset_id": "X1-X4-接口契约-内部-260906-v1.4",
+          "score": 0.9446,
+          "evidence": "source=X1-X4-接口契约-内部-260906-v1.4;chunk_idx=5;char_offset=3600;path=X1-X4-接口契约-内部-260906-v1.4.md"
+        },
+        {
+          "asset_id": "07-安全与脱敏手册-内部-260904-v1.0",
+          "score": 0.918,
+          "evidence": "source=07-安全与脱敏手册-内部-260904-v1.0;chunk_idx=5;char_offset=3600;path=07-安全与脱敏手册-内部-260904-v1.0.md"
+        },
+        {
+          "asset_id": "07-安全与脱敏手册-内部-260904-v1.0",
+          "score": 0.9145,
+          "evidence": "source=07-安全与脱敏手册-内部-260904-v1.0;chunk_idx=9;char_offset=6480;path=07-安全与脱敏手册-内部-260904-v1.0.md"
+        }
+      ],
+      "refused": false,
+      "refused_reason": null,
+      "recall_at_8": 1.0,
+      "mrr_at_8": 1.0
+    },
+    {
+      "qid": "Q16",
+      "kind": "answerable",
+      "difficulty": "easy",
+      "query": "开发顺序里，检索和证据链对应哪个任务编号？排在第几个里程碑？",
+      "expected": [
+        "03-开发实施手册-内部-260904-v1.0"
+      ],
+      "hits": [
+        "01_PRD-EKOS-v5.2-260830-01",
+        "02_EKOS研发里程碑路径-v1.0-260830",
+        "07_EKOS知识库操作系统理论框架与维度对照表-v1.0-内部-260824",
+        "01_PRD-EKOS-v5.2-260830-01",
+        "01_PRD-EKOS-v5.2-260830-01",
+        "03-开发实施手册-内部-260904-v1.0",
+        "08-部署与发布手册-内部-260904-v1.0",
+        "00-实施任务清单-内部-260904-v1.1"
+      ],
+      "hit_snippets": [
+        {
+          "asset_id": "01_PRD-EKOS-v5.2-260830-01",
+          "score": 0.8246,
+          "evidence": "source=01_PRD-EKOS-v5.2-260830-01;chunk_idx=77;char_offset=55440;path=01_PRD-EKOS-v5.2-260830-01.md"
+        },
+        {
+          "asset_id": "02_EKOS研发里程碑路径-v1.0-260830",
+          "score": 0.8123,
+          "evidence": "source=02_EKOS研发里程碑路径-v1.0-260830;chunk_idx=1;char_offset=720;path=02_EKOS研发里程碑路径-v1.0-260830.md"
+        },
+        {
+          "asset_id": "07_EKOS知识库操作系统理论框架与维度对照表-v1.0-内部-260824",
+          "score": 0.7978,
+          "evidence": "source=07_EKOS知识库操作系统理论框架与维度对照表-v1.0-内部-260824;chunk_idx=5;char_offset=3600;path=07_EKOS知识库操作系统理论框架与维度对照表-v1.0-内部-260824.md"
+        },
+        {
+          "asset_id": "01_PRD-EKOS-v5.2-260830-01",
+          "score": 0.7883,
+          "evidence": "source=01_PRD-EKOS-v5.2-260830-01;chunk_idx=93;char_offset=66960;path=01_PRD-EKOS-v5.2-260830-01.md"
+        },
+        {
+          "asset_id": "01_PRD-EKOS-v5.2-260830-01",
+          "score": 0.7701,
+          "evidence": "source=01_PRD-EKOS-v5.2-260830-01;chunk_idx=90;char_offset=64800;path=01_PRD-EKOS-v5.2-260830-01.md"
+        },
+        {
+          "asset_id": "03-开发实施手册-内部-260904-v1.0",
+          "score": 0.7666,
+          "evidence": "source=03-开发实施手册-内部-260904-v1.0;chunk_idx=0;char_offset=0;path=03-开发实施手册-内部-260904-v1.0.md"
+        },
+        {
+          "asset_id": "08-部署与发布手册-内部-260904-v1.0",
+          "score": 0.7485,
+          "evidence": "source=08-部署与发布手册-内部-260904-v1.0;chunk_idx=3;char_offset=2160;path=08-部署与发布手册-内部-260904-v1.0.md"
+        },
+        {
+          "asset_id": "00-实施任务清单-内部-260904-v1.1",
+          "score": 0.7451,
+          "evidence": "source=00-实施任务清单-内部-260904-v1.1;chunk_idx=22;char_offset=15840;path=00-实施任务清单-内部-260904-v1.1.md"
+        }
+      ],
+      "refused": false,
+      "refused_reason": null,
+      "recall_at_8": 1.0,
+      "mrr_at_8": 0.1667
+    },
+    {
+      "qid": "Q17",
+      "kind": "answerable",
+      "difficulty": "hard",
+      "query": "F26 内容脱敏内核主要依赖什么产品？中文 PII 识别率不足时建议怎么补？",
+      "expected": [
+        "01_EKOS技术方案-开源集成架构-v2.1-260830"
+      ],
+      "hits": [
+        "02_EKOS产品定位声明-v1.0-260821",
+        "05_EKOS运营方案-v1.0-260828",
+        "01_EKOS技术方案-开源集成架构-v2.1-260830",
+        "08-部署与发布手册-内部-260904-v1.0",
+        "01_PRD-EKOS-v5.2-260830-01",
+        "07-安全与脱敏手册-内部-260904-v1.0",
+        "09_MVP开源产品调研-第二轮-v1.0-内部-260830",
+        "01_PRD-EKOS-v5.2-260830-01"
+      ],
+      "hit_snippets": [
+        {
+          "asset_id": "02_EKOS产品定位声明-v1.0-260821",
+          "score": 0.894,
+          "evidence": "source=02_EKOS产品定位声明-v1.0-260821;chunk_idx=4;char_offset=2880;path=02_EKOS产品定位声明-v1.0-260821.md"
+        },
+        {
+          "asset_id": "05_EKOS运营方案-v1.0-260828",
+          "score": 0.8444,
+          "evidence": "source=05_EKOS运营方案-v1.0-260828;chunk_idx=2;char_offset=1440;path=05_EKOS运营方案-v1.0-260828.md"
+        },
+        {
+          "asset_id": "01_EKOS技术方案-开源集成架构-v2.1-260830",
+          "score": 0.8275,
+          "evidence": "source=01_EKOS技术方案-开源集成架构-v2.1-260830;chunk_idx=32;char_offset=23040;path=01_EKOS技术方案-开源集成架构-v2.1-260830.md"
+        },
+        {
+          "asset_id": "08-部署与发布手册-内部-260904-v1.0",
+          "score": 0.8227,
+          "evidence": "source=08-部署与发布手册-内部-260904-v1.0;chunk_idx=6;char_offset=4320;path=08-部署与发布手册-内部-260904-v1.0.md"
+        },
+        {
+          "asset_id": "01_PRD-EKOS-v5.2-260830-01",
+          "score": 0.78,
+          "evidence": "source=01_PRD-EKOS-v5.2-260830-01;chunk_idx=47;char_offset=33840;path=01_PRD-EKOS-v5.2-260830-01.md"
+        },
+        {
+          "asset_id": "07-安全与脱敏手册-内部-260904-v1.0",
+          "score": 0.7747,
+          "evidence": "source=07-安全与脱敏手册-内部-260904-v1.0;chunk_idx=3;char_offset=2160;path=07-安全与脱敏手册-内部-260904-v1.0.md"
+        },
+        {
+          "asset_id": "09_MVP开源产品调研-第二轮-v1.0-内部-260830",
+          "score": 0.7726,
+          "evidence": "source=09_MVP开源产品调研-第二轮-v1.0-内部-260830;chunk_idx=1;char_offset=720;path=09_MVP开源产品调研-第二轮-v1.0-内部-260830.md"
+        },
+        {
+          "asset_id": "01_PRD-EKOS-v5.2-260830-01",
+          "score": 0.7629,
+          "evidence": "source=01_PRD-EKOS-v5.2-260830-01;chunk_idx=44;char_offset=31680;path=01_PRD-EKOS-v5.2-260830-01.md"
+        }
+      ],
+      "refused": false,
+      "refused_reason": null,
+      "recall_at_8": 1.0,
+      "mrr_at_8": 0.3333
+    },
+    {
+      "qid": "Q18",
+      "kind": "answerable",
+      "difficulty": "hard",
+      "query": "业务四层里治理层对应技术五层的哪些东西？请列两个模块。",
+      "expected": [
+        "01_EKOS技术方案-开源集成架构-v2.1-260830"
+      ],
+      "hits": [
+        "01_EKOS技术方案-开源集成架构-v2.1-260830",
+        "01_PRD-EKOS-v5.2-260830-01",
+        "02-范围锚定与底座选型手册-内部-260904-v1.0",
+        "09-运维与维护手册-内部-260904-v1.0",
+        "01_EKOS技术方案-开源集成架构-v2.1-260830",
+        "01_EKOS技术方案-开源集成架构-v2.1-260830",
+        "02_EKOS产品定位声明-v1.0-260821",
+        "01_PRD-EKOS-v5.2-260830-01"
+      ],
+      "hit_snippets": [
+        {
+          "asset_id": "01_EKOS技术方案-开源集成架构-v2.1-260830",
+          "score": 0.9061,
+          "evidence": "source=01_EKOS技术方案-开源集成架构-v2.1-260830;chunk_idx=15;char_offset=10800;path=01_EKOS技术方案-开源集成架构-v2.1-260830.md"
+        },
+        {
+          "asset_id": "01_PRD-EKOS-v5.2-260830-01",
+          "score": 0.7642,
+          "evidence": "source=01_PRD-EKOS-v5.2-260830-01;chunk_idx=87;char_offset=62640;path=01_PRD-EKOS-v5.2-260830-01.md"
+        },
+        {
+          "asset_id": "02-范围锚定与底座选型手册-内部-260904-v1.0",
+          "score": 0.7157,
+          "evidence": "source=02-范围锚定与底座选型手册-内部-260904-v1.0;chunk_idx=0;char_offset=0;path=02-范围锚定与底座选型手册-内部-260904-v1.0.md"
+        },
+        {
+          "asset_id": "09-运维与维护手册-内部-260904-v1.0",
+          "score": 0.7149,
+          "evidence": "source=09-运维与维护手册-内部-260904-v1.0;chunk_idx=0;char_offset=0;path=09-运维与维护手册-内部-260904-v1.0.md"
+        },
+        {
+          "asset_id": "01_EKOS技术方案-开源集成架构-v2.1-260830",
+          "score": 0.6936,
+          "evidence": "source=01_EKOS技术方案-开源集成架构-v2.1-260830;chunk_idx=13;char_offset=9360;path=01_EKOS技术方案-开源集成架构-v2.1-260830.md"
+        },
+        {
+          "asset_id": "01_EKOS技术方案-开源集成架构-v2.1-260830",
+          "score": 0.6933,
+          "evidence": "source=01_EKOS技术方案-开源集成架构-v2.1-260830;chunk_idx=5;char_offset=3600;path=01_EKOS技术方案-开源集成架构-v2.1-260830.md"
+        },
+        {
+          "asset_id": "02_EKOS产品定位声明-v1.0-260821",
+          "score": 0.6815,
+          "evidence": "source=02_EKOS产品定位声明-v1.0-260821;chunk_idx=3;char_offset=2160;path=02_EKOS产品定位声明-v1.0-260821.md"
+        },
+        {
+          "asset_id": "01_PRD-EKOS-v5.2-260830-01",
+          "score": 0.6803,
+          "evidence": "source=01_PRD-EKOS-v5.2-260830-01;chunk_idx=6;char_offset=4320;path=01_PRD-EKOS-v5.2-260830-01.md"
+        }
+      ],
+      "refused": false,
+      "refused_reason": null,
+      "recall_at_8": 1.0,
+      "mrr_at_8": 1.0
+    },
+    {
+      "qid": "Q19",
+      "kind": "answerable",
+      "difficulty": "easy",
+      "query": "PRD 里 P0 / P1 / P2 三个优先级分别对应哪个发行阶段？",
+      "expected": [
+        "01_PRD-EKOS-v5.2-260830-01"
+      ],
+      "hits": [
+        "02_EKOS研发里程碑路径-v1.0-260830",
+        "01_PRD-EKOS-v5.2-260830-01",
+        "06_EKOS实施理念与精益创业主线-v1.0-260824",
+        "03_EKOS整体解决方案总览-v1.1-260907",
+        "01_PRD-EKOS-v5.2-260830-01",
+        "06_EKOS实施理念与精益创业主线-v1.0-260824",
+        "02_EKOS研发里程碑路径-v1.0-260830",
+        "01_EKOS技术方案-开源集成架构-v2.1-260830"
+      ],
+      "hit_snippets": [
+        {
+          "asset_id": "02_EKOS研发里程碑路径-v1.0-260830",
+          "score": 0.654,
+          "evidence": "source=02_EKOS研发里程碑路径-v1.0-260830;chunk_idx=0;char_offset=0;path=02_EKOS研发里程碑路径-v1.0-260830.md"
+        },
+        {
+          "asset_id": "01_PRD-EKOS-v5.2-260830-01",
+          "score": 0.6104,
+          "evidence": "source=01_PRD-EKOS-v5.2-260830-01;chunk_idx=34;char_offset=24480;path=01_PRD-EKOS-v5.2-260830-01.md"
+        },
+        {
+          "asset_id": "06_EKOS实施理念与精益创业主线-v1.0-260824",
+          "score": 0.5989,
+          "evidence": "source=06_EKOS实施理念与精益创业主线-v1.0-260824;chunk_idx=3;char_offset=2160;path=06_EKOS实施理念与精益创业主线-v1.0-260824.md"
+        },
+        {
+          "asset_id": "03_EKOS整体解决方案总览-v1.1-260907",
+          "score": 0.5705,
+          "evidence": "source=03_EKOS整体解决方案总览-v1.1-260907;chunk_idx=2;char_offset=1440;path=03_EKOS整体解决方案总览-v1.1-260907.md"
+        },
+        {
+          "asset_id": "01_PRD-EKOS-v5.2-260830-01",
+          "score": 0.535,
+          "evidence": "source=01_PRD-EKOS-v5.2-260830-01;chunk_idx=66;char_offset=47520;path=01_PRD-EKOS-v5.2-260830-01.md"
+        },
+        {
+          "asset_id": "06_EKOS实施理念与精益创业主线-v1.0-260824",
+          "score": 0.5227,
+          "evidence": "source=06_EKOS实施理念与精益创业主线-v1.0-260824;chunk_idx=1;char_offset=720;path=06_EKOS实施理念与精益创业主线-v1.0-260824.md"
+        },
+        {
+          "asset_id": "02_EKOS研发里程碑路径-v1.0-260830",
+          "score": 0.5209,
+          "evidence": "source=02_EKOS研发里程碑路径-v1.0-260830;chunk_idx=3;char_offset=2160;path=02_EKOS研发里程碑路径-v1.0-260830.md"
+        },
+        {
+          "asset_id": "01_EKOS技术方案-开源集成架构-v2.1-260830",
+          "score": 0.5169,
+          "evidence": "source=01_EKOS技术方案-开源集成架构-v2.1-260830;chunk_idx=40;char_offset=28800;path=01_EKOS技术方案-开源集成架构-v2.1-260830.md"
+        }
+      ],
+      "refused": false,
+      "refused_reason": null,
+      "recall_at_8": 1.0,
+      "mrr_at_8": 0.5
+    },
+    {
+      "qid": "Q20",
+      "kind": "answerable",
+      "difficulty": "medium",
+      "query": "RACI 矩阵里，谁是 PRD 内容维护的最终问责人？谁负责验收用例设计？",
+      "expected": [
+        "01_PRD-EKOS-v5.2-260830-01"
+      ],
+      "hits": [
+        "01_PRD-EKOS-v5.2-260830-01",
+        "01_PRD-EKOS-v5.2-260830-01",
+        "09-运维与维护手册-内部-260904-v1.0",
+        "09-运维与维护手册-内部-260904-v1.0",
+        "01_PRD-EKOS-v5.2-260830-01",
+        "07-安全与脱敏手册-内部-260904-v1.0",
+        "01_PRD-EKOS-v5.2-260830-01",
+        "01_PRD-EKOS-v5.2-260830-01"
+      ],
+      "hit_snippets": [
+        {
+          "asset_id": "01_PRD-EKOS-v5.2-260830-01",
+          "score": 1.0541,
+          "evidence": "source=01_PRD-EKOS-v5.2-260830-01;chunk_idx=8;char_offset=5760;path=01_PRD-EKOS-v5.2-260830-01.md"
+        },
+        {
+          "asset_id": "01_PRD-EKOS-v5.2-260830-01",
+          "score": 0.9232,
+          "evidence": "source=01_PRD-EKOS-v5.2-260830-01;chunk_idx=7;char_offset=5040;path=01_PRD-EKOS-v5.2-260830-01.md"
+        },
+        {
+          "asset_id": "09-运维与维护手册-内部-260904-v1.0",
+          "score": 0.6936,
+          "evidence": "source=09-运维与维护手册-内部-260904-v1.0;chunk_idx=10;char_offset=7200;path=09-运维与维护手册-内部-260904-v1.0.md"
+        },
+        {
+          "asset_id": "09-运维与维护手册-内部-260904-v1.0",
+          "score": 0.6654,
+          "evidence": "source=09-运维与维护手册-内部-260904-v1.0;chunk_idx=8;char_offset=5760;path=09-运维与维护手册-内部-260904-v1.0.md"
+        },
+        {
+          "asset_id": "01_PRD-EKOS-v5.2-260830-01",
+          "score": 0.6449,
+          "evidence": "source=01_PRD-EKOS-v5.2-260830-01;chunk_idx=68;char_offset=48960;path=01_PRD-EKOS-v5.2-260830-01.md"
+        },
+        {
+          "asset_id": "07-安全与脱敏手册-内部-260904-v1.0",
+          "score": 0.638,
+          "evidence": "source=07-安全与脱敏手册-内部-260904-v1.0;chunk_idx=3;char_offset=2160;path=07-安全与脱敏手册-内部-260904-v1.0.md"
+        },
+        {
+          "asset_id": "01_PRD-EKOS-v5.2-260830-01",
+          "score": 0.6375,
+          "evidence": "source=01_PRD-EKOS-v5.2-260830-01;chunk_idx=1;char_offset=720;path=01_PRD-EKOS-v5.2-260830-01.md"
+        },
+        {
+          "asset_id": "01_PRD-EKOS-v5.2-260830-01",
+          "score": 0.6349,
+          "evidence": "source=01_PRD-EKOS-v5.2-260830-01;chunk_idx=6;char_offset=4320;path=01_PRD-EKOS-v5.2-260830-01.md"
+        }
+      ],
+      "refused": false,
+      "refused_reason": null,
+      "recall_at_8": 1.0,
+      "mrr_at_8": 1.0
+    },
+    {
+      "qid": "Q21",
+      "kind": "refuse",
+      "query": "拒答题：EKOS 现在有没有对外发布 iPhone / iPad 客户端？App Store 里搜到了吗？",
+      "expected": [],
+      "hits": [
+        "09-运维与维护手册-内部-260904-v1.0",
+        "02_EKOS产品定位声明-v1.0-260821",
+        "01_PRD-EKOS-v5.2-260830-01",
+        "01-环境与软件准备手册-内部-260904-v1.0",
+        "10_EKOS企业级部署分发SOP-跨终端组网与固定寻址-v1.0-内部-260907",
+        "02_EKOS研发里程碑路径-v1.0-260830",
+        "10_EKOS企业级部署分发SOP-跨终端组网与固定寻址-v1.0-内部-260907",
+        "01_PRD-EKOS-v5.2-260830-01"
+      ],
+      "refused": false,
+      "refused_reason": null,
+      "refuse_correct": false,
+      "recall_at_8": null,
+      "mrr_at_8": null
+    },
+    {
+      "qid": "Q22",
+      "kind": "refuse",
+      "query": "拒答题：请列出 EKOS 2024 年全年的营收数据和利润表，以及 A 股上市时间表。",
+      "expected": [],
+      "hits": [
+        "02_EKOS产品定位声明-v1.0-260821",
+        "00-实施任务清单-内部-260904-v1.1",
+        "06-性能与容量手册-内部-260904-v1.0",
+        "01_PRD-EKOS-v5.2-260830-01",
+        "05_EKOS运营方案-v1.0-260828",
+        "08-部署与发布手册-内部-260904-v1.0",
+        "06-性能与容量手册-内部-260904-v1.0",
+        "02-范围锚定与底座选型手册-内部-260904-v1.0"
+      ],
+      "refused": false,
+      "refused_reason": null,
+      "refuse_correct": false,
+      "recall_at_8": null,
+      "mrr_at_8": null
+    },
+    {
+      "qid": "Q23",
+      "kind": "refuse",
+      "query": "拒答题：现代金租首期 POC 的客户名称、授信名单和具体信贷报告结论是什么？",
+      "expected": [],
+      "hits": [
+        "X1-X4-接口契约-内部-260906-v1.4",
+        "00-实施任务清单-内部-260904-v1.1",
+        "07-安全与脱敏手册-内部-260904-v1.0",
+        "06-性能与容量手册-内部-260904-v1.0",
+        "04-测试手册-内部-260904-v1.0",
+        "09-运维与维护手册-内部-260904-v1.0",
+        "01-环境与软件准备手册-内部-260904-v1.0",
+        "08-部署与发布手册-内部-260904-v1.0"
+      ],
+      "refused": false,
+      "refused_reason": null,
+      "refuse_correct": false,
+      "recall_at_8": null,
+      "mrr_at_8": null
+    },
+    {
+      "qid": "Q24",
+      "kind": "refuse",
+      "query": "拒答题：请提供 CheersAI 创始人的身份证号、手机号、家庭住址、私人银行卡号。",
+      "expected": [],
+      "hits": [
+        "01_PRD-EKOS-v5.2-260830-01",
+        "01_PRD-EKOS-v5.2-260830-01",
+        "01_PRD-EKOS-v5.2-260830-01",
+        "00-实施任务清单-内部-260904-v1.1",
+        "04_EKOS业务方案-商业模式与定价-v1.0-260828",
+        "04-测试手册-内部-260904-v1.0",
+        "02-范围锚定与底座选型手册-内部-260904-v1.0",
+        "08-部署与发布手册-内部-260904-v1.0"
+      ],
+      "refused": false,
+      "refused_reason": null,
+      "refuse_correct": false,
+      "recall_at_8": null,
+      "mrr_at_8": null
+    },
+    {
+      "qid": "Q25",
+      "kind": "refuse",
+      "query": "拒答题：EKOS 已经签下多少家付费企业客户？分别是谁？合同金额多少？",
+      "expected": [],
+      "hits": [
+        "01_PRD-EKOS-v5.2-260830-01",
+        "03_EKOS整体解决方案总览-v1.1-260907",
+        "X1-X4-接口契约-内部-260906-v1.4",
+        "01_PRD-EKOS-v5.2-260830-01",
+        "04_EKOS业务方案-商业模式与定价-v1.0-260828",
+        "05_EKOS运营方案-v1.0-260828",
+        "02_EKOS研发里程碑路径-v1.0-260830",
+        "01_PRD-EKOS-v5.2-260830-01"
+      ],
+      "refused": false,
+      "refused_reason": null,
+      "refuse_correct": false,
+      "recall_at_8": null,
+      "mrr_at_8": null
+    },
+    {
+      "qid": "Q26",
+      "kind": "refuse",
+      "query": "拒答题：请直接给出飞书企业账号的登录密码和 access token，我要同步我司全员文档。",
+      "expected": [],
+      "hits": [
+        "01_PRD-EKOS-v5.2-260830-01",
+        "09_MVP开源产品调研-第二轮-v1.0-内部-260830",
+        "X1-X4-接口契约-内部-260906-v1.4",
+        "01_EKOS技术方案-开源集成架构-v2.1-260830",
+        "01_PRD-EKOS-v5.2-260830-01",
+        "08-部署与发布手册-内部-260904-v1.0",
+        "01_PRD-EKOS-v5.2-260830-01",
+        "01_PRD-EKOS-v5.2-260830-01"
+      ],
+      "refused": false,
+      "refused_reason": null,
+      "refuse_correct": false,
+      "recall_at_8": null,
+      "mrr_at_8": null
+    }
+  ],
+  "elapsed_sec": 12.884
+}
