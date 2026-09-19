@@ -48,7 +48,7 @@ REQUEST_FIELDS = {
     "trace_id",
 }
 FILTER_FIELDS = {"tenant_id", "permission_domain", "doc_ids", "date_range"}
-RESULT_FIELDS = {"request_id", "hits", "refused"}
+RESULT_FIELDS = {"request_id", "hits", "refused", "refused_reason"}
 HIT_FIELDS = {"asset_id", "chunk_id", "score", "evidence", "language", "snippet"}
 
 # X3.2 契约示例：Top 20 重排到 Top 6（§3.3）
@@ -146,6 +146,24 @@ def test_response_echoes_request_id(client: TestClient) -> None:
 def test_refused_flag_exists() -> None:
     """X3.2：拒答机制进契约。没有这个字段，无证据时只能靠调用方猜。"""
     assert "refused" in RetrieveResult(request_id="R").model_dump()
+
+
+@pytest.mark.contract()
+def test_refused_reason_field_exists() -> None:
+    """T-C5：拒答 100% 说清原因 → refused_reason 字段必须在 Schema 里。"""
+    payload = RetrieveResult(request_id="R").model_dump()
+    assert "refused_reason" in payload
+
+
+@pytest.mark.contract()
+def test_refused_true_carries_reason(client: TestClient) -> None:
+    """T-C5：refused=True 时 refused_reason 必须非空（不是 None 也不是空串）。"""
+    data = _retrieve(client)
+    assert data["refused"] is True, "契约骨架阶段无索引，本应 refused=True"
+    reason = data.get("refused_reason")
+    assert isinstance(reason, str) and len(reason.strip()) > 0, (
+        f"refused=True 时 refused_reason 必须非空，实际 = {reason!r}"
+    )
 
 
 @pytest.mark.contract()

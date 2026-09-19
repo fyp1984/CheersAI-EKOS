@@ -1,0 +1,22 @@
+# Policy / 权限模型配置（T-D1）
+#
+# 换后端 = 改这里 + 新增/选择对应 Adapter，内核（packages/retrieval / apps/api）零改动。
+# 新增权限源 = 在 adapters: 下新增条目 + 实现一个 PolicyAdapter 子类，内核零改动。
+version: 1
+
+# 默认用哪个 adapter（E0 环境推荐 in-memory，不用起 SpiceDB）
+default_adapter: in-memory
+
+adapters:
+  in-memory:
+    backend: in-memory
+    # E0 预置样例关系（仅开发/测试用；正式环境从连接器写入，不写硬编码）
+    seed_sample: true
+
+  # E1 生产首选（PRD §4.7）：填环境变量，零硬编码端口与凭据（TR-7）
+  spicedb:
+    backend: spicedb
+    endpoint: ${SPICEDB_ENDPOINT:-localhost:18443}
+    token: ${SPICEDB_TOKEN:-}
+    scheme: ${SPICEDB_SCHEME:-https}
+    timeout: 5.0

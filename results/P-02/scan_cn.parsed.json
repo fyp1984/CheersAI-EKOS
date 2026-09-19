@@ -1,0 +1,22 @@
+{
+  "doc_id": "scan_cn",
+  "source_uri": "/Users/FYP/Documents/WorkSpace/CheersAI/subproducts/CheersAI-EKOS/deploy/fixtures/p02/scan_cn.pdf",
+  "language": "zh",
+  "blocks": [],
+  "parse_status": "needs_review",
+  "parser_version": "1.1.0",
+  "verdict": {
+    "scenario": "扫描件（无文本层）",
+    "conclusion": "需第三方OCR",
+    "detail": "文档文本层为空，须走 OCR 后端（PaddleOCR 或 RAGFlow DeepDoc 等）"
+  },
+  "_metrics": {
+    "elapsed_sec": 2.621,
+    "n_blocks": 0,
+    "n_tables_pages": 0,
+    "scanned": true,
+    "n_stamps": 0,
+    "trace_id": "TB3-scan_cn.pdf-173586",
+    "policy_id": "default"
+  }
+}

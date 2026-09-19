@@ -27,7 +27,7 @@ Field(description=...) 一律英文，中文解释只出现在文档字符串里
 
 from __future__ import annotations
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 # ISO 639-1，可带可选子标签（如 zh-Hans）。
 # 刻意不做封闭枚举，理由见模块文档字符串：封闭即焊死。
@@ -36,6 +36,8 @@ LANGUAGE_PATTERN = r"^[a-z]{2}(?:-[A-Za-z0-9]{1,8})*$"
 
 class ParsedBlock(BaseModel):
     """解析后的最小文本单元。"""
+
+    model_config = ConfigDict(extra="allow")
 
     block_id: str = Field(description="stable id within the owning document")
     order: int = Field(ge=0, description="reading order, 0-based")
@@ -47,6 +49,8 @@ class ParsedBlock(BaseModel):
 
 class ParsedDocument(BaseModel):
     """一次深度解析的完整输出。"""
+
+    model_config = ConfigDict(extra="allow")
 
     doc_id: str = Field(description="stable document identifier")
     source_uri: str = Field(description="where the document was read from")

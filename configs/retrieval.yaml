@@ -1,0 +1,44 @@
+# 检索引擎配置（T-C1）
+#
+# 三种检索引擎：keyword / vector / graph
+# 配置驱动：换引擎只改这里，不改 packages/retrieval/ 代码（T-C1 判据）。
+version: 1
+
+default_language: zh
+
+engines:
+  keyword:
+    enabled: true
+    provider: in-memory              # E0：内存倒排索引；E1 换 pgvector/meilisearch
+    weight: 0.40                     # 混合检索权重（keyword+vector+graph 归一后相加）
+    params:
+      min_token_chars: 1
+      case_sensitive: false
+
+  vector:
+    enabled: true
+    provider: in-memory              # E0：内存 cosine；E1 换 pgvector / Milvus
+    weight: 0.45
+    params:
+      embedding_dim: 1536            # 兼容 text-embedding-3-small；真实维度由模型决定
+      similarity: cosine
+
+  graph:
+    enabled: true
+    provider: in-memory              # E0：实体关联邻接；E1 换 Neo4j
+    weight: 0.15
+    params:
+      max_hops: 2
+
+# 混合检索参数
+hybrid:
+  top_k_per_engine: 20               # 每路召回 Top 20，重排后压到 top_k
+  dedupe: true                       # 同 asset+chunk 只保留最高分
+  evidence_required: true            # T-C5：每条 hit 必须有 evidence（哪怕是空串也要给）
+
+# 拒答策略（T-C5：拒答 100% 说清原因）
+refusal:
+  reason_when_no_index: "检索索引尚未加载（当前环境 E0 stub），无证据可召回"
+  reason_when_all_filtered: "召回结果已全部被权限过滤，当前账号无访问权限"
+  reason_when_low_score: "Top-k 相似度均低于阈值，证据不足"
+  min_score_threshold: 0.05

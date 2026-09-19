@@ -1,0 +1,18 @@
+{
+  "input": "/Users/FYP/Documents/WorkSpace/CheersAI/subproducts/CheersAI-EKOS/deploy/fixtures/p02/stamp_cn.pdf",
+  "trace_id": "TB3-stamp_cn.pdf-6139",
+  "verdict": {
+    "scenario": "盖章遮挡",
+    "conclusion": "合格",
+    "detail": "文本层完整可抽取；检测到 1 处小图覆盖（印章/水印），建议元数据标记遮挡区以降低下游置信"
+  },
+  "metrics": {
+    "elapsed_sec": 0.016,
+    "n_blocks": 6,
+    "n_tables_pages": 0,
+    "scanned": false,
+    "n_stamps": 1,
+    "trace_id": "TB3-stamp_cn.pdf-6139",
+    "policy_id": "default"
+  }
+}
