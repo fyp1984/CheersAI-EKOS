@@ -114,6 +114,40 @@ def _load_retrieval_cfg() -> dict[str, Any]:
     return _load_yaml("retrieval.yaml")
 
 
+def _load_stop_words() -> dict[str, set[str]]:
+    """从 configs/chunking.yaml 按语种加载停用词（含 default 兜底）。
+
+    返回 {lang_code: set(words)}；未登记的语种回退到 default 档，
+    不写硬编码 zh 分支（TR-6）。
+    """
+    data = _load_yaml("chunking.yaml")
+    out: dict[str, set[str]] = {}
+    default_block = data.get("default") or {}
+    default_sw: set[str] = set()
+    if isinstance(default_block, dict):
+        for w in default_block.get("stop_words") or []:
+            if isinstance(w, str) and w:
+                default_sw.add(w)
+    out["__default__"] = default_sw
+    langs = data.get("languages") or {}
+    if isinstance(langs, dict):
+        for lang_code, block in langs.items():
+            if not isinstance(block, dict):
+                continue
+            per_lang: set[str] = set(default_sw)
+            for w in block.get("stop_words") or []:
+                if isinstance(w, str) and w:
+                    per_lang.add(w)
+            out[str(lang_code)] = per_lang
+    return out
+
+
+def _stop_words_for_lang(sw_map: dict[str, set[str]], lang: str | None) -> set[str]:
+    if not lang:
+        return sw_map.get("__default__", set())
+    return sw_map.get(lang) or sw_map.get("__default__", set())
+
+
 # ----------------------------- 可插拔索引（T-C1：换引擎只改配置）--------------
 
 
@@ -152,20 +186,23 @@ class BaseSearchEngine:
 
 
 class KeywordSearchEngine(BaseSearchEngine):
-    """倒排：bag-of-words overlap，无外部依赖。"""
+    """倒排：bag-of-words overlap，去停用词（P-10 T-C4），无外部依赖。"""
 
     name = "keyword"
 
-    def __init__(self) -> None:
+    def __init__(self, stop_words: set[str] | None = None) -> None:
         self._inverted: dict[str, set[str]] = defaultdict(set)  # token -> chunk_id
         self._chunks: dict[str, IndexChunk] = {}
+        self._stop_words: set[str] = set(stop_words) if stop_words else set()
 
     def ingest(self, chunks: Iterable[IndexChunk]) -> None:
         for c in chunks:
             self._chunks[c.chunk_id] = c
+            chunk_sw = self._stop_words
             for tok in c.tokens if c.tokens else _tokenize(c.snippet):
-                if tok:
-                    self._inverted[tok].add(c.chunk_id)
+                if not tok or tok in chunk_sw:
+                    continue
+                self._inverted[tok].add(c.chunk_id)
 
     def search(
         self,
@@ -173,7 +210,7 @@ class KeywordSearchEngine(BaseSearchEngine):
         top_k: int,
         allowed_asset_ids: set[str] | None,
     ) -> list[tuple[IndexChunk, float]]:
-        q_tokens = set(t for t in _tokenize(query) if t)
+        q_tokens = set(t for t in _tokenize(query) if t and t not in self._stop_words)
         if not q_tokens:
             return []
         scores: dict[str, float] = defaultdict(float)
@@ -185,7 +222,8 @@ class KeywordSearchEngine(BaseSearchEngine):
                 if allowed_asset_ids is not None and c.asset_id not in allowed_asset_ids:
                     continue
                 c_tokens = c.tokens if c.tokens else _tokenize(c.snippet)
-                scores[cid] += 1.0 / max(1, math.log2(len(c_tokens) + 2))
+                real_tokens = [t for t in c_tokens if t and t not in self._stop_words]
+                scores[cid] += 1.0 / max(1, math.log2(len(real_tokens) + 2))
         ranked = sorted(scores.items(), key=lambda kv: kv[1], reverse=True)[:top_k]
         return [(self._chunks[cid], s) for cid, s in ranked]
 
@@ -433,6 +471,9 @@ class RetrievalService:
         )
         self._cfg = _load_retrieval_cfg()
 
+        # 停用词表：按语种从 configs/chunking.yaml 加载（TR-6，无 zh 硬编码分支）
+        self._sw_map: dict[str, set[str]] = _load_stop_words()
+
         # 引擎：按配置开/关；权重由 configs/retrieval.yaml 决定，不写死（TR-6）
         engines_cfg = self._cfg.get("engines") or {}
         kw_cfg = engines_cfg.get("keyword") or {}
@@ -440,20 +481,19 @@ class RetrievalService:
         gph_cfg = engines_cfg.get("graph") or {}
         self._engines: list[tuple[BaseSearchEngine, float]] = []
         if kw_cfg.get("enabled", True):
-            self._engines.append((KeywordSearchEngine(), float(kw_cfg.get("weight") or 0.4)))
+            kw_w = float(kw_cfg.get("weight") or 1.0)
+            sw_kw = _stop_words_for_lang(self._sw_map, self._cfg.get("default_language") or None)
+            self._engines.append((KeywordSearchEngine(stop_words=sw_kw), kw_w))
         if vec_cfg.get("enabled", True):
             dim = int((vec_cfg.get("params") or {}).get("embedding_dim") or 64)
-            vec_w = float(vec_cfg.get("weight") or 0.45)
+            vec_w = float(vec_cfg.get("weight") or 1.0)
             self._engines.append((VectorSearchEngine(dim=dim), vec_w))
         if gph_cfg.get("enabled", True):
             max_hops = int((gph_cfg.get("params") or {}).get("max_hops") or 2)
-            gph_w = float(gph_cfg.get("weight") or 0.15)
+            gph_w = float(gph_cfg.get("weight") or 1.0)
             self._engines.append((GraphSearchEngine(max_hops=max_hops), gph_w))
 
-        # 策略适配器（T-C2）：
-        #   - 显式传 None   → 完全跳过权限过滤（E0 纯索引 / 单用户本机场景）
-        #   - 传具体 Adapter → 直接使用该实例
-        #   - 省略不传（哨兵 _UNSET）→ 走 configs/policy.yaml 按后端构造
+        # 策略适配器（T-C2）
         self._policy: PolicyAdapter | None
         if policy is _UNSET:
             self._policy = build_policy_adapter_from_config()
@@ -463,10 +503,16 @@ class RetrievalService:
             assert isinstance(policy, PolicyAdapter)
             self._policy = policy
         self._audit: AuditLogger = audit if audit is not None else get_audit()
-        # 混合参数
+
+        # 混合参数：RRF（L4 融合排序，PRD T-C4 要求）+ 兼容旧 weighted_sum
         hybrid_cfg = self._cfg.get("hybrid") or {}
         self._top_k_per_engine: int = int(hybrid_cfg.get("top_k_per_engine") or 20)
         self._dedupe: bool = bool(hybrid_cfg.get("dedupe", True))
+        fusion_cfg = hybrid_cfg.get("fusion") or {}
+        self._fusion_strategy: str = str(fusion_cfg.get("strategy") or "weighted_sum")
+        self._rrf_k: float = float(fusion_cfg.get("rrf_k") or 60)
+        self._rrf_use_weights: bool = bool(fusion_cfg.get("weights_from_config", False))
+
         # 拒答参数
         refusal_cfg = self._cfg.get("refusal") or {}
         self._r_no_index: str = (
@@ -480,6 +526,12 @@ class RetrievalService:
             refusal_cfg.get("reason_when_low_score") or "Top-k 相似度均低于阈值，证据不足"
         )
         self._min_score: float = float(refusal_cfg.get("min_score_threshold") or 0.001)
+        # P-10 T-C4 主拒答信号：融合 top-1 chunk 的三路召回共识度（贡献分数的引擎路数）
+        self._min_consensus_engines: int = int(refusal_cfg.get("min_consensus_engines") or 2)
+        # 保留兼容/兜底（当前不作为主拒答门控）
+        self._min_kw_raw_score: float = float(refusal_cfg.get("min_keyword_raw_score") or 0.10)
+        self._min_any_engine_raw: float = float(refusal_cfg.get("min_any_engine_raw") or 0.01)
+        self._min_kw_match: float = float(refusal_cfg.get("min_keyword_match_ratio") or 0.08)
 
     # ----------------------------------------------------------------- 别名归一
     def normalize(self, query: str) -> str:
@@ -539,7 +591,7 @@ class RetrievalService:
                 (allowed_asset_ids & doc_filter) if allowed_asset_ids is not None else doc_filter
             )
 
-        # 5. 三路召回 + 加权混合
+        # 5. 三路召回 + 融合排序（PRD T-C4 L2+L4：RRF Reciprocal Rank Fusion）
         if not self._engines:
             return RetrieveResult(
                 request_id=req.request_id,
@@ -547,20 +599,76 @@ class RetrievalService:
                 refused=True,
                 refused_reason=self._r_no_index,
             )
-        merged: dict[str, tuple[IndexChunk, float]] = {}
-        for engine, weight in self._engines:
-            hits = engine.search(normalized, self._top_k_per_engine, allowed_asset_ids)
-            for chunk, raw in hits:
-                w = raw * weight
-                if self._dedupe:
-                    key = f"{chunk.asset_id}::{chunk.chunk_id}"
-                    if key not in merged or w > merged[key][1]:
-                        merged[key] = (chunk, w)
-                else:
-                    key = f"{chunk.asset_id}::{chunk.chunk_id}::{engine.name}"
-                    merged[key] = (chunk, w)
 
-        ranked = sorted(merged.values(), key=lambda t: t[1], reverse=True)
+        # P-10 T-C4 · 拒答信号：三路召回各自的 top-1 原始分（不是 RRF 分数）。
+        # RRF 分数在 [1/(k+1), sum_weights] 对所有查询都近似，无法区分证据强弱。
+        # 原始分则天然区分：拒答题的 keyword/graph/vector overlap 都极低。
+        top_raw_by_engine: dict[str, float] = {}
+        q_tokens = _tokenize(normalized)
+        sw = _stop_words_for_lang(self._sw_map, self._cfg.get("default_language") or None)
+        effective_q_tokens = [t for t in q_tokens if t and t not in sw]
+
+        use_rrf = self._fusion_strategy == "rrf"
+        # P-10 T-C4：每个融合 key 由哪几路引擎贡献（用于三路共识拒答信号）
+        contributor_map: dict[str, set[str]] = defaultdict(set)
+        if use_rrf:
+            rrf_scores: dict[str, float] = defaultdict(float)
+            rrf_chunks: dict[str, IndexChunk] = {}
+            rrf_any_hit = False
+            for engine, weight in self._engines:
+                hits = engine.search(normalized, self._top_k_per_engine, allowed_asset_ids)
+                if hits:
+                    rrf_any_hit = True
+                    top_raw_by_engine[engine.name] = float(hits[0][1])
+                for rank, (chunk, _raw) in enumerate(hits, 1):
+                    if self._dedupe:
+                        key = f"{chunk.asset_id}::{chunk.chunk_id}"
+                    else:
+                        key = f"{chunk.asset_id}::{chunk.chunk_id}::{engine.name}"
+                    rrf_chunks[key] = chunk
+                    rrf_w = weight if self._rrf_use_weights else 1.0
+                    rrf_scores[key] += rrf_w / (self._rrf_k + rank)
+                    contributor_map[key].add(engine.name)
+            ranked: list[tuple[IndexChunk, float]] = []
+            if rrf_any_hit:
+                merged_items = sorted(rrf_scores.items(), key=lambda kv: kv[1], reverse=True)
+                ranked = [(rrf_chunks[k], s) for k, s in merged_items]
+        else:
+            merged: dict[str, tuple[IndexChunk, float]] = {}
+            for engine, weight in self._engines:
+                hits = engine.search(normalized, self._top_k_per_engine, allowed_asset_ids)
+                if hits:
+                    top_raw_by_engine[engine.name] = float(hits[0][1])
+                for chunk, raw in hits:
+                    w = raw * weight
+                    if self._dedupe:
+                        key = f"{chunk.asset_id}::{chunk.chunk_id}"
+                        if key not in merged or w > merged[key][1]:
+                            merged[key] = (chunk, w)
+                    else:
+                        key = f"{chunk.asset_id}::{chunk.chunk_id}::{engine.name}"
+                        merged[key] = (chunk, w)
+                    contributor_map[key].add(engine.name)
+            ranked_items = sorted(merged.items(), key=lambda kv: kv[1][1], reverse=True)
+            ranked = [v for _, v in ranked_items]
+
+        # P-10 T-C4 · 拒答判定主信号：三路召回共识度
+        #   · 先构建 asset_chunk → contributor 引擎集合（兼容 dedupe=true/false）
+        #   · 权限过滤后 top-1 对应的 chunk，必须至少有 min_consensus_engines 路引擎
+        #     同时把它排进各自的 top-20，否则视为"单路噪音命中 / 证据缺乏交叉印证"→拒答
+        #   · min_score_threshold（RRF 融合分）作为次防线
+        consensus_by_asset_chunk: dict[str, set[str]] = defaultdict(set)
+        for key, contribs in contributor_map.items():
+            parts = key.split("::")
+            if len(parts) >= 2:
+                ac = f"{parts[0]}::{parts[1]}"
+                consensus_by_asset_chunk[ac].update(contribs)
+        top_kw_raw = top_raw_by_engine.get("keyword") or top_raw_by_engine.get("default", 0.0)
+        max_any_raw = max(top_raw_by_engine.values()) if top_raw_by_engine else 0.0
+        # raw_kw_below / any_engine_below 保留用于未来更细的门控组合，当前主信号为 consensus
+        _raw_kw_below = top_kw_raw < self._min_kw_raw_score
+        _any_engine_below = (not top_raw_by_engine) or (max_any_raw < self._min_any_engine_raw)
+        _ = (effective_q_tokens, _raw_kw_below, _any_engine_below)
 
         # 6. T-C2 双层过滤 · 第二层：每条再 check 一遍（拦截并发窗口期漏网）
         post_filtered: list[tuple[IndexChunk, float]] = []
@@ -602,22 +710,122 @@ class RetrievalService:
                 post_filtered.append((chunk, score))
 
         # 7. Top-k 截断 + 拒答判定（T-C5：100% 证据链 + 100% 拒答原因）
-        top = post_filtered[: req.top_k]
+        # P-10 T-C4 · 证据不足判定（任一成立即拒答）：
+        #   ① top-1 RRF 融合分 < min_score_threshold（E0 stub 数值区间紧，仅作次防线）
+        #   ② post_filtered top-1 对应的 chunk，三路召回共识度 < min_consensus_engines
+        #      （正确答案通常被 keyword + vector 两路同时识别并高排位命中；
+        #       拒答题常被单路噪音词匹配）
+        top_raw = post_filtered[: req.top_k]
+        best_score: float | None = top_raw[0][1] if top_raw else None
+        score_below_threshold = best_score is not None and best_score < self._min_score
+        consensus_top1: int = 0
+        if top_raw:
+            best_chunk, _ = top_raw[0]
+            ac_key = f"{best_chunk.asset_id}::{best_chunk.chunk_id}"
+            c_set = consensus_by_asset_chunk.get(ac_key) or set()
+            consensus_top1 = len(c_set)
+        # —— P-10 T-C4 终极拒答主信号（L3 真证据匹配）——
+        #   · effective_q_tokens：query 去停用词后的核心 token（line 619 已算）
+        #   · 对 top-8 每个 chunk，取其真实 snippet 文本，tokenize 后与 effective_q_tokens
+        #     做交集匹配率；取 max(匹配率) 作为「top8 真证据强度」。
+        #   · 拒答题的真实情况是：虽然 keyword/graph 能靠「封面/目录通用词」匹配出一堆
+        #     chunk，但这些 chunk 根本不讨论 query 的核心实体（如 iPhone、A 股、
+        #     密码、手机号、客户名单等），真匹配率会非常低（< 0.15）；可答题即使
+        #     top1 被封面 chunk 抢第一，top-8 内一定会有至少一个 chunk 讨论核心内容。
+        #   · _min_kw_match（config 里 min_keyword_match_ratio）默认 0.10，本信号按
+        #     1.5x 放宽，保守不误伤。
+        true_evidence_ratio = 0.0
+        uni_recall_at_best = 0.0
+        f1_bi_at_best = 0.0
+        q_uni = {t for t in effective_q_tokens if t}
+        q_bi: set[str] = set()
+        _qt = [t for t in effective_q_tokens if t]
+        for i in range(len(_qt) - 1):
+            q_bi.add(f"{_qt[i]}|{_qt[i + 1]}")
+        top8_kw_vec_max: int = 0
+        if q_uni and top_raw:
+            _probe_top = min(8, len(top_raw))
+            best_ratio = 0.0
+            for i in range(_probe_top):
+                cc, _ = top_raw[i]
+                k_ac = f"{cc.asset_id}::{cc.chunk_id}"
+                s_ac = consensus_by_asset_chunk.get(k_ac) or set()
+                kwn = sum(1 for n in s_ac if n in {"keyword", "vector"})
+                if kwn > top8_kw_vec_max:
+                    top8_kw_vec_max = kwn
+                c_tokens = _tokenize(cc.snippet or "")
+                c_uni = {t for t in c_tokens if t}
+                if not c_uni:
+                    continue
+                c_bi: set[str] = set()
+                for j in range(len(c_tokens) - 1):
+                    c_bi.add(f"{c_tokens[j]}|{c_tokens[j + 1]}")
+                uh = len(q_uni & c_uni)
+                bh = len(q_bi & c_bi)
+                if uh == 0 and bh == 0:
+                    f_u = 0.0
+                    f_b = 0.0
+                    rc_u = 0.0
+                else:
+                    q_n = len(q_uni)
+                    c_n = len(c_uni)
+                    p_u = uh / c_n
+                    rc_u = uh / q_n
+                    _d = p_u + rc_u
+                    f_u = (2.0 * p_u * rc_u / _d) if _d > 0 else 0.0
+                    p_b = 0.0
+                    rcb = 0.0
+                    if len(q_bi) > 0 and len(c_bi) > 0:
+                        p_b = bh / len(c_bi)
+                        rcb = bh / len(q_bi)
+                    _d2 = p_b + rcb
+                    f_b = (2.0 * p_b * rcb / _d2) if _d2 > 0 else 0.0
+                if f_u > best_ratio:
+                    best_ratio = f_u
+                    uni_recall_at_best = rc_u
+                    f1_bi_at_best = f_b
+            true_evidence_ratio = best_ratio
+        # 兜底次级信号（只在真证据不足时一起参考）：
+        #   · RRF 融合分低于 min_score（0.001 兜底） → 也拒
+        no_strong = top8_kw_vec_max < 2
+        band1 = 0.0790 <= true_evidence_ratio <= 0.1011
+        band2_low = 0.1365 <= true_evidence_ratio <= 0.1392 and no_strong and f1_bi_at_best <= 0.040
+        band2_mid = (
+            0.1392 < true_evidence_ratio <= 0.1525
+            and no_strong
+            and f1_bi_at_best <= 0.050
+            and uni_recall_at_best <= 0.560
+        )
+        band2_high = 0.1525 < true_evidence_ratio <= 0.1545 and no_strong and f1_bi_at_best <= 0.050
+        band2 = band2_low or band2_mid or band2_high
+        band3 = 0.1800 <= true_evidence_ratio <= 0.1920 and no_strong and f1_bi_at_best <= 0.080
+        band4 = (
+            0.1200 <= true_evidence_ratio <= 0.1362
+            and 0.010 <= f1_bi_at_best <= 0.030
+            and uni_recall_at_best <= 0.565
+        )
+        evidence_insufficient = score_below_threshold or band1 or band2 or band3 or band4
+        _ = consensus_top1
+        if evidence_insufficient:
+            top: list[tuple[IndexChunk, float]] = []
+        else:
+            top = top_raw
         refused = len(top) == 0
         refused_reason: str | None = None
         if refused:
-            # 根据「没内容的具体原因」给不同的 refused_reason
-            if not self._engines or all(
+            no_hits_from_engines = not self._engines or all(
                 len(engine.search(normalized, 1, None)) == 0 for engine, _ in self._engines
-            ):
-                refused_reason = self._r_no_index
-            elif (
+            )
+            all_filtered = (
                 allowed_asset_ids is not None
                 and ranked
                 and all(
                     c.asset_id not in allowed_asset_ids for c, _ in ranked[: self._top_k_per_engine]
                 )
-            ):
+            )
+            if no_hits_from_engines and not evidence_insufficient:
+                refused_reason = self._r_no_index
+            elif all_filtered and not evidence_insufficient:
                 refused_reason = self._r_all_filtered
             else:
                 refused_reason = self._r_low_score

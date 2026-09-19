@@ -10,7 +10,7 @@ engines:
   keyword:
     enabled: true
     provider: in-memory              # E0：内存倒排索引；E1 换 pgvector/meilisearch
-    weight: 0.40                     # 混合检索权重（keyword+vector+graph 归一后相加）
+    weight: 1.0                      # RRF 下三路独立排好序后融合，权重仍走配置（默认 1.0）
     params:
       min_token_chars: 1
       case_sensitive: false
@@ -18,7 +18,7 @@ engines:
   vector:
     enabled: true
     provider: in-memory              # E0：内存 cosine；E1 换 pgvector / Milvus
-    weight: 0.45
+    weight: 1.0
     params:
       embedding_dim: 1536            # 兼容 text-embedding-3-small；真实维度由模型决定
       similarity: cosine
@@ -26,19 +26,28 @@ engines:
   graph:
     enabled: true
     provider: in-memory              # E0：实体关联邻接；E1 换 Neo4j
-    weight: 0.15
+    weight: 1.0
     params:
       max_hops: 2
 
-# 混合检索参数
+# 混合检索参数（PRD §T-C4 要求 L2 + L4 融合排序，使用 RRF）
 hybrid:
   top_k_per_engine: 20               # 每路召回 Top 20，重排后压到 top_k
   dedupe: true                       # 同 asset+chunk 只保留最高分
   evidence_required: true            # T-C5：每条 hit 必须有 evidence（哪怕是空串也要给）
+  fusion:
+    strategy: rrf                    # weighted_sum（旧）/ rrf（L4 融合排序，PRD 指定）
+    rrf_k: 60                        # RRF 公式 1/(k + rank) 中的 k；业界常用 60
+    weights_from_config: true        # RRF 乘配置中的 engine.weight（默认 1.0，等价纯 RRF）
 
-# 拒答策略（T-C5：拒答 100% 说清原因）
+# 拒答策略（T-C5：拒答 100% 说清原因；P-10 T-C4 三路共识拒答）
 refusal:
   reason_when_no_index: "检索索引尚未加载（当前环境 E0 stub），无证据可召回"
   reason_when_all_filtered: "召回结果已全部被权限过滤，当前账号无访问权限"
   reason_when_low_score: "Top-k 相似度均低于阈值，证据不足"
-  min_score_threshold: 0.05
+  min_score_threshold: 0.001          # 次防线：RRF 融合分阈值（E0 stub 区间紧，仅兜底）
+  min_consensus_engines: 2            # 主防线（P-10 T-C4）：融合后的 top-1 chunk 必须至少有几路引擎在各自 top-20 内同时召回它才判定可答；否则视为单路噪音命中，拒答
+  # 以下保留兼容/兜底，当前主信号为 consensus
+  min_keyword_raw_score: 0.10
+  min_any_engine_raw: 0.01
+  min_keyword_match_ratio: 0.10
