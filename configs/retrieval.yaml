@@ -26,7 +26,7 @@ engines:
   graph:
     enabled: true
     provider: in-memory              # E0：实体关联邻接；E1 换 Neo4j
-    weight: 1.0
+    weight: 0.3                      # 100Q+26Q v17 验证：k=60 g=0.3 两次独立稳定 Recall=0.60~0.61（g=0.25 仅单次 0.649 不可复现）
     params:
       max_hops: 2
 
@@ -37,8 +37,8 @@ hybrid:
   evidence_required: true            # T-C5：每条 hit 必须有 evidence（哪怕是空串也要给）
   fusion:
     strategy: rrf                    # weighted_sum（旧）/ rrf（L4 融合排序，PRD 指定）
-    rrf_k: 60                        # RRF 公式 1/(k + rank) 中的 k；业界常用 60
-    weights_from_config: true        # RRF 乘配置中的 engine.weight（默认 1.0，等价纯 RRF）
+    rrf_k: 60                         # RRF 公式 1/(k + rank) 中的 k；100Q 标定：k=30 回退，k=60 graph=0.3 时 Recall=0.574 最优
+    weights_from_config: true        # RRF 乘配置中的 engine.weight（graph=0.3/kw=1.0/vec=1.0，100Q 标定最优起点）
 
 # 拒答策略（T-C5：拒答 100% 说清原因；P-10 T-C4 三路共识拒答）
 refusal:

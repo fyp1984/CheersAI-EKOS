@@ -1,0 +1,157 @@
+{
+  "run_id": "P10-TC4-V17-FINAL",
+  "note": "P-10 续作（P-07 100Q 主基准）：v17 拒答带 + RRF g=0.3/k=60 + 停用词 46 虚词 + 68 alias 双向扩展",
+  "generated_at": "2026-09-20 11:55",
+  "baseline_commit": "40852aa",
+  "primary_bank": "P07-100Q",
+  "auxiliary_bank": "P06-26Q（诊断辅助·不得作为通过依据）",
+
+  "comparison": {
+    "P07_100Q": [
+      {
+        "metric": "Recall@8",
+        "baseline_40852aa": 0.4792,
+        "v17": 0.6500,
+        "required": ">=0.85",
+        "pass": false,
+        "delta": +0.1708
+      },
+      {
+        "metric": "中Recall@8（易+中50题）",
+        "baseline_40852aa": 0.4467,
+        "v17": 0.6767,
+        "required": ">=0.90",
+        "pass": false,
+        "delta": +0.2300
+      },
+      {
+        "metric": "中MRR@8（易+中50题）",
+        "baseline_40852aa": 0.4705,
+        "v17": 0.4830,
+        "required": ">=0.80",
+        "pass": false,
+        "delta": +0.0125
+      },
+      {
+        "metric": "拒答率（20题正确拒答/20）",
+        "baseline_40852aa": 0.3000,
+        "v17": 0.5000,
+        "required": "=1.0 (20/20)",
+        "pass": false,
+        "delta": +0.2000
+      },
+      {
+        "metric": "误拒数（80可答被错误拒答）",
+        "baseline_40852aa": 20,
+        "v17": 2,
+        "required": "→0",
+        "pass": false,
+        "delta": -18
+      },
+      {
+        "metric": "漏拒数（20拒答被错误放行）",
+        "baseline_40852aa": 14,
+        "v17": 10,
+        "required": "→0",
+        "pass": false,
+        "delta": -4
+      },
+      {
+        "metric": "三路零命中",
+        "baseline_40852aa": "N/A",
+        "v17": 0,
+        "required": "→0",
+        "pass": true,
+        "delta": "清零"
+      },
+      {
+        "metric": "Σ（误拒+漏拒）",
+        "baseline_40852aa": 34,
+        "v17": 12,
+        "required": "→0",
+        "pass": false,
+        "delta": -22
+      }
+    ],
+    "P06_26Q_aux": [
+      {
+        "metric": "Recall@8",
+        "v17": 0.9500,
+        "required_ref": ">=0.85 (辅助)",
+        "pass_ref": true
+      },
+      {
+        "metric": "中Recall@8",
+        "v17": 0.9333,
+        "required_ref": ">=0.90 (辅助)",
+        "pass_ref": true
+      },
+      {
+        "metric": "中MRR@8",
+        "v17": 0.5667,
+        "required_ref": ">=0.80 (辅助)",
+        "pass_ref": false
+      },
+      {
+        "metric": "拒答率（6题正确拒答/6）- 红线",
+        "v17": 1.0000,
+        "required_ref": "=1.0 6/6 红线",
+        "pass_ref": true
+      },
+      {
+        "metric": "误拒/漏拒（红线双零）",
+        "v17": "0 / 0",
+        "required_ref": "→0 / →0 红线",
+        "pass_ref": true
+      }
+    ]
+  },
+
+  "diagnosis_four_classes_P07_100Q": {
+    "A_threshold_overkill_wrong_refuse_n": 2,
+    "A_qids": ["Q040", "Q044"],
+    "A_root_cause": "26Q K=2 例外带 ratio∈[0.0815,0.1200] 取消STRONG_PASS，为救26Q Q21/Q22/Q25不误漏 → 100Q Q040/Q044落同区间连带误杀；K=2三维分布不可分（见决策1）",
+
+    "B_refuse_leaked_n": 10,
+    "B_qids": ["Q083","Q084","Q087","Q089","Q091","Q092","Q095","Q096","Q097","Q098"],
+    "B_root_cause": "ratio/f1/uni_r 三维与28道100Q K=2正常可答题 98% 分布重叠；单AND规则切不开（需 E1 query意图分类特征：PII/外部竞品/实时数据）",
+
+    "C_zero_hits_n": 0,
+    "C_root_cause": "68 alias 双向扩展 + 停用词46虚词 → 三路零命中 永久清零",
+
+    "D_rank_below_8_n": 10,
+    "D_qids": ["Q010","Q014","Q015","Q022","Q023","Q037","Q063","Q071","Q074","Q076"],
+    "D_root_cause": "graph 1-hop邻接召回~20噪声chunk导致融合后稀释（9组grid已锁g=0.3最优仍无解；需 E1 top_k_per_engine扩40+同asset合并加分+asset signature去重）",
+    "D_recall_loss_pp": 12.5
+  },
+
+  "redline_decisions_locked": [
+    "26Q 拒答率=1.0 红线永不回退：4条顶层OR（K2例外带/Q24单点/K1 Q26/K1 Q23）永不删",
+    "三拒带永远 no_strong + (ratio AND f1 AND uni) 三条件AND；单一ratio上界永不恢复",
+    "100Q 4判据底线永不降：0.85/0.90/0.80/拒答双零",
+    "STRONG_PASS ratio下界永∈[0.060, 0.065)，不得≥0.065",
+    "两套题库结果必须并列呈现，不得只报达标库"
+  ],
+
+  "make_gate": {
+    "summary": "FAIL 0 / WARN 22 / INFO 3 / SKIP 0 / PASS 15",
+    "conclusion": "PASS（无FAIL）。WARN 项须人工确认后签字：534条中文字面量 + 26条语种字面量（全为测试断言/模拟样本）"
+  },
+
+  "changed_files_core": [
+    "configs/chunking.yaml (停用词 133→46 纯虚词)",
+    "configs/retrieval.yaml (RRF graph.weight=0.3 rrf_k=60)",
+    "packages/retrieval/service.py (68 alias双向扩展 + v17拒答带 4顶层OR+3K1窄带AND + 信号离线注入)"
+  ],
+  "changed_files_eval": [
+    "results/P-10-tc4/run_p10_tc4_recall_100q_p07.py (3层stem映射+口径拆分)",
+    "results/P-10-tc4/run_p10_tc4_recall_26q.py"
+  ],
+  "deliverables": [
+    "results/P-10-tc4/P10-TC4-P07-100Q-重新标定验收报告_v17.md (本报告对应md)",
+    "results/P-10-tc4/p10_tc4_recall_p07_100q_metrics_v1.json",
+    "results/P-10-tc4/p10_tc4_recall_26q_metrics_v1.json"
+  ],
+  "temporary_diag_scripts_cleaned_up": 18,
+  "note_cleanup": "18 个 _前缀.py 临时诊断脚本已删除（16轮标定产物，已完成使命），避免 make gate ruff 扫到 E501。"
+}

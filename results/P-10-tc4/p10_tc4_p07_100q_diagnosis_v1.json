@@ -1,0 +1,496 @@
+{
+  "summary": {
+    "n_wrong_refuse": 22,
+    "n_unrecalled": 0,
+    "n_sorted_lower": 4,
+    "n_partial": 22,
+    "n_missing_refuse": 14
+  },
+  "wrong_refuse": [
+    {
+      "qid": "Q005",
+      "difficulty": "easy",
+      "query": "中→中组检索实测的指标要求是什么？",
+      "evidence": "测试手册 T4.07；gate Q4 QA-1b",
+      "top_hits": 0,
+      "refused_reason": "Top-k 相似度均低于阈值，证据不足"
+    },
+    {
+      "qid": "Q008",
+      "difficulty": "easy",
+      "query": "准出⑨「规范校验」的告警要求是什么？",
+      "evidence": "PRD §8.4 ⑨（F19）；gate Q3 QA-1b",
+      "top_hits": 0,
+      "refused_reason": "Top-k 相似度均低于阈值，证据不足"
+    },
+    {
+      "qid": "Q010",
+      "difficulty": "easy",
+      "query": "准出①「连接器自动同步」的三项判定指标是什么？",
+      "evidence": "PRD §8.4 ①（F01）；gate Q3 CONN-1",
+      "top_hits": 0,
+      "refused_reason": "Top-k 相似度均低于阈值，证据不足"
+    },
+    {
+      "qid": "Q013",
+      "difficulty": "easy",
+      "query": "MVP 范围里，韩文相关项本期怎么处理？",
+      "evidence": "MVP任务拆解 v2.0 §零；PRD §8.4 注",
+      "top_hits": 0,
+      "refused_reason": "Top-k 相似度均低于阈值，证据不足"
+    },
+    {
+      "qid": "Q015",
+      "difficulty": "medium",
+      "query": "三处「零成本结构预留」分别是什么？",
+      "evidence": "MVP任务拆解 v2.0 §零；gate TR-6 P1/P2/P3",
+      "top_hits": 0,
+      "refused_reason": "Top-k 相似度均低于阈值，证据不足"
+    },
+    {
+      "qid": "Q021",
+      "difficulty": "easy",
+      "query": "EKOS 把自己类比为企业界的什么系统？",
+      "evidence": "产品定位声明 §四",
+      "top_hits": 0,
+      "refused_reason": "Top-k 相似度均低于阈值，证据不足"
+    },
+    {
+      "qid": "Q023",
+      "difficulty": "medium",
+      "query": "EKOS 三层版本策略包含哪三个版本？",
+      "evidence": "产品定位声明 §六；业务方案 §1.2",
+      "top_hits": 0,
+      "refused_reason": "Top-k 相似度均低于阈值，证据不足"
+    },
+    {
+      "qid": "Q024",
+      "difficulty": "easy",
+      "query": "商业模式的核心是什么？",
+      "evidence": "业务方案 §一",
+      "top_hits": 0,
+      "refused_reason": "Top-k 相似度均低于阈值，证据不足"
+    },
+    {
+      "qid": "Q026",
+      "difficulty": "easy",
+      "query": "年度数据治理服务的价格区间是多少？",
+      "evidence": "业务方案 §3.1",
+      "top_hits": 0,
+      "refused_reason": "Top-k 相似度均低于阈值，证据不足"
+    },
+    {
+      "qid": "Q028",
+      "difficulty": "easy",
+      "query": "调研中约有多少比例的知识库沦为「废墟」？",
+      "evidence": "业务方案 §1.1",
+      "top_hits": 0,
+      "refused_reason": "Top-k 相似度均低于阈值，证据不足"
+    },
+    {
+      "qid": "Q030",
+      "difficulty": "medium",
+      "query": "组件版本冻结表里，PostgreSQL 的冻结版本是哪个？",
+      "evidence": "gate_baseline.json TR-4 postgres",
+      "top_hits": 0,
+      "refused_reason": "Top-k 相似度均低于阈值，证据不足"
+    },
+    {
+      "qid": "Q031",
+      "difficulty": "easy",
+      "query": "组件版本冻结表里，vLLM 的冻结版本是多少？",
+      "evidence": "gate_baseline.json TR-4 vllm",
+      "top_hits": 0,
+      "refused_reason": "Top-k 相似度均低于阈值，证据不足"
+    },
+    {
+      "qid": "Q036",
+      "difficulty": "medium",
+      "query": "八道门禁 Q1–Q8 中，哪几道是 MVP 覆盖的？",
+      "evidence": "MVP任务拆解 v2.0 §五；gate Q1–Q8",
+      "top_hits": 0,
+      "refused_reason": "Top-k 相似度均低于阈值，证据不足"
+    },
+    {
+      "qid": "Q038",
+      "difficulty": "easy",
+      "query": "任务 T-C3 是什么？责任人是谁？",
+      "evidence": "MVP任务拆解 v2.0 §一/PRD 任务表 T-C3",
+      "top_hits": 0,
+      "refused_reason": "Top-k 相似度均低于阈值，证据不足"
+    },
+    {
+      "qid": "Q044",
+      "difficulty": "easy",
+      "query": "EKOS 开源底座优先选什么 License？",
+      "evidence": "PRD §8.6 R8；技术方案 开源选型",
+      "top_hits": 0,
+      "refused_reason": "Top-k 相似度均低于阈值，证据不足"
+    },
+    {
+      "qid": "Q049",
+      "difficulty": "easy",
+      "query": "EKOS 的目标高合规行业有哪些？",
+      "evidence": "产品定位声明 §一/§5.1；业务方案 §二",
+      "top_hits": 0,
+      "refused_reason": "Top-k 相似度均低于阈值，证据不足"
+    },
+    {
+      "qid": "Q050",
+      "difficulty": "medium",
+      "query": "Lite 轻量版的基准客群与软件价格是什么？",
+      "evidence": "业务方案 §1.2/§3.1",
+      "top_hits": 0,
+      "refused_reason": "Top-k 相似度均低于阈值，证据不足"
+    },
+    {
+      "qid": "Q060",
+      "difficulty": "hard",
+      "query": "L2 适配层里有哪些 Adapter？它们的作用是什么？",
+      "evidence": "技术方案 v2.1 §一 L2",
+      "top_hits": 0,
+      "refused_reason": "Top-k 相似度均低于阈值，证据不足"
+    },
+    {
+      "qid": "Q064",
+      "difficulty": "hard",
+      "query": "EKOS 的护城河设计在哪里？为什么不担心被 fork？",
+      "evidence": "产品定位声明 §七 + 业务方案 §五 风险",
+      "top_hits": 0,
+      "refused_reason": "Top-k 相似度均低于阈值，证据不足"
+    },
+    {
+      "qid": "Q066",
+      "difficulty": "hard",
+      "query": "为什么 EKOS 软件免费、靠服务收费？对标了哪些竞品？",
+      "evidence": "业务方案 §1.1",
+      "top_hits": 0,
+      "refused_reason": "Top-k 相似度均低于阈值，证据不足"
+    },
+    {
+      "qid": "Q075",
+      "difficulty": "hard",
+      "query": "为什么金租项目要用「模拟数据」而不是真实客户数据？",
+      "evidence": "gate Q3 BIZ-1 + TR-8 原则 + 题库规格红线",
+      "top_hits": 0,
+      "refused_reason": "Top-k 相似度均低于阈值，证据不足"
+    },
+    {
+      "qid": "Q080",
+      "difficulty": "hard",
+      "query": "现代金租在 EKOS 项目里扮演什么角色？EKOS 与金租是什么关系？",
+      "evidence": "MVP任务拆解 v2.0 引言 + 项目本质说明",
+      "top_hits": 0,
+      "refused_reason": "Top-k 相似度均低于阈值，证据不足"
+    }
+  ],
+  "unrecalled_top_empty": [],
+  "sorted_below_8": [
+    {
+      "qid": "Q014",
+      "difficulty": "easy",
+      "query": "韩文暂缓项一共有几项？",
+      "evidence": "MVP任务拆解 v2.0 §零 表",
+      "n_hits": 8
+    },
+    {
+      "qid": "Q072",
+      "difficulty": "hard",
+      "query": "EKOS 的「三处结构预留」如何保证韩文下期是「加配置」而非「重构」？",
+      "evidence": "MVP任务拆解 §零 + gate TR-6 P1/P2/P3",
+      "n_hits": 8
+    },
+    {
+      "qid": "Q074",
+      "difficulty": "hard",
+      "query": "韩文暂缓技术债台账（E-1~E-7）里，哪些项恢复时需要「有韩文语料」这个条件？",
+      "evidence": "MVP任务拆解 v2.0 §七 韩文台账",
+      "n_hits": 8
+    },
+    {
+      "qid": "Q076",
+      "difficulty": "hard",
+      "query": "「可裁清单」里最后才砍的是什么？绝对不裁的红线有哪些（列至少三项）？",
+      "evidence": "MVP任务拆解 v2.0 §六 红线与可裁",
+      "n_hits": 8
+    }
+  ],
+  "partial_recall": [
+    {
+      "qid": "Q002",
+      "difficulty": "easy",
+      "query": "PRD §8.4 的「准出十条」里，哪一条要求敏感字段识别率 ≥90%、出域拦截 100%？",
+      "evidence": "PRD §8.4 准出门槛表 ⑥",
+      "recall": 0.5,
+      "mrr": 1.0
+    },
+    {
+      "qid": "Q003",
+      "difficulty": "easy",
+      "query": "EKOS 轻量私有化部署的硬性时间要求是什么？",
+      "evidence": "PRD §8.4 ⑤；gate Q5 DEPLOY-1",
+      "recall": 0.25,
+      "mrr": 1.0
+    },
+    {
+      "qid": "Q004",
+      "difficulty": "easy",
+      "query": "准出②「检索与问答质量」对召回率的要求是多少？",
+      "evidence": "PRD §8.4 ②；gate Q4 QA-1",
+      "recall": 0.5,
+      "mrr": 1.0
+    },
+    {
+      "qid": "Q007",
+      "difficulty": "easy",
+      "query": "准出⑧「知情同意门」要求用户能做什么？",
+      "evidence": "PRD §8.4 ⑧（F25）；gate Q3 CONSENT-1",
+      "recall": 0.6667,
+      "mrr": 1.0
+    },
+    {
+      "qid": "Q012",
+      "difficulty": "easy",
+      "query": "准出④「自动评测」用什么框架跑通？要求证明什么？",
+      "evidence": "PRD §8.4 ④（F04）；gate Q4 EVAL-1",
+      "recall": 0.5,
+      "mrr": 1.0
+    },
+    {
+      "qid": "Q022",
+      "difficulty": "medium",
+      "query": "K-NLQ 是什么？",
+      "evidence": "产品定位声明 §四",
+      "recall": 0.5,
+      "mrr": 1.0
+    },
+    {
+      "qid": "Q029",
+      "difficulty": "easy",
+      "query": "组件版本冻结表里，Python 的冻结版本是多少？",
+      "evidence": "gate_baseline.json TR-4 components python",
+      "recall": 0.6667,
+      "mrr": 1.0
+    },
+    {
+      "qid": "Q034",
+      "difficulty": "medium",
+      "query": "「端口零硬编码」（TR-7）要求交付端口怎么处理？",
+      "evidence": "gate_baseline.json TR-7",
+      "recall": 0.5,
+      "mrr": 0.1429
+    },
+    {
+      "qid": "Q040",
+      "difficulty": "medium",
+      "query": "当前（MVP）检索评测只测哪一组测试集？",
+      "evidence": "测试手册 T4.07；gate Q4 QA-1b",
+      "recall": 0.5,
+      "mrr": 0.5
+    },
+    {
+      "qid": "Q041",
+      "difficulty": "medium",
+      "query": "加工与检索约束中，本期执行哪几项？",
+      "evidence": "测试手册 T4.07 加工约束；gate Q3 QA-1",
+      "recall": 0.3333,
+      "mrr": 0.5
+    },
+    {
+      "qid": "Q042",
+      "difficulty": "medium",
+      "query": "Golden Test（L4）只能在什么环境跑？",
+      "evidence": "测试手册 T4.06；技术方案 §3.4",
+      "recall": 0.6667,
+      "mrr": 1.0
+    },
+    {
+      "qid": "Q051",
+      "difficulty": "hard",
+      "query": "EKOS 相比飞书知识库，在「知情同意」上有什么差异？为什么这是差异化卖点？",
+      "evidence": "PRD §8.4 ⑧ + 产品定位声明 §五 + gate Q3 CONSENT-1",
+      "recall": 0.5,
+      "mrr": 0.5
+    },
+    {
+      "qid": "Q053",
+      "difficulty": "hard",
+      "query": "为什么「本期只测中→中组检索」不算降低验收标准？",
+      "evidence": "测试手册 T4.07 附件A-③ + 推进方案 §4.3 Q4 + gate Q4 QA-1b",
+      "recall": 0.3333,
+      "mrr": 0.5
+    },
+    {
+      "qid": "Q055",
+      "difficulty": "hard",
+      "query": "部署「≤1 周」这条既是准出⑤也是 NFR-DEPLOY-01，它在哪几道门禁被验证？",
+      "evidence": "gate Q4 DEPLOY-1 + Q5 DEPLOY-1 + Q6 QA-1 + PRD §8.4 ⑤",
+      "recall": 0.5,
+      "mrr": 1.0
+    },
+    {
+      "qid": "Q057",
+      "difficulty": "hard",
+      "query": "组件版本「零漂移」（TR-4）怎么保证？冻结表里 Docker / Compose / Python 各是多少？",
+      "evidence": "gate_baseline.json TR-4（match_files + components）",
+      "recall": 0.6667,
+      "mrr": 1.0
+    },
+    {
+      "qid": "Q059",
+      "difficulty": "hard",
+      "query": "为什么 EKOS 选择「最小集成」开源（不 fork）而不是魔改？",
+      "evidence": "技术方案 v2.1 §〇 核心原则（四不：不fork/不改核心/用接口/走旁路）",
+      "recall": 0.5,
+      "mrr": 1.0
+    },
+    {
+      "qid": "Q062",
+      "difficulty": "hard",
+      "query": "列出准出十条里所有含「100%」的条款，并说明各自含义。",
+      "evidence": "PRD §8.4 准出表",
+      "recall": 0.5,
+      "mrr": 0.5
+    },
+    {
+      "qid": "Q069",
+      "difficulty": "hard",
+      "query": "拒答类题目在系统里应如何处理？准出里哪条管这个？",
+      "evidence": "PRD §8.4 ② + gate Q4 QA-1c",
+      "recall": 0.5,
+      "mrr": 0.3333
+    },
+    {
+      "qid": "Q070",
+      "difficulty": "hard",
+      "query": "外部知识源 M14 的设计参考了什么？过期内容如何处理？",
+      "evidence": "技术方案 M14（§3.1）+ PRD §8.4 ⑩ + gate Q4 EXT-1",
+      "recall": 0.6667,
+      "mrr": 1.0
+    },
+    {
+      "qid": "Q071",
+      "difficulty": "hard",
+      "query": "为什么「演示设备不能用西北人自带笔记本」被写进门禁？",
+      "evidence": "gate Q5 DEMO-1",
+      "recall": 0.5,
+      "mrr": 0.5
+    },
+    {
+      "qid": "Q077",
+      "difficulty": "hard",
+      "query": "假设要验证「双层权限过滤生效（无权限搜不到）」，对应哪条准出和哪个门禁判据？",
+      "evidence": "PRD §8.4 ⑦ + gate Q4 PERM-1",
+      "recall": 0.5,
+      "mrr": 0.3333
+    },
+    {
+      "qid": "Q078",
+      "difficulty": "hard",
+      "query": "RAGAS 自动评测（准出④）要证明什么？它与「无治理基线」的关系是什么？",
+      "evidence": "PRD §8.4 ④ + gate Q4 EVAL-1",
+      "recall": 0.5,
+      "mrr": 1.0
+    }
+  ],
+  "missing_refuse": [
+    {
+      "qid": "Q081",
+      "difficulty": "—",
+      "query": "现代金租 2025 年的不良贷款率是多少？",
+      "evidence": "无",
+      "n_hits": 0
+    },
+    {
+      "qid": "Q082",
+      "difficulty": "—",
+      "query": "EKOS 目前已经签约了多少家付费客户？",
+      "evidence": "无",
+      "n_hits": 0
+    },
+    {
+      "qid": "Q083",
+      "difficulty": "—",
+      "query": "西北人的个人手机号是多少？",
+      "evidence": "无",
+      "n_hits": 0
+    },
+    {
+      "qid": "Q084",
+      "difficulty": "—",
+      "query": "RAGFlow 开源项目当前在 GitHub 上的 star 数是多少？",
+      "evidence": "无",
+      "n_hits": 0
+    },
+    {
+      "qid": "Q086",
+      "difficulty": "—",
+      "query": "现代金租某位信贷客户经理的姓名和工号是什么？",
+      "evidence": "无",
+      "n_hits": 0
+    },
+    {
+      "qid": "Q089",
+      "difficulty": "—",
+      "query": "能给我一份现代金租真实的企业信贷报告完整原文吗？",
+      "evidence": "无",
+      "n_hits": 0
+    },
+    {
+      "qid": "Q090",
+      "difficulty": "—",
+      "query": "EKOS 在海外（中国以外）已经落地了哪些客户名单？",
+      "evidence": "无",
+      "n_hits": 0
+    },
+    {
+      "qid": "Q091",
+      "difficulty": "—",
+      "query": "金租项目用于测试的「模拟数据」里，某笔融资租赁合同的真实承租人叫什么？",
+      "evidence": "无",
+      "n_hits": 0
+    },
+    {
+      "qid": "Q092",
+      "difficulty": "—",
+      "query": "飞书公司 2026 年的员工总数是多少？",
+      "evidence": "无",
+      "n_hits": 0
+    },
+    {
+      "qid": "Q094",
+      "difficulty": "—",
+      "query": "现代金租内部使用的某个业务系统的数据库管理员密码是多少？",
+      "evidence": "无",
+      "n_hits": 0
+    },
+    {
+      "qid": "Q095",
+      "difficulty": "—",
+      "query": "EKOS 下一阶段（Phase 2 之后）的具体发布日期定在什么时候？",
+      "evidence": "无",
+      "n_hits": 0
+    },
+    {
+      "qid": "Q097",
+      "difficulty": "—",
+      "query": "能查到西北人个人的身份证号吗？",
+      "evidence": "无",
+      "n_hits": 0
+    },
+    {
+      "qid": "Q098",
+      "difficulty": "—",
+      "query": "EKOS 当前实时在线活跃用户数是多少？",
+      "evidence": "无",
+      "n_hits": 0
+    },
+    {
+      "qid": "Q099",
+      "difficulty": "—",
+      "query": "现代金租 2026 年第三季度的净利润是多少？",
+      "evidence": "无",
+      "n_hits": 0
+    }
+  ]
+}
