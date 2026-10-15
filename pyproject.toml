@@ -13,7 +13,7 @@ requires-python = "==3.11.10"          # 冻结版本，不得放宽
 # 注：不设 readme —— 本工程约定默认不生成 README.md
 dependencies = [
     # ---- 运行时（版本严格按 60.90.03 §3.7 冻结表）----
-# 冻结表内的 5 项：逐字对齐 60.90.03 §3.7
+    # 冻结表内的 5 项：逐字对齐 60.90.03 §3.7
     "fastapi==0.115.6",
     "uvicorn[standard]==0.34.0",
     "celery==5.4.0",
@@ -36,6 +36,9 @@ dependencies = [
     # 上游哪天不再依赖它，我们的配置层就凭空断掉，而 pyproject 里看不出任何线索。
     "pyyaml==6.0.3",
     # 注意：paddleocr==2.9.1 暂缓引入（arm64 依赖链重，留到 E1 验证）
+    "pdfplumber==0.11.10",
+    "reportlab==5.0.0",
+    "pillow==12.3.0",
 ]
 
 # 开发工具链放 [dependency-groups]（PEP 735），不放在 [project.optional-dependencies]。
@@ -114,7 +117,22 @@ warn_unused_ignores = true
 disallow_untyped_defs = true
 # 第三方库缺桩时不阻断
 [[tool.mypy.overrides]]
-module = ["pymupdf.*", "minio.*", "celery.*", "pgvector.*"]
+module = [
+    "pymupdf.*",
+    "minio.*",
+    "celery.*",
+    "pgvector.*",
+    "fitz",
+    "fitz.*",
+    "magic_pdf",
+    "magic_pdf.*",
+    "pdfplumber",
+    "pdfplumber.*",
+    "reportlab",
+    "reportlab.*",
+    "PIL",
+    "PIL.*",
+]
 ignore_missing_imports = true
 
 # ---------------- 测试 ----------------

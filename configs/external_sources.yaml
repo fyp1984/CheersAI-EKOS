@@ -1,0 +1,25 @@
+# ⑩ M14 外部知识源配置（MVP 最小版：1 个外部标准可信源）
+#
+# 判据（PRD §6 F-M14 / gate Q4:EXT-1）：
+#   ① ≥1 个外部源可作为检索源被召回
+#   ② 外部知识 100% 标注来源与生效日期
+#   ③ 过期内容 100% 被标记且在检索结果中不可见
+#
+# 配置驱动：新增一个外部源 = 加一段 sources 条目，内核零改动（T-C1）。
+version: 1
+
+sources:
+  - id: ext-standard-001
+    name: 通用数据管理标准委员会（样例）
+    kind: standard                 # regulation / standard
+    adapter: external-source       # 对应 apps/worker/external_sources.py
+    root: deploy/fixtures/external-sources
+    format: md
+    # front matter 字段名 → 语义（外部源若用别的字段名，改这里即可，不改代码）
+    fields:
+      source_name: source_name
+      effective_date: effective_date
+      expiry_date: expiry_date
+    # 时效策略：过期内容不在检索结果中出现（判据③的「不可见」环节）
+    on_expired: hide_from_retrieval
+    permission_domain: D-external

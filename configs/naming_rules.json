@@ -1,0 +1,42 @@
+{
+  "version": "1.0",
+  "enforcement": "advisory",
+  "description": "Ingest naming and path validation rules (config layer, not hard-coded in kernel). MVP uses lightweight JSON; OPA/Rego is deferred per technical plan section 4.8.",
+  "naming": {
+    "doc_id_pattern": "^[A-Za-z0-9_\\-\\.]+$",
+    "doc_id_max_length": 128,
+    "doc_id_min_length": 1,
+    "forbidden_substrings": [
+      " ",
+      "../",
+      "..\\",
+      "/",
+      "\\",
+      ":",
+      "*",
+      "?",
+      "\"",
+      "<",
+      ">",
+      "|"
+    ]
+  },
+  "path": {
+    "source_uri_max_length": 2048,
+    "source_uri_min_length": 1,
+    "allowed_schemes": [
+      "file",
+      "minio",
+      "s3",
+      "http",
+      "https"
+    ],
+    "scheme_required": true,
+    "forbidden_substrings": [
+      " ",
+      "../",
+      "..\\"
+    ],
+    "path_traversal_check": true
+  }
+}

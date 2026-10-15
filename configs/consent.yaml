@@ -1,0 +1,42 @@
+# 知情同意门运行时配置（T-D3 · 准出⑧）
+#
+# 为什么默认 scope 写在配置里、不写在代码里
+# --------------------------------------------
+# 「哪些知识被纳入」是实例层决定的：金租看的是合同/财报/尽调，
+# 医院看的是病历/检查/处方。内核只提供通用的 scope 容器，
+# 具体内容落到 configs，避免内核出现行业词（TR-1）。
+#
+# webhook_targets 只写目标名（环境变量解析后注入），
+# 不写 host:port 字面量，遵守 TR-7 零硬编码端口。
+version: 1
+
+default_consent_id: "consent-default"
+
+# MVP 默认纳入范围（E0 验证用，全部通用语义，零行业词）
+# 真实部署时由连接器注册时动态登记，不把这份表当权威。
+default_scopes:
+  - scope_id: "scope-local-doc"
+    source_type: "local-doc"
+    source_ref: "deploy/fixtures/mock-library"
+    display_name: "本地文档库"
+    description: "本地文件系统中的文档与资料"
+    language: "zh"
+
+  - scope_id: "scope-feishu-ingest"
+    source_type: "feishu-ingest"
+    source_ref: "connector-feishu-wiki"
+    display_name: "飞书 Wiki 知识库"
+    description: "飞书云文档与 Wiki 同步的内容"
+    language: "zh"
+
+  - scope_id: "scope-external-registry"
+    source_type: "external-registry"
+    source_ref: "connector-external-spec"
+    display_name: "外部规范与标准"
+    description: "公开法规、行业通用规范"
+    language: "zh"
+
+# 下游撤回通知的目标（TR-7：这里不出现 host:port，
+# 实际地址由部署环境通过 ENV 注入后，HttpNotifier 从配置读取）
+# MVP 留空，默认走 LogOnlyNotifier 打日志即可验证调用链。
+webhook_targets: []

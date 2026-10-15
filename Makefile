@@ -3,7 +3,7 @@
 
 .DEFAULT_GOAL := help
 PY   := uv run
-GATE := python tools/gate/gate_check.py
+GATE := $(PY) python tools/gate/gate_check.py
 
 .PHONY: help setup lint fmt type test-unit test-contract test-integration test-golden \
         gate gate-selftest gate-mutation gate-checklist up down stub clean

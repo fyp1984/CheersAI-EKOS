@@ -19,3 +19,16 @@ default_language: zh
 
 supported_languages:
   - zh
+
+connectors:
+  - name: local-doc
+    type: local-doc
+    enabled: true
+    config:
+      root: deploy/fixtures/mock-library
+  - name: feishu-ingest
+    type: feishu-ingest
+    enabled: true
+    config:
+      fixture_path: deploy/fixtures/feishu_wiki_fixture.json
+      dry_run: true
