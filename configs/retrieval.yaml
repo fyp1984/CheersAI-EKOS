@@ -17,11 +17,18 @@ engines:
 
   vector:
     enabled: true
-    provider: in-memory              # E0：内存 cosine；E1 换 pgvector / Milvus
+    # P-10 续作2：tei/http = 真 embedding bge-m3 (TEI cpu-1.8, OpenAI兼容 /v1/embeddings)
+    # TEI 服务未启动时自动降级为内存 minhash 伪向量（不导致整体 fail）
+    # E0 演示端口: 18001，契约交付端口: 8001（优先读环境变量 EMBEDDING_HOST）
+    provider: tei/http
     weight: 1.0
     params:
-      embedding_dim: 1536            # 兼容 text-embedding-3-small；真实维度由模型决定
+      embedding_dim: 1024           # bge-m3 float32 真实维度（与权重文件 config.json hidden_size 对齐）
       similarity: cosine
+      host_from_env: EMBEDDING_HOST # 环境变量优先（E1 compose 组网时写；E0 本机演示：export EMBEDDING_HOST=http://127.0.0.1:18001）
+      host: http://127.0.0.1:18001  # 默认回退：E0 本机演示态 TEI
+      model: bge-m3
+      max_batch_items: 32           # 服务端 max_client_batch_size 上限（SevenSmile TEI 默认 32）；超限会被直接拒绝 → 整批降级为伪向量
 
   graph:
     enabled: true
@@ -30,9 +37,19 @@ engines:
     params:
       max_hops: 2
 
+  reranker:
+    enabled: true                    # ⚠️ 无效开关：代码未读取该字段；reranker 实际启停只由 RERANKER_HOST 环境变量决定
+    provider: cross-encoder/http    # E0：本机 bge-reranker-v2-m3 CrossEncoder MPS；E1 换 TEI reranker 集群
+    weight: 1.0
+    params:
+      host_from_env: RERANKER_HOST   # 环境变量优先（E1 compose 组网时写；E0 本机：export RERANKER_HOST=http://127.0.0.1:18002）
+      host: http://127.0.0.1:18002   # E0 本机演示态兜底（代码层若检测到 host:port 字面量则忽略 yaml，走 env）
+      top_n: 20                      # v18k：20 基线（v18j 50 导致通用目录 chunk 挤占 top-8，Recall 降 0.04）
+      timeout_sec: 30                # MPS 冷启动首次 CrossEncoder 编译需 10–20s，留够余量
+
 # 混合检索参数（PRD §T-C4 要求 L2 + L4 融合排序，使用 RRF）
 hybrid:
-  top_k_per_engine: 20               # 每路召回 Top 20，重排后压到 top_k
+  top_k_per_engine: 20               # 每路召回 Top 20（v18r 标定：466 chunks×3路 噪声最少且 evidence 进池率最高；v18t扩50会引入无关chunk挤压正确证据，Recall降0.06）
   dedupe: true                       # 同 asset+chunk 只保留最高分
   evidence_required: true            # T-C5：每条 hit 必须有 evidence（哪怕是空串也要给）
   fusion:
@@ -46,7 +63,7 @@ refusal:
   reason_when_all_filtered: "召回结果已全部被权限过滤，当前账号无访问权限"
   reason_when_low_score: "Top-k 相似度均低于阈值，证据不足"
   min_score_threshold: 0.001          # 次防线：RRF 融合分阈值（E0 stub 区间紧，仅兜底）
-  min_consensus_engines: 2            # 主防线（P-10 T-C4）：融合后的 top-1 chunk 必须至少有几路引擎在各自 top-20 内同时召回它才判定可答；否则视为单路噪音命中，拒答
+  min_consensus_engines: 2            # 主防线 v18r：双路共识（kw+vec至少两路命中；拒答再由四维盒裁决，R类漏拒率最低=0/20；v18t放宽到1会导致R类单路词法漏匹配就放行，拒答率1.0→0.90）
   # 以下保留兼容/兜底，当前主信号为 consensus
   min_keyword_raw_score: 0.10
   min_any_engine_raw: 0.01
