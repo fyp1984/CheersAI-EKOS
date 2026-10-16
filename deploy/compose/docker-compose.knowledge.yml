@@ -1,0 +1,113 @@
+# EKOS 共用层 · 知识引擎服务组（Knowledge Engine）
+#
+# 归属：2026-10-15 由 FileBay 栈迁入 EKOS，成为 EKOS 底座的一部分。
+# 消费方：Askoda（数据需求智能分析助手，:18080）经 ekos-ragflow-proxy :19380 接入。
+#
+# 为什么用 include: 而不是把服务逐个抄一遍
+# --------------------------------------------
+# RAGFlow 的依赖编排有 13 个服务、每个几十行环境变量，其中**关键项是上游
+# docker-compose-base.yml 里硬编码的**（ES 的 node.name / discovery.type / xpack.*、
+# MySQL 的 MYSQL_ROOT_PASSWORD、MinIO 的 MINIO_ROOT_*）。手抄必漏——实测漏了
+# ES 的 7 个键就导致 bootstrap checks failed、容器反复重启。
+# 所以这里沿用 FileBay 已验证的 include: 模式：上游编排原样引入，本文件只做
+# 「改端口 / 改内存 / 换卷 / 挂 FileBay 前端外壳」四处覆盖。
+#
+# 关键约束（别改）：
+#   1. **卷一律 external 原地引用**，不搬数据。卷名沿用 filebay-knowledge-trial_* 前缀
+#      （它们是 2026-10-15 之前由 FileBay 栈创建的），改名会丢数据，所以用 name: 指过去。
+#   2. **ragflow-cpu 必须锁 linux/amd64**：上游只发布 amd64，本机是 arm64 → 走 Rosetta
+#      （实测常驻 2.5 GiB）。跟随其余服务的 arm64 会直接起不来。
+#   3. 端口：随迁的上游副本已**直接删掉各服务的 `ports:` 段**，本文件不再需要
+#      `ports: !reset []`（那会让 check-yaml 挂：它不认 Compose 自定义标签）。
+#      唯一对外入口是 ekos-ragflow-proxy 的宿主 :19380。
+#   4. include: 的 env_file 指向随上游目录一起复制过来的 .env（含凭据，已 gitignore）。
+#      不要改成 Compose 的项目级 .env——EKOS 自己的 MINIO_USER 与 RAGFlow 的
+#      MINIO_USER=rag_flow 会撞名。
+#   5. 用 Compose Spec 通用语法（不用 !reset 等新版专有字段），与 docker-compose.dev.yml 一致。
+#   6. 上游副本已裁剪到**只保留本平台实际运行的 5 个服务**；被裁掉的 9 个服务
+#      image 标签均为 latest，会触发本仓 TR-4「版本零漂移」。裁剪记录见副本内注释。
+#
+# 用法：
+#   docker compose -f docker-compose.knowledge.yml up -d ragflow-cpu
+#   docker compose -f docker-compose.knowledge.yml ps
+#
+# 回滚：本文件不改任何卷，回滚只需停掉这 5 个服务，再用 FileBay 原栈起回
+#      （CheersAI-FileBay/deploy/knowledge/docker-compose.trial.yml）。
+
+name: ekos-knowledge
+
+include:
+  - path: ./knowledge-overlay/ragflow-upstream/docker-compose.yml
+    env_file: ./knowledge-overlay/ragflow-upstream/.env
+
+services:
+
+  # ---------------- 覆盖：ES ----------------
+  es01:
+    mem_limit: 3g
+    mem_reservation: 1g
+    platform: linux/arm64
+    # tmpfs（/tmp:mode=1777,size=512m）由上游 base 提供，**不要在这里重复加**——
+    # 列表型字段是追加语义，重复会报 duplicate mount。
+
+  # ---------------- 覆盖：MySQL ----------------
+  mysql:
+    platform: linux/arm64
+
+  # ---------------- 覆盖：MinIO ----------------
+  minio:
+    platform: linux/arm64
+
+  # ---------------- 覆盖：Valkey ----------------
+  redis:
+    platform: linux/arm64
+
+  # ---------------- 覆盖：知识引擎本体 ----------------
+  ragflow-cpu:
+    platform: linux/amd64          # ← 见约束 2，上游无 arm64 变体
+    # 部署期包装脚本：启动时向前端 index.html 注入 FileBay 外壳，再 exec 上游 entrypoint.sh。
+    entrypoint: ["/bin/bash", "/ragflow/filebay-entrypoint.sh"]
+    command:
+      - "--enable-adminserver"
+      - "--init-model-provider-tables"
+      - "--disable-datasync"      # FileBay 自己管入库，禁用 RAGFlow 的数据源同步 worker 以省内存
+      - "--workers=1"
+    # 上游 volumes 会被合并（追加），这里补 4 个 FileBay 定制文件：
+    #   前端外壳 css/js + 对 user_api.py 的补丁 + 部署期包装脚本。
+    volumes:
+      - ./knowledge-overlay/ragflow/filebay-entrypoint.sh:/ragflow/filebay-entrypoint.sh:ro
+      - ./knowledge-overlay/ragflow/filebay-shell.css:/ragflow/web/dist/filebay-shell.css:ro
+      - ./knowledge-overlay/ragflow/filebay-shell.js:/ragflow/web/dist/filebay-shell.js:ro
+      - ./knowledge-overlay/ragflow/user_api.py.patched:/ragflow/api/apps/restful_apis/user_api.py:ro
+      # 前端产物卷：上游声明为本地卷，这里改 external 指到既有卷（零迁移）。
+      - ragflow_web_dist:/ragflow/web/dist
+    mem_limit: 3g
+    mem_reservation: 1g
+    cpus: "2.50"
+    pids_limit: 512
+    healthcheck:
+      # 不用 curl -f：RAGFlow 首页对未登录请求会返回 302/401，加 -f 会把健康探针判成红。
+      test: ["CMD-SHELL", "curl -fsS --max-time 5 http://127.0.0.1/ >/dev/null"]
+      interval: 20s
+      timeout: 8s
+      retries: 12
+      start_period: 90s
+
+volumes:
+  # ↓ 全部 external：原地引用 FileBay 栈创建的卷，**零数据迁移**。
+  #   上游 base 里的键名（esdata01 / mysql_data / …）保持不变，只把 driver 换成 external。
+  esdata01:
+    external: true
+    name: filebay-knowledge-trial_esdata01
+  mysql_data:
+    external: true
+    name: filebay-knowledge-trial_mysql_data
+  minio_data:
+    external: true
+    name: filebay-knowledge-trial_minio_data
+  redis_data:
+    external: true
+    name: filebay-knowledge-trial_redis_data
+  ragflow_web_dist:
+    external: true
+    name: filebay-knowledge-trial_ragflow-web-dist

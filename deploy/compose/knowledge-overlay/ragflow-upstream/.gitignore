@@ -1,0 +1,4 @@
+# 上游 .env 含凭据（MYSQL_PASSWORD / ELASTIC_PASSWORD / MINIO_PASSWORD / REDIS_PASSWORD）
+.env
+# 运行日志（迁自 FileBay，44 MB），只为保持排障连续性，不入库
+ragflow-logs/

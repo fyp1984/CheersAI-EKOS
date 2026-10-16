@@ -1,0 +1,291 @@
+/*
+ * CheersAI visual adapter for the upstream RAGFlow SPA.
+ *
+ * This file is mounted into the built RAGFlow image by the trial compose
+ * layer. It deliberately contains no RAGFlow business logic, so upgrading
+ * the pinned upstream source only requires rebuilding its web assets.
+ */
+:root,
+:root.dark {
+  --cheers-primary: #3b82f6;
+  --cheers-primary-dark: #2563eb;
+  --cheers-primary-light: #60a5fa;
+  --cheers-success: #10b981;
+  --cheers-warning: #f59e0b;
+  --cheers-danger: #ef4444;
+  --cheers-info: #8b5cf6;
+  --cheers-canvas: #f9fafb;
+  --cheers-surface: #ffffff;
+  --cheers-surface-muted: #f3f4f6;
+  --cheers-border: #e5e7eb;
+  --cheers-text: #111827;
+  --cheers-text-muted: #4b5563;
+  --cheers-radius: 8px;
+  --cheers-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --cheers-shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --cheers-transition: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* RAGFlow token bridge. Keep both themes light in the unified workspace. */
+  --background: 0 0% 100%;
+  --foreground: 222 47% 11%;
+  --muted: 220 14% 96%;
+  --muted-foreground: 215 16% 47%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 222 47% 11%;
+  --border: 220 13% 91%;
+  --input: 220 13% 91%;
+  --card: 0 0% 100%;
+  --card-foreground: 222 47% 11%;
+  --primary: 217 91% 60%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 220 14% 96%;
+  --secondary-foreground: 222 47% 11%;
+  --accent: 214 95% 93%;
+  --accent-foreground: 217 91% 45%;
+  --ring: 217 91% 60%;
+  --bg-base: var(--cheers-canvas);
+  --bg-title: var(--cheers-canvas);
+  --bg-component: var(--cheers-surface);
+  --bg-card: var(--cheers-surface-muted);
+  --bg-input: var(--cheers-surface);
+  --bg-canvas: 249 250 251;
+  --bg-list: 249 250 251;
+  --text-primary: 17 24 39;
+  --text-secondary: 75 85 99;
+  --text-disabled: #9ca3af;
+  --text-input-tip: #9ca3af;
+  --border-default: var(--cheers-border);
+  --border-button: var(--cheers-border);
+  --border-accent: var(--cheers-primary);
+  --accent-primary: 59 130 246;
+  --background-card: var(--cheers-surface);
+  --background-header-bar: var(--cheers-surface);
+  --background-highlight: #dbeafe;
+  --background-note: var(--cheers-surface-muted);
+  --input-border: #d1d5db;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+  background: var(--cheers-canvas) !important;
+  color: var(--cheers-text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
+    "Helvetica Neue", Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* A single, quiet application bar shared with the FileBay workspace. */
+#root > div > header {
+  min-height: 64px !important;
+  padding: 0 32px !important;
+  gap: 24px !important;
+  background: var(--cheers-surface) !important;
+  border-bottom: 1px solid var(--cheers-border);
+  box-shadow: var(--cheers-shadow-sm);
+}
+
+#root > div > header > div:first-child {
+  min-width: 184px;
+}
+
+#root > div > header > div:first-child img {
+  width: 36px !important;
+  height: 36px !important;
+  border-radius: 9px;
+  box-shadow: var(--cheers-shadow-sm);
+}
+
+#root > div > header nav > ul {
+  gap: 4px;
+  padding: 4px !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: var(--cheers-radius) !important;
+}
+
+#root > div > header nav > ul > li[role="presentation"] {
+  display: none !important;
+}
+
+#root > div > header nav > ul > li > a {
+  height: 40px !important;
+  padding: 0 16px !important;
+  border: 1px solid transparent;
+  border-radius: var(--cheers-radius) !important;
+  color: var(--cheers-text-muted) !important;
+  font-size: 14px !important;
+  font-weight: 500;
+  transition: background-color var(--cheers-transition), color var(--cheers-transition),
+    border-color var(--cheers-transition);
+}
+
+#root > div > header nav > ul > li > a:hover,
+#root > div > header nav > ul > li > a:focus-visible {
+  background: var(--cheers-surface-muted);
+  color: var(--cheers-text) !important;
+}
+
+#root > div > header nav > ul > li > a[aria-current="page"] {
+  background: var(--cheers-primary) !important;
+  border-color: var(--cheers-primary) !important;
+  color: #ffffff !important;
+  box-shadow: 0 1px 2px rgba(37, 99, 235, 0.22);
+}
+
+#filebay-workbench-nav > a {
+  color: var(--cheers-primary-dark) !important;
+}
+
+#filebay-workbench-nav > a::before {
+  content: "⌂";
+  margin-right: 7px;
+  font-size: 16px;
+  line-height: 1;
+}
+
+#root > div > header [data-testid="auth-status"] > a,
+#root > div > header [data-testid="auth-status"] button {
+  border-radius: var(--cheers-radius);
+  color: var(--cheers-text-muted);
+  transition: background-color var(--cheers-transition), color var(--cheers-transition);
+}
+
+#root > div > header [data-testid="auth-status"] > a:hover,
+#root > div > header [data-testid="auth-status"] button:hover {
+  background: var(--cheers-surface-muted);
+  color: var(--cheers-text);
+}
+
+/* Main workspace: precise density, surfaces and controls from CheersAI Desktop. */
+#root main {
+  background: var(--cheers-canvas) !important;
+}
+
+#root main h1,
+#root main h2 {
+  color: var(--cheers-text);
+}
+
+#root main h1 {
+  font-size: 24px !important;
+  font-weight: 700 !important;
+  line-height: 1.2;
+}
+
+#root main h2 {
+  font-size: 20px !important;
+  font-weight: 600 !important;
+  line-height: 1.3;
+}
+
+#root main h3 {
+  color: var(--cheers-text);
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+#root main input,
+#root main textarea,
+#root main [role="combobox"],
+#root main button[role="combobox"] {
+  border-color: #d1d5db !important;
+  border-radius: var(--cheers-radius) !important;
+  font-size: 14px !important;
+}
+
+#root main input:focus,
+#root main textarea:focus,
+#root main [role="combobox"]:focus-visible,
+#root main button:focus-visible {
+  outline: none !important;
+  border-color: var(--cheers-primary) !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+}
+
+#root main button {
+  border-radius: var(--cheers-radius);
+  transition: background-color var(--cheers-transition), border-color var(--cheers-transition),
+    box-shadow var(--cheers-transition), transform var(--cheers-transition);
+}
+
+#root main button:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+#root main table th {
+  padding-top: 12px !important;
+  padding-bottom: 12px !important;
+  color: #6b7280 !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.05em;
+}
+
+#root main table td {
+  padding-top: 16px !important;
+  padding-bottom: 16px !important;
+  font-size: 14px !important;
+}
+
+#root main table tbody tr {
+  transition: background-color var(--cheers-transition);
+}
+
+#root main table tbody tr:hover {
+  background: var(--cheers-canvas) !important;
+}
+
+/* RAGFlow's account/settings navigation becomes the Desktop side rail. */
+#root main aside.shrink-0.w-16 {
+  background: linear-gradient(180deg, #111827 0%, #1f2937 100%) !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: #d1d5db !important;
+}
+
+#root main aside.shrink-0.w-16 :is(h1, h2, h3, h4, p, span, a, button, svg) {
+  color: inherit;
+}
+
+#root main aside.shrink-0.w-16 a,
+#root main aside.shrink-0.w-16 button {
+  min-height: 40px;
+  border-radius: var(--cheers-radius) !important;
+  color: #d1d5db !important;
+  transition: background-color var(--cheers-transition), color var(--cheers-transition);
+}
+
+#root main aside.shrink-0.w-16 a:hover,
+#root main aside.shrink-0.w-16 button:hover {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #ffffff !important;
+}
+
+#root main aside.shrink-0.w-16 [aria-current="page"],
+#root main aside.shrink-0.w-16 [data-state="active"] {
+  background: var(--cheers-primary) !important;
+  color: #ffffff !important;
+}
+
+/* Popup surfaces need to remain readable over the darker RAGFlow rails. */
+[data-radix-popper-content-wrapper] [role="menu"],
+[data-radix-popper-content-wrapper] [role="listbox"],
+[role="dialog"] {
+  border-color: var(--cheers-border) !important;
+  border-radius: 12px !important;
+  box-shadow: var(--cheers-shadow-md) !important;
+}
+
+@media (max-width: 1023px) {
+  #root > div > header {
+    min-height: 56px !important;
+    padding: 0 16px !important;
+  }
+
+  #root > div > header > div:first-child {
+    min-width: auto;
+  }
+}
